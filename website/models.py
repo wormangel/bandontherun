@@ -9,7 +9,8 @@ class UserProfile(models.Model):
     phone = models.CharField(verbose_name="telefone", max_length=15, blank=True)
 
     # one way of doing this (the other would be bidirectional relationship)
-    def bands():
+    @property
+    def bands(self):
         return Band.objects.filter(members__contains=self)
 
 class Band(models.Model):
