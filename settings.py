@@ -145,4 +145,4 @@ LOGGING = {
     }
 }
 
-#AUTH_PROFILE_MODULE = 'bandontherun.UserProfile'
+AUTH_PROFILE_MODULE = 'website.UserProfile'
