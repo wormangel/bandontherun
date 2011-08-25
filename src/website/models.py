@@ -4,8 +4,6 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, primary_key=True)
     
-    # User already contains first_name and last_name. remove this?
-    name = models.CharField(verbose_name="nome", max_length=50, blank=True)
     phone = models.CharField(verbose_name="telefone", max_length=15, blank=True)
 
     # one way of doing this (the other would be bidirectional relationship)
