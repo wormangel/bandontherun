@@ -66,7 +66,7 @@ STATIC_URL = '/public/'
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
-ADMIN_MEDIA_PREFIX = '/static/admin/'
+ADMIN_MEDIA_PREFIX = '/public/admin/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -101,7 +101,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'bandontherun.urls'
+ROOT_URLCONF = 'project.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -116,7 +116,7 @@ INSTALLED_APPS = (
     # 'django.contrib.sites', (team) we don't use this feature 
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'website',
+    'project',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
