@@ -6,7 +6,8 @@
         <li><a href="/about">about</a></li>
         <li><a href="/user/logout">logout</a></li>
       </ul>
-      {% if len(user.profile.bands) == 0 %}
+      {{ user.profile.phone }}
+      {% if user.profile.phone %}
       <p>You do not belong to a band. What do you think about <a href="/band/new">creating</a> a new one?</p>
       {% else %}
       <button>Create band</button>

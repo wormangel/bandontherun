@@ -23,7 +23,7 @@ def dashboard(request):
     return render_to_response('user/dashboard.html', context_instance=RequestContext(request))
 
 def show_user(request):
-     return render_to_response('user/user.html')
+     return render_to_response('user/show.html', context_instance=RequestContext(request))
 
 def new_user(request):
     if request.method == 'GET':
@@ -41,7 +41,7 @@ def create_user(request):
         email = request.POST['email']
         phone = request.POST['phone']
         # TODO: validate input / use form
-        accounts_manager.create_user(first_name, last_name, username, password, email, phone)
+        users_manager.create_user(first_name, last_name, username, password, email, phone)
         user = authenticate(username=username, password=password)
         if user is not None:
             login_auth(request, user)
@@ -68,8 +68,8 @@ def update_user(request):
         password = request.POST['password']
         email = request.POST['email']
         phone = request.POST['phone']
-        # TODO: validate input
-        user = accounts_manager.update_user(first_name, last_name, username, password, email, phone)
+        # TODO: validate input / use form
+        user = accounts_manager.update_user(request.user, first_name, last_name, username, password, email, phone)
         if user is not None:
             return redirect('/user/dashboard')
         else:
@@ -94,8 +94,8 @@ def login(request):
             login_auth(request, user)
             return redirect(next)
         else:
-            # error flag for message
-            return redirect('/login?next=%s' % next)
+            # TODO: append errors
+            return redirect('/user/login?next=%s' % next)
     else:
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
         return HttpResponse(status_code=405)
@@ -151,11 +151,44 @@ def update_band(request):
         bio = request.POST['bio']
         url = request.POST['url']
         # TODO: validate input / use form
+        # validate if user updating the info is a member
         if band is not None:
             bands_manager.update_band(band_name, shortcut_name, bio, url)
         else:
             # echo input vars on output
             return redirect('/band/%s/edit' % old_shortcut_name)
+        return redirect('/band/%s' % band_name)
+    else:
+        # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
+        return HttpResponse(status_code=405)
+        
+def add_band_member(request):
+    if request.method == 'POST':
+        shortcut_name = request.POST['shortcut_name']
+        username = request.POST['username']
+        # TODO: validate input / use form
+        # validate if user updating the info is a member
+        if band is not None:
+            bands_manager.add_band_member(shortcut_name, users_manager.get_user(username))
+        else:
+            # echo input vars on output
+            return redirect('/band/%s/member/new' % shortcut_name)
+        return redirect('/band/%s' % band_name)
+    else:
+        # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
+        return HttpResponse(status_code=405)
+
+def remove_band_member(request):
+    if request.method == 'POST':
+        shortcut_name = request.POST['shortcut_name']
+        username = request.POST['username']
+        # TODO: validate input / use form
+        # validate if user updating the info is a member
+        if band is not None:
+            bands_manager.remove_band_member(shortcut_name, users_manager.get_user(username))
+        else:
+            # echo input vars on output
+            return redirect('/band/%s/members' % shortcut_name)
         return redirect('/band/%s' % band_name)
     else:
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
