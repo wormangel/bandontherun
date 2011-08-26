@@ -146,4 +146,9 @@ LOGGING = {
     }
 }
 
-AUTH_PROFILE_MODULE = 'website.UserProfile'
+# Overridden variables
+AUTH_PROFILE_MODULE = 'project.UserProfile'
+
+LOGIN_URL = '/user/login'
+
+LOGOUT_URL = '/user/logout'

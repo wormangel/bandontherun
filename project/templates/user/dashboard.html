@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block body %}
+      <h1>Band on the Run!</h1>
+      <ul>
+        <li><a href="#">dashboard</a></li>
+        <li><a href="/about">about</a></li>
+        <li><a href="/user/logout">logout</a></li>
+      </ul>
+      {% if len(user.profile.bands) == 0 %}
+      <p>You do not belong to a band. What do you think about <a href="/band/new">creating</a> a new one?</p>
+      {% else %}
+      <button>Create band</button>
+      <ul>
+        {% for band in user.profile.bands %}
+        <li><a href="/band/%s" % band.id>{{ band.name }}</a></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+{% endblock %}

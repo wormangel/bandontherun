@@ -7,10 +7,25 @@ from django.contrib.auth.decorators import login_required
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-    # url(r'^$', 'project.views.home', name='home'),
     url(r'^$', 'project.views.index', name='index'),
-    url(r'^band/(?P<band_name>\d+)/$', 'project.views.show_band', name='show-band'),
-    url(r'^accounts/(?P<user_login>\d+)/$', 'project.views.show_user', name='show-user'),
+    url(r'^about$', 'project.views.about', name='about'),
+
+    # band
+    url(r'^band/new$', 'project.views.new_band', name='new-band'),
+    url(r'^band/create$', 'project.views.create_band', name='create-band'),
+    url(r'^band/(?P<shortcut_name>\d+)/edit$', 'project.views.edit_band', name='edit-band'),
+    url(r'^band/(?P<shortcut_name>\d+)/update$', 'project.views.update_band', name='update-band'),
+    url(r'^band/(?P<shortcut_name>\d+)$', 'project.views.show_band', name='show-band'),
+
+    # accounts
+    url(r'^user/login$', 'project.views.login', name='user-login'),
+    url(r'^user/logout$', 'project.views.logout', name='user-logout'),
+    url(r'^user/new$', 'project.views.new_user', name='new-user'),
+    url(r'^user/create$', 'project.views.create_user', name='create-user'),
+    url(r'^user/edit$', 'project.views.edit_user', name='edit-user'),
+    url(r'^user/update$', 'project.views.update_user', name='update-user'),
+    url(r'^user/dashboard$', 'project.views.dashboard', name='user-dashboard'),
+    url(r'^user/profile/(?P<username>\d+)$', 'project.views.show_user', name='show-user'),
 
     # Examples:
     # url(r'^bandontherun/', include('bandontherun.foo.urls')),

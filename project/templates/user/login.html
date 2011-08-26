@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block body %}
+      <h1>Band on the Run!</h1>
+      <ul>
+        <li><a href="#">login</a></li>
+        <li><a href="/user/new">criar conta</a></li>
+      </ul>
+      
+      <form id="login" action="/user/login" method="post">
+        {% csrf_token %}
+        <label for="username">
+          <input id="username" name="username" type="text" placeholder="your username" />
+        </label>
+        <label for="password">
+          <input id="password" name="password" type="password" placeholder="your password"/>
+        </label>
+        <input type="submit" value="Login" />
+      </form>
+{% endblock %}

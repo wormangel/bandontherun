@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block body %}
+      <h1>Band on the Run!</h1>
+      <ul>
+        <li><a href="/user/dashboard">dashboard</a></li>
+        <li><a href="/about">about</a></li>
+        <li><a href="/user/logout">logout</a></li>
+      </ul>
+      
+      <h2>{{ band.name }}</h2>
+      <dl>
+        <dt>Nome:</dt>
+        <dd>{{ band.name }}</dd>
+        <dt>URL:</dt>
+        <dd>{{ band.url }}</dd>
+      </dl>
+      <p>{{ band.bio }}</p>
+      
+      <h3>Members</h3>
+      <ul>
+      {% for member in band.members %}
+        <li>{{ member.first_name }}</li>
+      {% endfor %}
+      </ul>
+{% endblock %}

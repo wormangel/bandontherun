@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block body %}
+      <h1>Band on the Run!</h1>
+      <ul>
+        <li><a href="#">dashboard</a></li>
+        <li><a href="/about">about</a></li>
+        <li><a href="/user/logout">logout</a></li>
+      </ul>
+      
+      <form id="login" action="/band/create" method="post">
+        {% csrf_token %}
+        <label for="band_name">
+          <input id="band_name" name="band_name" type="text" placeholder="your band name" />
+        </label>
+        <label for="shortcut_name">
+          <input id="shortcut_name" name="shortcut_name" type="text" placeholder="your shortcut band name" />
+        </label>
+        <label for="url">
+          <input id="url" name="url" type="text" placeholder="your band url" />
+        </label>
+        <label for="bio">
+          <textarea id="bio" name="bio" placeholder="your band bio"></textarea>
+        </label>
+        <input type="submit" value="Login" />
+      </form>
+{% endblock %}

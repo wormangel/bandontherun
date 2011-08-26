@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block body %}
+      <h1>Band on the Run!</h1>
+      <form action="/user/update" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="old_username" value="{{ user.username }}">
+        <label for="first_name">
+          <input id="first_name" name="first_name" type="text" placeholder="seu nome" value="{{ user.first_name }}"/>
+        </label>
+        <label for="last_name">
+          <input id="last_name" name="last_name" type="text" placeholder="seu sobrenome" value="{{ user.last_name }}/>
+        </label>
+        <label for="username">
+          <input id="username" name="username" type="text" placeholder="seu login" value="{{ user.username }}/>
+        </label>
+        <label for="password">
+          <input id="password" name="password" type="password" placeholder="senha" value=""/>
+        </label>
+        <label for="email">
+          <input id="email" name="email" type="text" placeholder="seu@email.com" value="{{ user.email }}/>
+        </label>
+        <label for="phone">
+          <input id="phone" name="phone" type="text" placeholder="(00) 0000-0000" value="{{ user.profile.phone }}"/>
+        </label>
+        <input type="submit" value="Save" />
+      </form>
+{% endblock %}

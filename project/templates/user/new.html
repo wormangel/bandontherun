@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block body %}
+      <h1>Band on the Run!</h1>
+      <ul>
+        <li><a href="/login">login</a></li>
+        <li><a href="#">create account</a></li>
+      </ul>
+      
+      <form id="register" action="/user/create" method="post">
+        {% csrf_token %}
+        <label for="first_name">
+          <input id="first_name" name="first_name" type="text" placeholder="your first name" />
+        </label>
+        <label for="last_name">
+          <input id="last_name" name="last_name" type="text" placeholder="your last name" />
+        </label>
+        <label for="username">
+          <input id="username" name="username" type="text" placeholder="your username" />
+        </label>
+        <label for="password">
+          <input id="password" name="password" type="password" placeholder="your password"/>
+        </label>
+        <label for="email">
+          <input id="email" name="email" type="text" placeholder="your@email.com" />
+        </label>
+        <label for="phone">
+          <input id="phone" name="phone" type="text" placeholder="(00) 0000-0000" />
+        </label>
+        <input type="submit" value="Create" />
+      </form>
+{% endblock %}
