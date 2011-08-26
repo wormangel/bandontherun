@@ -17,9 +17,26 @@
       <p>{{ band.bio }}</p>
       
       <h3>Members</h3>
-      <ul>
+      <form action="/band/{{ band.shortcut_name }}/member/add" method="post">
+        {% csrf_token %}
+        <label for="username">
+          <input id="username" name="username" type="text" placeholder="member username" />
+        </label>
+        <input type="submit" value="Add" />
+      </form>
       {% for member in band.members %}
-        <li>{{ member.first_name }}</li>
+        <li>{{ member.get_full_name() }}</li>
       {% endfor %}
       </ul>
+      
+      (Form abaixo será mostrado se não existir o usuário. Escondê-lo quando for aplicar css.)
+      <form action="/user/invite" method="post">
+        {% csrf_token %}
+        <label for="email">
+          <input id="email" name="email" type="email" placeholder="new member email" />
+        </label>
+        <input type="submit" value="Invite" />
+      </form>
+      <ul>
 {% endblock %}
+

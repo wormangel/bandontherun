@@ -117,6 +117,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'project',
+    'djcelery',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -161,3 +162,13 @@ AUTH_PROFILE_MODULE = 'project.UserProfile'
 LOGIN_URL = '/user/login'
 
 LOGOUT_URL = '/user/logout'
+
+# django-celery configuration
+import djcelery
+djcelery.setup_loader()
+
+BROKER_HOST = "localhost"
+BROKER_PORT = 5672
+BROKER_USER = "guest"
+BROKER_PASSWORD = "guest"
+BROKER_VHOST = "/"

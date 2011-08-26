@@ -1,5 +1,6 @@
 # TODO: separate in two apps (user, band)
 # TODO: create decorators for @get @post @put @delete
+# TODO: change some posts request to put (investigate how to do that with django)
 
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as login_auth, logout as logout_auth
@@ -24,7 +25,7 @@ def dashboard(request):
     return render_to_response('user/dashboard.html', context_instance=RequestContext(request))
 
 def show_user(request, username):
-     return render_to_response('user/show.html', {'user': users_manager.get_user(username)}, context_instance=RequestContext(request))
+     return render_to_response('user/show.html', context_instance=RequestContext(request))
 
 def new_user(request):
     if request.method == 'GET':
@@ -32,6 +33,11 @@ def new_user(request):
     else:
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
         return HttpResponse(status=405)
+
+def invite_user(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        users_manager.invite_user(email)
 
 def create_user(request):
     if request.method == 'POST':
@@ -70,7 +76,7 @@ def update_user(request):
         email = request.POST['email']
         phone = request.POST['phone']
         # TODO: validate input / use form
-        user = accounts_manager.update_user(request.user, first_name, last_name, username, password, email, phone)
+        user = users_manager.update_user(request.user, first_name, last_name, username, password, email, phone)
         if user is not None:
             return redirect('/user/dashboard')
         else:
@@ -154,15 +160,14 @@ def update_band(request, shortcut_name):
             bands_manager.update_band(band_name, shortcut_name, new_shortcut_name, bio, url)
         else:
             # echo input vars on output
-            return redirect('/band/%s/edit' % old_shortcut_name)
+            return redirect('/band/%s/edit' % shortcut_name)
         return redirect('/band/%s' % band_name)
     else:
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
         return HttpResponse(status_code=405)
         
-def add_band_member(request):
+def add_band_member(request, shortcut_name):
     if request.method == 'POST':
-        shortcut_name = request.POST['shortcut_name']
         username = request.POST['username']
         # TODO: validate input / use form
         # validate if user updating the info is a member
@@ -170,24 +175,22 @@ def add_band_member(request):
             bands_manager.add_band_member(shortcut_name, users_manager.get_user(username))
         else:
             # echo input vars on output
-            return redirect('/band/%s/member/new' % shortcut_name)
+            return redirect('/band/%s' % shortcut_name)
         return redirect('/band/%s' % band_name)
     else:
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
         return HttpResponse(status_code=405)
 
-def remove_band_member(request):
+def remove_band_member(request, shortcut_name):
     if request.method == 'POST':
-        shortcut_name = request.POST['shortcut_name']
-        username = request.POST['username']
+        member = request.POST['member']
         # TODO: validate input / use form
         # validate if user updating the info is a member
         if band is not None:
-            bands_manager.remove_band_member(shortcut_name, users_manager.get_user(username))
+            bands_manager.remove_band_member(shortcut_name, users_manager.get_user(member))
         else:
             # echo input vars on output
-            return redirect('/band/%s/members' % shortcut_name)
-        return redirect('/band/%s' % band_name)
+        return redirect('/band/%s' % shortcut_name)
     else:
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
         return HttpResponse(status_code=405)

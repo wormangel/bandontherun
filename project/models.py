@@ -22,3 +22,5 @@ class Band(models.Model):
     logo = models.ImageField(upload_to="static/bands/") #research this further
     members = models.ManyToManyField(UserProfile)
 
+    def is_member(user):
+        return len(Band.objects.filter(members__user=user)) is not 0

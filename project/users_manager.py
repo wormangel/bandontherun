@@ -20,3 +20,7 @@ def update_user(user, first_name, last_name, username, password, email, phone):
 
 def get_user(username):
     return User.objects.filter(username=username)
+
+def invite_user(email):
+    if email is not None:
+        # NewUserTask.delay(shortcut_name)
