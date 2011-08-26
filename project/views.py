@@ -23,8 +23,8 @@ def about(request):
 def dashboard(request):
     return render_to_response('user/dashboard.html', context_instance=RequestContext(request))
 
-def show_user(request):
-     return render_to_response('user/show.html', context_instance=RequestContext(request))
+def show_user(request, username):
+     return render_to_response('user/show.html', {'user': users_manager.get_user(username)}, context_instance=RequestContext(request))
 
 def new_user(request):
     if request.method == 'GET':
@@ -110,7 +110,7 @@ def logout(request):
 ##############
 def show_band(request, shortcut_name):
     if request.method == 'GET':
-        return render_to_response('band/show.html', {band: bands_manager.get_band(shortcut_name)}, context_instance=RequestContext(request))
+        return render_to_response('band/show.html', {'band': bands_manager.get_band(shortcut_name)}, context_instance=RequestContext(request))
     else:
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
         return HttpResponse(status_code=405)
@@ -137,7 +137,7 @@ def create_band(request):
 
 def edit_band(request, shortcut_name):
     if request.method == 'GET':
-        return render_to_response('band/edit.html', {band: bands_manager.get_band(shortcut_name)}, context_instance=RequestContext(request))
+        return render_to_response('band/edit.html', {'band': bands_manager.get_band(shortcut_name)}, context_instance=RequestContext(request))
     else:
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
         return HttpResponse(status_code=405)

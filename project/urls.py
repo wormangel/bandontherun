@@ -13,9 +13,9 @@ urlpatterns = patterns('',
     # band
     url(r'^band/new$', 'project.views.new_band', name='new-band'),
     url(r'^band/create$', 'project.views.create_band', name='create-band'),
-    url(r'^band/(?P<shortcut_name>\d+)$', 'project.views.show_band', name='show-band'),
-    url(r'^band/(?P<shortcut_name>\d+)/edit$', 'project.views.edit_band', name='edit-band'),
-    url(r'^band/(?P<shortcut_name>\d+)/update$', 'project.views.update_band', name='update-band'),
+    url(r'^band/(?P<shortcut_name>\w+)$', 'project.views.show_band', name='show-band'),
+    url(r'^band/(?P<shortcut_name>\w+)/edit$', 'project.views.edit_band', name='edit-band'),
+    url(r'^band/(?P<shortcut_name>\w+)/update$', 'project.views.update_band', name='update-band'),
 
     # accounts
     url(r'^user/login$', 'project.views.login', name='user-login'),
@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     url(r'^user/edit$', 'project.views.edit_user', name='edit-user'),
     url(r'^user/update$', 'project.views.update_user', name='update-user'),
     url(r'^user/dashboard$', 'project.views.dashboard', name='user-dashboard'),
-    url(r'^user/profile/(?P<username>\d+)$', 'project.views.show_user', name='show-user'),
+    url(r'^user/profile/(?P<username>\w+)$', 'project.views.show_user', name='show-user'),
 
     # Examples:
     # url(r'^bandontherun/', include('bandontherun.foo.urls')),
