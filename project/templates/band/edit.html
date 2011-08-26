@@ -7,9 +7,8 @@
         <li><a href="/user/logout">logout</a></li>
       </ul>
       
-      <form id="login" action="/band/update" method="post">
+      <form id="login" action="/band/{{ band.shortcut_name }}update" method="post">
         {% csrf_token %}
-        <input type="hidden" name="old_shortcut_name" value="{{ band.shortcut_name }}">
         <label for="band_name">
           <input id="band_name" name="band_name" type="text" placeholder="your band name" value="{{ band.name }}" />
         </label>

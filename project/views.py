@@ -1,4 +1,5 @@
 # TODO: separate in two apps (user, band)
+# TODO: create decorators for @get @post @put @delete
 
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as login_auth, logout as logout_auth
@@ -107,9 +108,8 @@ def logout(request):
 ##############
 # band views #
 ##############
-def show_band(request):
+def show_band(request, shortcut_name):
     if request.method == 'GET':
-        shortcut_name = request.GET['band_name']
         return render_to_response('band/show.html', {band: bands_manager.get_band(shortcut_name)}, context_instance=RequestContext(request))
     else:
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
@@ -135,25 +135,23 @@ def create_band(request):
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
         return HttpResponse(status_code=405)
 
-def edit_band(request):
+def edit_band(request, shortcut_name):
     if request.method == 'GET':
-        band_name = request.GET['band_name']
-        return render_to_response('band/edit.html', {band: bands_manager.get_band(band_name)}, context_instance=RequestContext(request))
+        return render_to_response('band/edit.html', {band: bands_manager.get_band(shortcut_name)}, context_instance=RequestContext(request))
     else:
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
         return HttpResponse(status_code=405)
 
-def update_band(request):
+def update_band(request, shortcut_name):
     if request.method == 'POST':
         band_name = request.POST['band_name']
-        old_shortcut_name = request.POST['old_shortcut_name']
         new_shortcut_name = request.POST['new_shortcut_name']
         bio = request.POST['bio']
         url = request.POST['url']
         # TODO: validate input / use form
         # validate if user updating the info is a member
         if band is not None:
-            bands_manager.update_band(band_name, shortcut_name, bio, url)
+            bands_manager.update_band(band_name, shortcut_name, new_shortcut_name, bio, url)
         else:
             # echo input vars on output
             return redirect('/band/%s/edit' % old_shortcut_name)

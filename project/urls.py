@@ -13,9 +13,9 @@ urlpatterns = patterns('',
     # band
     url(r'^band/new$', 'project.views.new_band', name='new-band'),
     url(r'^band/create$', 'project.views.create_band', name='create-band'),
+    url(r'^band/(?P<shortcut_name>\d+)$', 'project.views.show_band', name='show-band'),
     url(r'^band/(?P<shortcut_name>\d+)/edit$', 'project.views.edit_band', name='edit-band'),
     url(r'^band/(?P<shortcut_name>\d+)/update$', 'project.views.update_band', name='update-band'),
-    url(r'^band/(?P<shortcut_name>\d+)$', 'project.views.show_band', name='show-band'),
 
     # accounts
     url(r'^user/login$', 'project.views.login', name='user-login'),
