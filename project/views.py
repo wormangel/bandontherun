@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate, login as login_auth, logout as log
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
 
+from models import Band
+
 import users_manager, bands_manager
 
 def index(request):
@@ -135,7 +137,7 @@ def create_band(request):
         bio = request.POST['bio']
         url = request.POST['url']
         # TODO: validate input / use form
-        bands_manager.create_band(band_name, shortcut_name, bio, url, request.user.profile)
+        bands_manager.create_band(band_name, shortcut_name, bio, url, request.user)
         return redirect('/band/%s' % shortcut_name)
     else:
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
@@ -171,12 +173,13 @@ def add_band_member(request, shortcut_name):
         username = request.POST['username']
         # TODO: validate input / use form
         # validate if user updating the info is a member
+        band = Band.objects.filter(name=shortcut_name)[0]
         if band is not None:
-            bands_manager.add_band_member(shortcut_name, users_manager.get_user(username))
+            bands_manager.add_band_member(shortcut_name, users_manager.get_user(username)[0])
         else:
             # echo input vars on output
             return redirect('/band/%s' % shortcut_name)
-        return redirect('/band/%s' % band_name)
+        return redirect('/band/%s' % shortcut_name)
     else:
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
         return HttpResponse(status_code=405)
@@ -189,6 +192,7 @@ def remove_band_member(request, shortcut_name):
         if band is not None:
             bands_manager.remove_band_member(shortcut_name, users_manager.get_user(member))
         else:
+            pass
             # echo input vars on output
         return redirect('/band/%s' % shortcut_name)
     else:

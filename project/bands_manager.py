@@ -26,3 +26,4 @@ def remove_band_member(shortcut_name, user):
     
 def get_band(name):
     band = Band.objects.filter(name=name)
+    return band[0]

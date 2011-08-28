@@ -23,4 +23,5 @@ def get_user(username):
 
 def invite_user(email):
     if email is not None:
+        pass
         # NewUserTask.delay(shortcut_name)

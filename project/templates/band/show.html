@@ -24,8 +24,8 @@
         </label>
         <input type="submit" value="Add" />
       </form>
-      {% for member in band.members %}
-        <li>{{ member.get_full_name() }}</li>
+      {% for member in band.member_list %}
+        <li>{{ member }}</li>
       {% endfor %}
       </ul>
       

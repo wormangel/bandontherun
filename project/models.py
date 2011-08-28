@@ -20,7 +20,9 @@ class Band(models.Model):
     bio = models.TextField(verbose_name="bio", max_length=1000, blank=False)
     url = models.URLField(verbose_name="url")
     logo = models.ImageField(upload_to="static/bands/") #research this further
-    members = models.ManyToManyField(UserProfile)
+    members = models.ManyToManyField(User)
 
     def is_member(user):
         return len(Band.objects.filter(members__user=user)) is not 0
+
+Band.member_list = property(lambda u: Band.objects.filter(name=u.name)[0].members.all())
