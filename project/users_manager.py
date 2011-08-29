@@ -8,9 +8,11 @@ def create_user(first_name, last_name, username, password, email, phone):
     try:
         user = User.objects.create(first_name=first_name, last_name=last_name, username=username, email=email)
         user.set_password(password)
-        user.profile.phone = phone
         user.save()
-        user.profile.save()
+
+        profile = user.profile
+        profile.phone = phone
+        profile.save()
         return user
     except Exception as exc:
        raise Exception("Error creating user. Reason: " + exc.message)
@@ -26,7 +28,13 @@ def update_user(user, first_name, last_name, username, password, email, phone):
     return user
 
 def get_user(username):
-    return User.objects.filter(username=username)
+    user = User.objects.filter(username=username)
+    if len(user) == 0:
+        return None
+    elif len(user) != 1:
+        raise Exception("Unexpected! Call security!")
+    else:
+        return user[0]
 
 def invite_user(email):
     if email is not None:

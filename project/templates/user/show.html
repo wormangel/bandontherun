@@ -1,10 +1,26 @@
 {% extends 'base.html' %}
 {% block body %}
-      <h2>{{ user.username }}</h2>
-      <dl>
-        <dt>Nome:</dt>
-        <dd>{{ user.profile.first_name }} {{ user.profile.last_name }}</dd>
-        <dt>Phone:</dt>
-        <dd>{{ user.profile.phone }}</dd>
-      </dl>
+    {% if not error_msg %}
+        <h2>{{ profile_user.username }}</h2>
+        <dl>
+            <dt>Name:</dt>
+            <dd>{{ profile_user.first_name }} {{ profile_user.last_name }}</dd>
+            <dt>Email:</dt>
+            <dd><a href="mailto:{{ profile_user.email }}">{{ profile_user.email }}</a></dd>
+            <dt>Phone:</dt>
+            <dd>{{ profile_user.profile.phone }}</dd>
+            <dt>Bands:</dt>
+            {% if profile_user.bands %}
+                {% for band in profile_user.bands %}
+                    <dd><a href="{% url 'show-band' band.shortcut_name %}">{{ band.name }}</a></dd>
+                {% endfor %}
+            {% else %}
+                <dd>None yet</dd>
+            {% endif %}
+        </dl>
+    {% else %}
+        <div class="alert-message error">
+            {{ error_msg }}
+        </div>
+    {% endif %}
 {% endblock %}

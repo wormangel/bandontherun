@@ -31,7 +31,15 @@ def dashboard(request):
 
 @login_required
 def show_user(request, username):
-     return render_to_response('user/show.html', context_instance=RequestContext(request))
+    try:
+        profile_user = users_manager.get_user(username)
+        if profile_user is None:
+            return render_to_response('user/show.html', {'error_msg': "There is no user called\'" + username + "\'."}, context_instance=RequestContext(request))
+        else:
+            return render_to_response('user/show.html', {'profile_user': profile_user}, context_instance=RequestContext(request))
+    except Exception as exc:
+        return render_to_response('user/show.html', {'error_msg': "Error ocurred: " + exc.message}, context_instance=RequestContext(request))
+
 
 @login_required
 def invite_user(request):

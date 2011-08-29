@@ -1,15 +1,13 @@
 {% extends 'base.html' %}
+{% load url from future %}
+        
 {% block body %}
       This is a dashboard!<br/>
-      {{ user.profile.phone }}
-      {% if user.profile.phone %}
-      <p>You do not belong to a band. What do you think about <a href="/band/new">creating</a> a new one?</p>
-      {% else %}
-      <button>Create band</button>
+
+      <p>You do not belong to a band. What do you think about <a href="{% url 'create-band' %}">creating</a> a new one?</p>
       <ul>
         {% for band in user.profile.bands %}
         <li><a href="/band/%s" % band.id>{{ band.name }}</a></li>
         {% endfor %}
       </ul>
-      {% endif %}
 {% endblock %}
