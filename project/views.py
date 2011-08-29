@@ -52,7 +52,7 @@ def create_user(request):
         return redirect('/user/dashboard')
 
     if request.method == 'POST':
-        form = UserForm(request.POST)
+        form = UserCreateForm(request.POST)
         if form.is_valid():
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
@@ -69,25 +69,47 @@ def create_user(request):
             except Exception as exc:
                 form.errors['__all__'] = form.error_class(["Error: " + exc.message])
     else:
-        form = UserForm()
+        form = UserCreateForm()
     return render_to_response('user/create.html', { 'form' : form }, context_instance=RequestContext(request))
 
 @login_required
 def edit_user(request):
+    context = {}
     if request.method == 'POST':
-        form = UserForm(request.POST)
+        form = UserEditForm(request.POST)
         if form.is_valid():
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
             email = form.cleaned_data['email']
             phone = form.cleaned_data['phone']
-            user = users_manager.update_user(request.user, first_name, last_name, username, password, email, phone)
-            return HttpResponseRedirect('/user/dashboard')
+            new_password =  form.cleaned_data['new_password']
+            new_password_confirm = form.cleaned_data['new_password_confirm']
+
+            error = False
+            if new_password and new_password_confirm:
+                if (new_password != new_password_confirm):
+                    form.errors['__all__'] = form.error_class(["Error: passwords didn't match."])
+                    error = True
+            elif (new_password and not new_password_confirm) or (new_password_confirm and not new_password):
+                form.errors['__all__'] = form.error_class(["Error: you must input the desired password twice."])
+                error = True
+            else:
+                print 'NAO MUDOU SENHA'
+                new_password = None
+
+            if not error:
+                user = users_manager.update_user(request.user, first_name, last_name, new_password, email, phone)
+
+            context['success'] = not error
     else:
-        form = UserForm()
-    return render_to_response('user/edit.html', { 'form' : form }, context_instance=RequestContext(request))
+        data = {'first_name':request.user.first_name,
+                'last_name': request.user.last_name,
+                'email': request.user.email,
+                'phone': request.user.profile.phone,}
+        form = UserEditForm(data)
+
+    context['form'] = form
+    return render_to_response('user/edit.html', context, context_instance=RequestContext(request))
 
 def login(request):
     if request.method == 'POST':
