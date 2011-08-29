@@ -1,3 +1,5 @@
+{% load url from future %}
+
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
@@ -19,8 +21,50 @@
   </head>
 
   <body>
-    <div id="container">
-      {% block body %}{% endblock %}
+    <div id="container" class="container-fluid">
+        <div class="sidebar">
+            <h2>
+                Menu
+            </h2>
+            {% if user.is_authenticated %}
+                Logged in as <strong>{{ user.username }}</strong><br/><br/>
+            {% endif %}
+
+            {% block menu %}
+                <ul id="main-menu" class="unstyled">
+
+                    <li>Logon
+                        <ul>
+                            {% if user.is_authenticated %}
+                                <li><a href="{% url 'user-logout' %}">Logout</a></li>
+                            {% else %}
+                                <li><a href="{% url 'user-login' %}">Login</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                        <li>User
+                            <ul id="user-menu">
+                                <li><a href="{% url 'user-dashboard' %}">Dashboard</a></li>
+                                <li><a href="{% url 'show-user' user.username %}">Profile</a></li>
+                            </ul>
+                        </li>
+                        <li>Band
+                            <ul id="band-menu">
+                                <li><a href="{% url 'new-band' %}">Create band</a></li>
+                                <li><a href="#">Your bands</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% endblock %}
+        </div>
+
+        <div class="content">
+            <h1>Band on the Run!</h1>
+            {% block body %}{% endblock %}
+        </div>
     </div>
     <script>
       head.js("http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js", "{{ STATIC_URL }}js/script.js");
@@ -31,5 +75,15 @@
       g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
       s.parentNode.insertBefore(g,s)}(document,"script"));
     </script>
+    <footer>
+        {% block footer %}
+            <div class="span16 columns">
+                    <a href="{% url 'index' %}">Homepage</a>
+                    <a href="{% url 'about' %}">About</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Privacy Policy</a>
+            </div>
+        {% endblock %}
+    </footer>
   </body>
 </html>

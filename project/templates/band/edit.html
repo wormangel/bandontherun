@@ -1,12 +1,5 @@
 {% extends 'base.html' %}
 {% block body %}
-      <h1>Band on the Run!</h1>
-      <ul>
-        <li><a href="/user/dashboard">dashboard</a></li>
-        <li><a href="/about">about</a></li>
-        <li><a href="/user/logout">logout</a></li>
-      </ul>
-      
       <form id="login" action="/band/{{ band.shortcut_name }}update" method="post">
         {% csrf_token %}
         <label for="band_name">
