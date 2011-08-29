@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load url from future %}
+        
 {% block body %}
     {% if not error_msg %}
         <h2>{{ profile_user.username }}</h2>
@@ -18,6 +20,9 @@
                 <dd>None yet</dd>
             {% endif %}
         </dl>
+        {% if user.username == profile_user.username %}
+        <a href="{% url 'edit-user' %}"><button class="btn primary">Edit</button></a>
+        {% endif %}
     {% else %}
         <div class="alert-message error">
             {{ error_msg }}
