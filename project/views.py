@@ -198,12 +198,14 @@ def add_band_member(request, shortcut_name):
         username = request.POST['username']
         # TODO: validate input / use form
         # validate if user updating the info is a member
-        band = Band.objects.filter(name=shortcut_name)[0]
+        band = bands_manager.get_band(shortcut_name)
         if band is not None:
-            bands_manager.add_band_member(shortcut_name, users_manager.get_user(username)[0])
+            new_member = users_manager.get_user(username)
+            if (new_member is None):
+                return render_to_response('band/show.html', {'error_msg': "There is no user called\'" + username + "\'."}, context_instance=RequestContext(request))
+            bands_manager.add_band_member(shortcut_name, new_member)
         else:
-            # echo input vars on output
-            return redirect('/band/%s' % shortcut_name)
+            return render_to_response('band/show.html', {'error_msg': "There is no band called\'" + band.shortcut_name + "\'."}, context_instance=RequestContext(request))
         return redirect('/band/%s' % shortcut_name)
     else:
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
