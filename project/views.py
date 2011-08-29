@@ -82,12 +82,13 @@ def login(request):
                 next = request.GET['next']
             except:
                 next = '/user/dashboard'
+
             user = authenticate(username=username, password=password)
             if user is not None:
                 login_auth(request, user)
                 return HttpResponseRedirect(next)
             else:
-                return redirect('/user/login?next=%s' % next)
+                form.errors['__all__'] = form.error_class(["Login failure. Verify your user/password combination"])
     else:
         form = LoginForm()    
     return render_to_response('user/login.html', {'form' : form}, context_instance=RequestContext(request))

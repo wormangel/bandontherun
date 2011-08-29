@@ -1,0 +1,29 @@
+                {% if form.non_field_errors %}
+                    <div class="clearfix error input">
+                        {% for err in form.non_field_errors %}
+                            <span class="help-inline">{{ err }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <fieldset>
+                    <legend>Login</legend>
+                    {% for field in form %}
+                        {% if field.errors %}
+                            <div class="clearfix error">
+                                {{ field.label_tag }}
+                                <div class="input">
+                                    {{ field }}
+                                    <span class="help-inline">
+                                        {% for error in field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </span>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="clearfix">
+                                {{ field.label_tag }} <div class="input">{{ field }}</div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </fieldset>
