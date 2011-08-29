@@ -63,14 +63,14 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+STATIC_URL = '/public/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    join(abspath(dirname(__file__)), 'project/static'),
+    join(abspath(dirname(__file__)), 'public'),
 )
 
 # List of finder classes that know how to find static files in
@@ -99,12 +99,13 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'project.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    join(abspath(dirname(__file__)), 'templates'),
 )
 
 INSTALLED_APPS = (
@@ -114,7 +115,8 @@ INSTALLED_APPS = (
     # 'django.contrib.sites', (team) we don't use this feature 
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'project',
+    'user',
+    'band',
     'djcelery',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
@@ -142,7 +144,7 @@ LOGGING = {
         },
     },
     'loggers': {
-        'project.users_manager':{
+        'user.users_manager':{
             'handlers' : ['console'],
             'level': 'DEBUG',
         },
@@ -155,7 +157,7 @@ LOGGING = {
 }
 
 # Overridden variables
-AUTH_PROFILE_MODULE = 'project.UserProfile'
+AUTH_PROFILE_MODULE = 'user.UserProfile'
 
 LOGIN_URL = '/user/login'
 

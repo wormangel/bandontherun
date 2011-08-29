@@ -13,15 +13,19 @@ def create_band(band_name, shortcut_name, bio, url, user):
     except Exception as exc:
        raise Exception("Error creating band. Reason: " + exc.message)
     
-def update_band(band, band_name, bio, url):
-    band.name = band_name
+def update_band(band_id, name, bio, url):
+    band = get_band(band_id)
+    band.name = name
     band.bio = bio
     band.url = url
     band.save()
     return band
-    
-def add_band_member(shortcut_name, user):
-    band = get_band(shortcut_name)
+
+def exists(band_id):
+    return Band.objects.filter(id=band_id).exists()
+
+def add_band_member(band_id, user):
+    band = get_band(band_id)
     if band is None:
         raise Exception("There is no band with this shortcut name.")
 
@@ -44,8 +48,8 @@ def remove_band_member(shortcut_name, user):
     band.save()
     return band
     
-def get_band(shortcut_name):
-    band = Band.objects.filter(shortcut_name=shortcut_name)
+def get_band(band_id):
+    band = Band.objects.filter(id=band_id)
     if len(band) == 0:
         return None
     elif len(band) != 1:

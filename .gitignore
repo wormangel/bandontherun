@@ -1,2 +1,3 @@
 db
 *.pyc
+remove_pyc.sh
