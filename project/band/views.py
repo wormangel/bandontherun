@@ -102,12 +102,8 @@ def remove_band_member(request, band_id, username):
         # TODO: validate input / use form
         # validate if user updating the info is a member
         if bands_manager.exists(band_id):
-            if bands_manager.is_member(username):
-                bands_manager.remove_band_member(band_id, users_manager.get_user(username))
-                return redirect('/band/%d' % band_name)
-            else:
-                # TODO: see how to handle this better
-                return HttpResponse(status_code=404)
+            bands_manager.remove_band_member(band_id, username)
+            return redirect('/band/%d' % band_id)
         else:
             # TODO: see how to handle this better
             return HttpResponse(status_code=404)
