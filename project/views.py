@@ -94,7 +94,6 @@ def edit_user(request):
                 form.errors['__all__'] = form.error_class(["Error: you must input the desired password twice."])
                 error = True
             else:
-                print 'NAO MUDOU SENHA'
                 new_password = None
 
             if not error:
@@ -142,42 +141,57 @@ def logout(request):
 ##############
 @login_required
 def show_band(request, shortcut_name):
-    if request.method == 'GET':
-        return render_to_response('band/show.html', {'band': bands_manager.get_band(shortcut_name)}, context_instance=RequestContext(request))
-    else:
-        # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
-        return HttpResponse(status_code=405)
+    try:
+        band = bands_manager.get_band(shortcut_name)
+        if band is None:
+            return render_to_response('band/show.html', {'error_msg': "There is no band called\'" + shortcut_name + "\'."}, context_instance=RequestContext(request))
+        else:
+            return render_to_response('band/show.html', {'band': band}, context_instance=RequestContext(request))
+    except Exception as exc:
+        return render_to_response('band/show.html', {'error_msg': "Error ocurred: " + exc.message}, context_instance=RequestContext(request))
 
 @login_required
 def create_band(request):
     if request.method == 'POST':
-        form = BandForm(request.POST)
+        form = BandCreateForm(request.POST)
         if form.is_valid():
             band_name = form.cleaned_data['band_name']
             shortcut_name = form.cleaned_data['shortcut_name']
             bio = form.cleaned_data['bio']
             url = form.cleaned_data['url']
-            bands_manager.create_band(band_name, shortcut_name, bio, url, request.user)
-            return HttpResponseRedirect('/band/%s' % shortcut_name)
+            try:
+                bands_manager.create_band(band_name, shortcut_name, bio, url, request.user)
+                return HttpResponseRedirect('/band/%s' % shortcut_name)
+            except Exception as exc:
+                form.errors['__all__'] = form.error_class(["Error: " + exc.message])
     else:
-        form = BandForm()
+        form = BandCreateForm()
     return render_to_response('band/create.html', { 'form' : form }, context_instance=RequestContext(request))
 
 @login_required
 def edit_band(request, shortcut_name):
-    if request.method == 'POST':
-        form = BandForm(request.POST)
-        if form.is_valid():
-            band_name = form.cleaned_data['band_name']
-            shortcut_name = form.cleaned_data['shortcut_name']
-            bio = form.cleaned_data['bio']
-            url = form.cleaned_data['url']
-            bands_manager.update_band(band_name, shortcut_name, new_shortcut_name, bio, url)
-            return HttpResponseRedirect('/band/%s' % band_name)
+    context = {}
+    context['shortcut_name'] = shortcut_name
+    band = bands_manager.get_band(shortcut_name)
+    if (band is not None):
+        if request.method == 'POST':
+            form = BandEditForm(request.POST)
+            if form.is_valid():
+                band_name = form.cleaned_data['band_name']
+                bio = form.cleaned_data['bio']
+                url = form.cleaned_data['url']
+                bands_manager.update_band(band, band_name, bio, url)
+                context['success'] = True
+        else:
+            data = {'band_name':band.name,
+                    'bio': band.bio,
+                    'url': band.url,}
+            form = BandEditForm(data)
+        context['form'] = form
     else:
-        form = BandForm()
-    return render_to_response('band/edit.html', {'band': bands_manager.get_band(shortcut_name), 'form' : form}, context_instance=RequestContext(request))
+        context['error_msg'] = "There is no band with the specified shortcut name."
 
+    return render_to_response('band/edit.html', context, context_instance=RequestContext(request))
 @login_required
 def add_band_member(request, shortcut_name):
     if request.method == 'POST':

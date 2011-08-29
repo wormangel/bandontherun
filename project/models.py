@@ -7,12 +7,8 @@ class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, primary_key=True)
     phone = models.CharField(verbose_name="phone", max_length=15, blank=True)
 
-    # one way of doing this (the other would be bidirectional relationship)
-    @property
-    def bands(self):
-        return Band.objects.filter(members__contains=self)
-
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
+User.bands = property(lambda u: Band.objects.filter(members__username=u.username))
 
 class Band(models.Model):
     name = models.CharField(verbose_name="name", max_length=50, blank=False)
@@ -25,4 +21,4 @@ class Band(models.Model):
     def is_member(user):
         return len(Band.objects.filter(members__user=user)) is not 0
 
-Band.member_list = property(lambda u: Band.objects.filter(name=u.name)[0].members.all())
+Band.member_list = property(lambda u: u.members.all())

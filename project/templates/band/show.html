@@ -1,36 +1,47 @@
 {% extends 'base.html' %}
 {% load url from future %}
+        
 {% block body %}
-      <h2>{{ band.name }}</h2>
-      <dl>
-        <dt>Name:</dt> <dd>{{ band.name }}</dd>
-        <dt>URL:</dt>  <li><a href="{{ band.url }}"> {{ band.url }} </a></li>
-        <dt>Bio:</dt> <dd>{{ band.bio }}</dd>
-      </dl>
-      
-      <h4>Members:</h4>
-      {% for member in band.member_list %}
-        <li><a href="{% url 'show-user' member %} "> {{ member }} </a></li>
-      {% endfor %}
-      </ul>
-      
-      <h4>Add a new member:</h4>
-      <form action="/band/{{ band.shortcut_name }}/member/add" method="post">
-        {% csrf_token %}
-        <label for="username">
-          <input id="username" name="username" type="text" placeholder="member username" />
-        </label>
-        <input type="submit" value="Add" />
-      </form>
-      
-      <!--(Form abaixo será mostrado se não existir o usuário. Escondê-lo quando for aplicar css.)
-      <form action="/user/invite" method="post">
+    {% if not error_msg %}
+        <h2>{{ band.shortcut_name }}</h2>
+        <dl>
+            <dt>Name:</dt>
+            <dd>{{ band.name }}</dd>
+            <dt>URL:</dt>
+            <dd><a href="{{ band.url }}"> {{ band.url }} </a></dd>
+            <dt>Bio:</dt>
+            <dd>{{ band.bio|safe }}</dd>
+        </dl>
+
+        <a href="{% url 'edit-band' band.shortcut_name %}"><button class="btn">Edit</button></a>
+
+        <h4>Members:</h4>
+        <ul>
+        {% for member in band.member_list %}
+            <li><a href="{% url 'show-user' member %} "> {{ member }} </a></li>
+        {% endfor %}
+        </ul>
+
+        <h4>Add a new member:</h4>
+        <form action="/band/{{ band.shortcut_name }}/member/add" method="post">
+            {% csrf_token %}
+            <label for="username"/>
+            <input id="username" name="username" type="text" placeholder="member username" />
+            <button class="btn primary" type="submit">Add</button>
+        </form>
+
+        <!--(Form abaixo será mostrado se não existir o usuário. Escondê-lo quando for aplicar css.)
+        <form action="/user/invite" method="post">
         {% csrf_token %}
         <label for="email">
           <input id="email" name="email" type="email" placeholder="new member email" />
         </label>
         <input type="submit" value="Invite" />
-      </form>-->
-      <ul>
+        </form>-->
+        {% else %}
+            <div class="alert-message error">
+                {{ error_msg }}
+            </div>
+        {% endif %}
 {% endblock %}
 
