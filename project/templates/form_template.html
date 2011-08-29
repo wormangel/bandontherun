@@ -6,7 +6,7 @@
                     </div>
                 {% endif %}
                 <fieldset>
-                    <legend>Login</legend>
+                    <legend>{{ form_title }}</legend>
                     {% for field in form %}
                         {% if field.errors %}
                             <div class="clearfix error">

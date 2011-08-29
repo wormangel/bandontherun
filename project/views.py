@@ -4,6 +4,7 @@
 
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login as login_auth, logout as logout_auth
+from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
 
@@ -19,23 +20,29 @@ def index(request):
         return render_to_response('index.html', context_instance=RequestContext(request))
 
 def about(request):
-    return render_to_response('about.html')
+    return render_to_response('about.html', context_instance=RequestContext(request))
 
 #################
 # account views #
 #################
+@login_required
 def dashboard(request):
     return render_to_response('user/dashboard.html', context_instance=RequestContext(request))
 
+@login_required
 def show_user(request, username):
      return render_to_response('user/show.html', context_instance=RequestContext(request))
 
+@login_required
 def invite_user(request):
     if request.method == 'POST':
         email = request.POST['email']
         users_manager.invite_user(email)
 
 def create_user(request):
+    if request.user.is_authenticated():
+        return redirect('/user/dashboard')
+
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
@@ -45,17 +52,19 @@ def create_user(request):
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
             phone = form.cleaned_data['phone']
-        
-            users_manager.create_user(first_name, last_name, username, password, email, phone)
-            
-            # authenticate and login
-            user = authenticate(username=username, password=password)
-            login_auth(request, user)
-            return HttpResponseRedirect('/user/dashboard')
+            try:
+                users_manager.create_user(first_name, last_name, username, password, email, phone)
+                # authenticate and login
+                user = authenticate(username=username, password=password)
+                login_auth(request, user)
+                return HttpResponseRedirect('/user/dashboard')
+            except Exception as exc:
+                form.errors['__all__'] = form.error_class(["Error: " + exc.message])
     else:
         form = UserForm()
     return render_to_response('user/create.html', { 'form' : form }, context_instance=RequestContext(request))
 
+@login_required
 def edit_user(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -93,6 +102,7 @@ def login(request):
         form = LoginForm()    
     return render_to_response('user/login.html', {'form' : form}, context_instance=RequestContext(request))
 
+@login_required
 def logout(request):
     logout_auth(request)
     return redirect('/')
@@ -100,6 +110,7 @@ def logout(request):
 ##############
 # band views #
 ##############
+@login_required
 def show_band(request, shortcut_name):
     if request.method == 'GET':
         return render_to_response('band/show.html', {'band': bands_manager.get_band(shortcut_name)}, context_instance=RequestContext(request))
@@ -107,6 +118,7 @@ def show_band(request, shortcut_name):
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
         return HttpResponse(status_code=405)
 
+@login_required
 def create_band(request):
     if request.method == 'POST':
         form = BandForm(request.POST)
@@ -121,6 +133,7 @@ def create_band(request):
         form = BandForm()
     return render_to_response('band/create.html', { 'form' : form }, context_instance=RequestContext(request))
 
+@login_required
 def edit_band(request, shortcut_name):
     if request.method == 'POST':
         form = BandForm(request.POST)
@@ -134,7 +147,8 @@ def edit_band(request, shortcut_name):
     else:
         form = BandForm()
     return render_to_response('band/edit.html', {'band': bands_manager.get_band(shortcut_name), 'form' : form}, context_instance=RequestContext(request))
-        
+
+@login_required
 def add_band_member(request, shortcut_name):
     if request.method == 'POST':
         username = request.POST['username']
@@ -151,6 +165,7 @@ def add_band_member(request, shortcut_name):
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
         return HttpResponse(status_code=405)
 
+@login_required
 def remove_band_member(request, shortcut_name):
     if request.method == 'POST':
         member = request.POST['member']

@@ -4,7 +4,7 @@ class UserForm(forms.Form):
     first_name = forms.CharField(max_length=20)
     last_name = forms.CharField(max_length=20)
     username = forms.CharField(min_length=3, max_length=20)
-    password = forms.CharField(min_length=8, max_length=20)
+    password = forms.CharField(min_length=6, max_length=20, widget=forms.PasswordInput(render_value=False))
     email = forms.EmailField()
     phone = forms.CharField(max_length=20)
     
