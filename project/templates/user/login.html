@@ -1,11 +1,5 @@
 {% extends 'base.html' %}
 {% block body %}
-      <h1>Band on the Run!</h1>
-      <ul>
-        <li><a href="#">login</a></li>
-        <li><a href="/user/new">criar conta</a></li>
-      </ul>
-      
       <form id="login" action="/user/login" method="post">
         {% csrf_token %}
         <label for="username">

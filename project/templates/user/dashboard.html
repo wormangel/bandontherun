@@ -1,11 +1,6 @@
 {% extends 'base.html' %}
 {% block body %}
-      <h1>Band on the Run!</h1>
-      <ul>
-        <li><a href="#">dashboard</a></li>
-        <li><a href="/about">about</a></li>
-        <li><a href="/user/logout">logout</a></li>
-      </ul>
+      This is a dashboard!<br/>
       {{ user.profile.phone }}
       {% if user.profile.phone %}
       <p>You do not belong to a band. What do you think about <a href="/band/new">creating</a> a new one?</p>

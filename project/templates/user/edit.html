@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% block body %}
-      <h1>Band on the Run!</h1>
       <form action="/user/update" method="post">
         {% csrf_token %}
         <label for="first_name">

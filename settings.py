@@ -1,5 +1,7 @@
 # Django settings for bandontherun project.
 
+from os.path import abspath, join, dirname
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -63,16 +65,12 @@ STATIC_ROOT = ''
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
-# URL prefix for admin static files -- CSS, JavaScript and images.
-# Make sure to use a trailing slash.
-# Examples: "http://foo.com/static/admin/", "/static/admin/".
-ADMIN_MEDIA_PREFIX = '/static/admin/'
-
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    join(abspath(dirname(__file__)), 'project/static'),
 )
 
 # List of finder classes that know how to find static files in
