@@ -73,27 +73,24 @@ def edit_user(request):
     return render_to_response('user/edit.html', { 'form' : form }, context_instance=RequestContext(request))
 
 def login(request):
-    if request.method == 'GET':
-        return render_to_response('user/login.html', context_instance=RequestContext(request))
-    elif request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        try:
-            next = request.GET['next']
-        except:
-            next = '/user/dashboard'
-        print username
-        print password
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login_auth(request, user)
-            return HttpResponseRedirect(next)
-        else:
-            # TODO: append errors
-            return redirect('/user/login?next=%s' % next)
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            try:
+                next = request.GET['next']
+            except:
+                next = '/user/dashboard'
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login_auth(request, user)
+                return HttpResponseRedirect(next)
+            else:
+                return redirect('/user/login?next=%s' % next)
     else:
-        # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
-        return HttpResponse(status_code=405)
+        form = LoginForm()    
+    return render_to_response('user/login.html', {'form' : form}, context_instance=RequestContext(request))
 
 def logout(request):
     logout_auth(request)

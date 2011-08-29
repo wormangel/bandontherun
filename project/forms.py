@@ -14,3 +14,9 @@ class BandForm(forms.Form):
     shortcut_name = forms.CharField(max_length=20)
     bio = forms.CharField(label='Band Bio')
     url = forms.URLField(label='Your Web site', required=False)
+    
+
+class LoginForm(forms.Form):
+    username = forms.CharField(min_length=3, max_length=20)
+    password = forms.CharField(label=(u'Password'), widget=forms.PasswordInput(render_value=False))
+    

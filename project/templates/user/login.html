@@ -1,13 +1,8 @@
 {% extends 'base.html' %}
 {% block body %}
-      <form id="login" action="/user/login" method="post">
-        {% csrf_token %}
-        <label for="username">
-          <input id="username" name="username" type="text" placeholder="your username" />
-        </label>
-        <label for="password">
-          <input id="password" name="password" type="password" placeholder="your password"/>
-        </label>
-        <input type="submit" value="Login" />
+        
+      <form action="/user/login" method="post"> {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Login" />
       </form>
 {% endblock %}

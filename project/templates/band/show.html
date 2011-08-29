@@ -1,15 +1,20 @@
 {% extends 'base.html' %}
+{% load url from future %}
 {% block body %}
       <h2>{{ band.name }}</h2>
       <dl>
-        <dt>Nome:</dt>
-        <dd>{{ band.name }}</dd>
-        <dt>URL:</dt>
-        <dd>{{ band.url }}</dd>
+        <dt>Name:</dt> <dd>{{ band.name }}</dd>
+        <dt>URL:</dt>  <li><a href="{{ band.url }}"> {{ band.url }} </a></li>
+        <dt>Bio:</dt> <dd>{{ band.bio }}</dd>
       </dl>
-      <p>{{ band.bio }}</p>
       
-      <h3>Members</h3>
+      <h4>Members:</h4>
+      {% for member in band.member_list %}
+        <li><a href="{% url 'show-user' member %} "> {{ member }} </a></li>
+      {% endfor %}
+      </ul>
+      
+      <h4>Add a new member:</h4>
       <form action="/band/{{ band.shortcut_name }}/member/add" method="post">
         {% csrf_token %}
         <label for="username">
@@ -17,19 +22,15 @@
         </label>
         <input type="submit" value="Add" />
       </form>
-      {% for member in band.member_list %}
-        <li>{{ member }}</li>
-      {% endfor %}
-      </ul>
       
-      (Form abaixo será mostrado se não existir o usuário. Escondê-lo quando for aplicar css.)
+      <!--(Form abaixo será mostrado se não existir o usuário. Escondê-lo quando for aplicar css.)
       <form action="/user/invite" method="post">
         {% csrf_token %}
         <label for="email">
           <input id="email" name="email" type="email" placeholder="new member email" />
         </label>
         <input type="submit" value="Invite" />
-      </form>
+      </form>-->
       <ul>
 {% endblock %}
 
