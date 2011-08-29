@@ -1,11 +1,5 @@
 {% extends 'base.html' %}
 {% block body %}
-      <h1>Band on the Run!</h1>
-      <ul>
-        <li><a href="/login">login</a></li>
-        <li><a href="#">create account</a></li>
-      </ul>
-      
       <form action="/user/create" method="post"> {% csrf_token %}
             {{ form.as_p }}
             <input type="submit" value="Create" />
