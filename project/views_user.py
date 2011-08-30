@@ -1,24 +1,21 @@
-# TODO: create decorators for @get @post @put @delete
 # TODO: change some posts request to put (investigate how to do that with django)
 
-from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as login_auth, logout as logout_auth
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
 
 from forms import UserCreateForm, UserEditForm, LoginForm
 import users_manager
-import bands_manager
 
-#################
-# account views #
-#################
 @login_required
+@require_GET
 def dashboard(request):
     return render_to_response('user/dashboard.html', context_instance=RequestContext(request))
 
 @login_required
+@require_GET
 def show_user(request, username):
     context = {}
     context_instance = RequestContext(request)
@@ -34,6 +31,7 @@ def show_user(request, username):
         context['error_msg'] = "Error ocurred: " + exc.message
         return render_to_response('user/show.html', context, context_instance=context_instance)
 
+@require_http_methods(["GET", "POST"])
 def create_user(request):
     context = {}
     context_instance = RequestContext(request)
@@ -66,6 +64,7 @@ def create_user(request):
     return render_to_response('user/create.html', context, context_instance=context_instance)
 
 @login_required
+@require_http_methods(["GET", "POST"])
 def edit_user(request):
     context = {}
     context_instance = RequestContext(request)
@@ -105,6 +104,7 @@ def edit_user(request):
     context['form'] = form
     return render_to_response('user/edit.html', context, context_instance=context_instance)
 
+@require_http_methods(["GET", "POST"])
 def login(request):
     context = {}
     context_instance = RequestContext(request)
@@ -133,12 +133,14 @@ def login(request):
     return render_to_response('user/login.html', context, context_instance=context_instance)
 
 @login_required
+@require_GET
 def logout(request):
     logout_auth(request)
     return redirect('/')
 
 # TODO
 @login_required
+@require_http_methods(["GET", "POST"])
 def invite_user(request):
     if request.method == 'POST':
         email = request.POST['email']

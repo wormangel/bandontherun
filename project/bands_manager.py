@@ -23,7 +23,7 @@ def exists(band_id):
 def add_band_member(band_id, user):
     band = get_band(band_id)
     if band is None:
-        raise Exception("There is no band with this shortcut name.")
+        raise Exception("There is no band with this id.")
 
     if band.members.filter(username=user.username).exists():
         raise Exception(user.username + " is already rocking in this band!")
@@ -35,13 +35,15 @@ def add_band_member(band_id, user):
 def remove_band_member(band_id, username):
     band = get_band(band_id)
     if band is None:
-        raise Exception("There is no band with this shortcut name.")
+        raise Exception("There is no band with this id.")
 
     if not band.members.filter(username=username).exists():
         raise Exception(username + " is not a member of this band.")
 
-    # band.members.remove(user)
-    band.members.remove(username)
+    user = band.members.filter(username=username)[0]
+
+    band.members.remove(user)
+    #band.members.remove(username)
     band.save()
     return band
     

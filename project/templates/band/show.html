@@ -16,7 +16,13 @@
         <h4>Members:</h4>
         <ul id="members">
         {% for member in band.member_list %}
-            <li><a href="{% url 'show-user' member.id %} ">{{ member.username }}</a> <a class="remove" href="{% url 'remove-band-member' band_id=band.id username=member.username %} "><button class="btn inline small">Revoke</button></a></li>
+            <li>
+                <form action="/band/{{ band.id }}/member/{{ member.username }}/remove" method="post">
+                    {% csrf_token %}
+                    <a href="{% url 'show-user' member.username %} ">{{ member.username }}</a>
+                    <button class="btn inline small" type="submit">Revoke</button>
+                </form>
+            </li>
         {% endfor %}
         </ul>
 
@@ -36,10 +42,10 @@
         </label>
         <input type="submit" value="Invite" />
         </form>-->
-        {% else %}
-            <div class="alert-message error">
-                {{ error_msg }}
-            </div>
-        {% endif %}
+    {% else %}
+        <div class="alert-message error">
+            {{ error_msg }}
+        </div>
+    {% endif %}
 {% endblock %}
 
