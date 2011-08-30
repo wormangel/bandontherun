@@ -1,6 +1,7 @@
+# TODO: change some posts request to put / delete (investigate how to do that with django)
+
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as login_auth, logout as logout_auth
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
@@ -10,7 +11,6 @@ from forms import BandCreateForm, BandEditForm
 import users_manager
 import bands_manager
 
-@login_required
 @require_GET
 def show_band(request, band_id):
     context = {}
@@ -22,17 +22,18 @@ def show_band(request, band_id):
                 context['band'] = band
                 return render_to_response('band/show.html', context, context_instance=context_instance)
             else:
+                # 403
                 context['error_msg'] = "You have no permission to view this band cause you are not a member of it."
                 return render_to_response('band/show.html', context, context_instance=context_instance)
         else:
-            context['error_msg'] = "There is no band associated with id '" + band_id + "'."
+            # 404
+            context['error_msg'] = "There is no band associated with id '%d'." % band_id
             return render_to_response('band/show.html', context, context_instance=context_instance)
     except Exception as exc:
-        print exc
-        context['error_msg'] = "Error ocurred: " + exc.message
+        # 500
+        context['error_msg'] = "Error ocurred: %s" % exc.message
         return render_to_response('band/show.html', context, context_instance=context_instance)
 
-@login_required
 @require_http_methods(["GET", "POST"])
 def create_band(request):
     context = {}
@@ -48,7 +49,8 @@ def create_band(request):
                 band = bands_manager.create_band(name, bio, url, request.user)
                 return redirect('/band/%d' % band.id)
             except Exception as exc:
-                form.errors['__all__'] = form.error_class(["Error: " + exc.message])
+                #400
+                form.errors['__all__'] = form.error_class(["Error: %s" % exc.message])
     else: # request.method == GET
         form = BandCreateForm()
 
@@ -56,7 +58,6 @@ def create_band(request):
     context['form'] = form
     return render_to_response('band/create.html', context, context_instance=context_instance)
 
-@login_required
 @require_http_methods(["GET", "POST"])
 def edit_band(request, band_id):
     context = {}
@@ -79,11 +80,11 @@ def edit_band(request, band_id):
         context['form'] = BandEditForm(data)
         context['band_id'] = band_id
     else:
-        context['error_msg'] = "There is no band with the specified shortcut name."
+        # 404
+        context['error_msg'] = "There is no band associated with id %d." % band_id
 
     return render_to_response('band/edit.html', context, context_instance=context_instance)
 
-@login_required
 @require_POST
 def add_band_member(request, band_id):
     context = {}
@@ -95,21 +96,20 @@ def add_band_member(request, band_id):
     if bands_manager.exists(band_id):
         if users_manager.exists(username):
             bands_manager.add_band_member(band_id, users_manager.get_user(username))
-            return redirect('/band/%s' % band_id)
+            return redirect('/band/%d' % band_id)
         else:
-            context['error_msg'] = "There is no user called '" + username + "'."
+            # 404
+            context['error_msg'] = "There is no user called '%s'." % username
             return render_to_response('band/show.html', context, context_instance=context_instance)
     else:
-        context['error_msg'] = "There is no band associated with id '" + band_id + "'."
+        # 404
+        context['error_msg'] = "There is no band associated with id '%d'." % band_id
         return render_to_response('band/show.html', context, context_instance=context_instance)
 
-@login_required
 @require_POST
 def remove_band_member(request, band_id, username):
     # TODO: validate input / use form
     # validate if user updating the info is a member
-    print band_id
-    print username
     if bands_manager.exists(band_id):
         bands_manager.remove_band_member(band_id, username)
         return redirect('/band/%s' % band_id)

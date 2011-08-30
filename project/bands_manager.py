@@ -40,10 +40,7 @@ def remove_band_member(band_id, username):
     if not band.members.filter(username=username).exists():
         raise Exception(username + " is not a member of this band.")
 
-    user = band.members.filter(username=username)[0]
-
     band.members.remove(user)
-    #band.members.remove(username)
     band.save()
     return band
     

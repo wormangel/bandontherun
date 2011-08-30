@@ -1,7 +1,6 @@
-# TODO: change some posts request to put (investigate how to do that with django)
+# TODO: change some posts request to put / delete (investigate how to do that with django)
 
 from django.contrib.auth import authenticate, login as login_auth, logout as logout_auth
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
@@ -9,12 +8,10 @@ from django.shortcuts import render_to_response, redirect
 from forms import UserCreateForm, UserEditForm, LoginForm
 import users_manager
 
-@login_required
 @require_GET
 def dashboard(request):
     return render_to_response('user/dashboard.html', context_instance=RequestContext(request))
 
-@login_required
 @require_GET
 def show_user(request, username):
     context = {}
@@ -25,10 +22,12 @@ def show_user(request, username):
             context['profile_user'] = users_manager.get_user(username)
             return render_to_response('user/show.html', context, context_instance=context_instance)
         else:
-            context['error_msg'] = "There is no user called '" + username + "'."
+            # 404
+            context['error_msg'] = "There is no user called '%s'." % username
             return render_to_response('user/show.html', context, context_instance=context_instance)
     except Exception as exc:
-        context['error_msg'] = "Error ocurred: " + exc.message
+        # 500
+        context['error_msg'] = "Error ocurred: %s" % exc.message
         return render_to_response('user/show.html', context, context_instance=context_instance)
 
 @require_http_methods(["GET", "POST"])
@@ -55,7 +54,8 @@ def create_user(request):
                 login_auth(request, user)
                 return redirect('/user/dashboard')
             except Exception as exc:
-                form.errors['__all__'] = form.error_class(["Error: " + exc.message])
+                # 400
+                form.errors['__all__'] = form.error_class(["Error: %s" % exc.message])
     else:
         form = UserCreateForm()
 
@@ -63,7 +63,6 @@ def create_user(request):
     context['form'] = form
     return render_to_response('user/create.html', context, context_instance=context_instance)
 
-@login_required
 @require_http_methods(["GET", "POST"])
 def edit_user(request):
     context = {}
@@ -82,9 +81,11 @@ def edit_user(request):
             error = False
             if new_password and new_password_confirm:
                 if (new_password != new_password_confirm):
+                    # 400
                     form.errors['__all__'] = form.error_class(["Error: passwords didn't match."])
                     error = True
             elif (new_password and not new_password_confirm) or (new_password_confirm and not new_password):
+                # 400
                 form.errors['__all__'] = form.error_class(["Error: you must input the desired password twice."])
                 error = True
             else:
@@ -124,6 +125,7 @@ def login(request):
                 login_auth(request, user)
                 return redirect(next)
             else:
+                # 400
                 form.errors['__all__'] = form.error_class(["Login failure. Verify your user/password combination"])
     else:
         form = LoginForm()
@@ -132,7 +134,6 @@ def login(request):
     context['form'] = form
     return render_to_response('user/login.html', context, context_instance=context_instance)
 
-@login_required
 @require_GET
 def logout(request):
     logout_auth(request)

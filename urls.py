@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import patterns, include, url
+from django.contrib.auth.decorators import login_required
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -9,20 +10,20 @@ urlpatterns = patterns('',
     url(r'^about$', 'project.views.about', name='about'),
 
     # bands url
-    url(r'^band/create$', 'project.views_band.create_band', name='create-band'),
-    url(r'^band/(?P<band_id>\d+)$', 'project.views_band.show_band', name='show-band'),
-    url(r'^band/(?P<band_id>\d+)/edit$', 'project.views_band.edit_band', name='edit-band'),
-    url(r'^band/(?P<band_id>\d+)/member/add$', 'project.views_band.add_band_member', name='add-band-member'),
-    url(r'^band/(?P<band_id>\d+)/member/(?P<username>\w+)/remove$', 'project.views_band.remove_band_member', name='remove-band-member'),
+    url(r'^band/create$', login_required('project.views_band.create_band'), name='create-band'),
+    url(r'^band/(?P<band_id>\d+)$', login_required('project.views_band.show_band'), name='show-band'),
+    url(r'^band/(?P<band_id>\d+)/edit$', login_required('project.views_band.edit_band'), name='edit-band'),
+    url(r'^band/(?P<band_id>\d+)/member/add$', login_required('project.views_band.add_band_member'), name='add-band-member'),
+    url(r'^band/(?P<band_id>\d+)/member/(?P<username>\w+)/remove$', login_required('project.views_band.remove_band_member'), name='remove-band-member'),
 
     # users url
     url(r'^user/login$', 'project.views_user.login', name='user-login'),
-    url(r'^user/logout$', 'project.views_user.logout', name='user-logout'),
     url(r'^user/create$', 'project.views_user.create_user', name='create-user'),
-    url(r'^user/edit$', 'project.views_user.edit_user', name='edit-user'),
-    url(r'^user/dashboard$', 'project.views_user.dashboard', name='user-dashboard'),
-    url(r'^user/invite$', 'project.views_user.invite_user', name='invite-user'),
-    url(r'^user/profile/(?P<username>\w+)$', 'project.views_user.show_user', name='show-user'),
+    url(r'^user/logout$', login_required('project.views_user.logout'), name='user-logout'),
+    url(r'^user/edit$', login_required('project.views_user.edit_user'), name='edit-user'),
+    url(r'^user/dashboard$', login_required('project.views_user.dashboard'), name='user-dashboard'),
+    url(r'^user/invite$', login_required('project.views_user.invite_user'), name='invite-user'),
+    url(r'^user/profile/(?P<username>\w+)$', login_required('project.views_user.show_user'), name='show-user'),
     
     # Examples:
     # Uncomment the admin/doc line below to enable admin documentation:
