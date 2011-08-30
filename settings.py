@@ -115,8 +115,7 @@ INSTALLED_APPS = (
     # 'django.contrib.sites', (team) we don't use this feature 
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user',
-    'band',
+    'project',
     'djcelery',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
@@ -144,7 +143,7 @@ LOGGING = {
         },
     },
     'loggers': {
-        'user.users_manager':{
+        'project.users_manager':{
             'handlers' : ['console'],
             'level': 'DEBUG',
         },
@@ -157,7 +156,7 @@ LOGGING = {
 }
 
 # Overridden variables
-AUTH_PROFILE_MODULE = 'user.UserProfile'
+AUTH_PROFILE_MODULE = 'project.UserProfile'
 
 LOGIN_URL = '/user/login'
 

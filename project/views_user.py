@@ -9,22 +9,14 @@ from django.shortcuts import render_to_response, redirect
 
 from forms import UserCreateForm, UserEditForm, LoginForm
 import users_manager
-
-def index(request):
-    if request.user.is_authenticated():
-        return redirect('/user/dashboard')
-    else:
-        return render_to_response('index.html', context_instance=RequestContext(request))
-
-def about(request):
-    return render_to_response('about.html', context_instance=RequestContext(request))
+import bands_manager
 
 #################
 # account views #
 #################
 @login_required
 def dashboard(request):
-    return render_to_response('dashboard.html', context_instance=RequestContext(request))
+    return render_to_response('user/dashboard.html', context_instance=RequestContext(request))
 
 @login_required
 def show_user(request, username):
@@ -34,13 +26,13 @@ def show_user(request, username):
     try:
         if users_manager.exists(username):
             context['profile_user'] = users_manager.get_user(username)
-            return render_to_response('show.html', context, context_instance=context_instance)
+            return render_to_response('user/show.html', context, context_instance=context_instance)
         else:
             context['error_msg'] = "There is no user called '" + username + "'."
-            return render_to_response('show.html', context, context_instance=context_instance)
+            return render_to_response('user/show.html', context, context_instance=context_instance)
     except Exception as exc:
         context['error_msg'] = "Error ocurred: " + exc.message
-        return render_to_response('show.html', context, context_instance=context_instance)
+        return render_to_response('user/show.html', context, context_instance=context_instance)
 
 def create_user(request):
     context = {}
@@ -71,7 +63,7 @@ def create_user(request):
 
     # GET / POST with invalid input
     context['form'] = form
-    return render_to_response('create.html', context, context_instance=context_instance)
+    return render_to_response('user/create.html', context, context_instance=context_instance)
 
 @login_required
 def edit_user(request):
@@ -138,7 +130,7 @@ def login(request):
 
     # GET / POST with invalid input
     context['form'] = form
-    return render_to_response('login.html', context, context_instance=context_instance)
+    return render_to_response('user/login.html', context, context_instance=context_instance)
 
 @login_required
 def logout(request):
