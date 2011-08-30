@@ -9,9 +9,9 @@ User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 User.bands = property(lambda u: Band.objects.filter(members__username=u.username))
 
 class Band(models.Model):
-    name = models.CharField(verbose_name="name", max_length=50, blank=False)
-    bio = models.TextField(verbose_name="bio", max_length=1000, blank=False)
-    url = models.URLField(verbose_name="url")
+    name = models.CharField(verbose_name="name", max_length=50)
+    bio = models.TextField(verbose_name="bio", max_length=1000, blank=True)
+    url = models.URLField(verbose_name="url", blank=True)
     logo = models.ImageField(upload_to="public/bands/") #research this further
     members = models.ManyToManyField(User)
 
