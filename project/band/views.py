@@ -12,16 +12,20 @@ import bands_manager
 def show_band(request, band_id):
     context = {}
     context_instance = RequestContext(request)
-
     try:
         band = bands_manager.get_band(band_id)
         if band is not None:
-            context['band'] = band
-            return render_to_response('show.html', context, context_instance=context_instance)
+            if band.is_member(request.user) is True:
+                context['band'] = band
+                return render_to_response('band-show.html', context, context_instance=context_instance)
+            else:
+                context['error_msg'] = "You have no permission to view this band cause you are not a member of it."
+                return render_to_response('show.html', context, context_instance=context_instance)
         else:
             context['error_msg'] = "There is no band associated with id '" + id + "'."
             return render_to_response('show.html', context, context_instance=context_instance)
     except Exception as exc:
+        print exc
         context['error_msg'] = "Error ocurred: " + exc.message
         return render_to_response('show.html', context, context_instance=context_instance)
 
@@ -33,12 +37,12 @@ def create_band(request):
     if request.method == 'POST':
         form = BandCreateForm(request.POST)
         if form.is_valid():
-            name = form.cleaned_data['band']
+            name = form.cleaned_data['name']
             bio = form.cleaned_data['bio']
             url = form.cleaned_data['url']
             try:
-                bands_manager.create_band(band_name, bio, url, request.user)
-                return redirect('/band/%d' % band_id)
+                band = bands_manager.create_band(name, bio, url, request.user)
+                return redirect('/band/%d' % band.id)
             except Exception as exc:
                 form.errors['__all__'] = form.error_class(["Error: " + exc.message])
     else: # request.method == GET
@@ -46,7 +50,7 @@ def create_band(request):
 
     # GET / POST with invalid input
     context['form'] = form
-    return render_to_response('create.html', context, context_instance=context_instance)
+    return render_to_response('band-create.html', context, context_instance=context_instance)
 
 @login_required
 def edit_band(request, band_id):

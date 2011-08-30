@@ -5,12 +5,12 @@ from django.conf.urls.defaults import patterns, include, url
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^$', 'project.views.index', name='index'),
-    url(r'^about$', 'project.views.about', name='about'),
+    url(r'^$', 'user.views.index', name='index'),
+    url(r'^about$', 'user.views.about', name='about'),
 
     # Examples:
     url(r'^band/', include('band.urls')),
-    url(r'^user/', include('project.urls')),
+    url(r'^user/', include('user.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

@@ -1,12 +1,8 @@
 from models import Band
 
-def create_band(band_name, shortcut_name, bio, url, user):
-    exists = get_band(shortcut_name)
-    if exists:
-        raise Exception("Band shortcut name already in use.")
-
+def create_band(name, bio, url, user):
     try:
-        band = Band.objects.create(name=band_name, shortcut_name=shortcut_name, bio=bio, url=url)
+        band = Band.objects.create(name=name, bio=bio, url=url)
         band.members.add(user)
         band.save()
         return band

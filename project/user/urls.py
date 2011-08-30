@@ -6,13 +6,13 @@ from django.conf.urls.defaults import patterns, include, url
 
 urlpatterns = patterns('',
     # accounts
-    url(r'^login$', 'project.views.login', name='user-login'),
-    url(r'^logout$', 'project.views.logout', name='user-logout'),
-    url(r'^create$', 'project.views.create_user', name='create-user'),
-    url(r'^user/edit$', 'project.views.edit_user', name='edit-user'),
-    url(r'^dashboard$', 'project.views.dashboard', name='user-dashboard'),
-    url(r'^invite$', 'project.views.invite_user', name='invite-user'),
-    url(r'^profile/(?P<username>\w+)$', 'project.views.show_user', name='show-user'),
+    url(r'^login$', 'user.views.login', name='user-login'),
+    url(r'^logout$', 'user.views.logout', name='user-logout'),
+    url(r'^create$', 'user.views.create_user', name='create-user'),
+    url(r'^user/edit$', 'user.views.edit_user', name='edit-user'),
+    url(r'^dashboard$', 'user.views.dashboard', name='user-dashboard'),
+    url(r'^invite$', 'user.views.invite_user', name='invite-user'),
+    url(r'^profile/(?P<username>\w+)$', 'user.views.show_user', name='show-user'),
 
     # Examples:
     # url(r'^bandontherun/', include('bandontherun.foo.urls')),
