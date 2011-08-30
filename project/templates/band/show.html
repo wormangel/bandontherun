@@ -14,9 +14,9 @@
         <a href="{% url 'edit-band' band.id %}"><button class="btn">Edit</button></a>
 
         <h4>Members:</h4>
-        <ul>
+        <ul id="members">
         {% for member in band.member_list %}
-            <li><a href="{% url 'show-user' member.id %} ">{{ member.username }}</a> <a href="{% url 'remove-band-member' band_id=band.id username=member.username %} "><button class="btn inline small">Revoke</button></a></li>
+            <li><a href="{% url 'show-user' member.id %} ">{{ member.username }}</a> <a class="remove" href="{% url 'remove-band-member' band_id=band.id username=member.username %} "><button class="btn inline small">Revoke</button></a></li>
         {% endfor %}
         </ul>
 

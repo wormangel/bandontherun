@@ -1,7 +1,7 @@
 # TODO: create decorators for @get @post @put @delete
 # TODO: change some posts request to put (investigate how to do that with django)
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as login_auth, logout as logout_auth
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext

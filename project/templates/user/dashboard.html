@@ -7,7 +7,7 @@
             <p> Check what's happening now with these bands you play on! </p>
             <ul>
                 {% for band in user.bands %}
-                    <li><a href="{% url 'show-band' band.shortcut_name %}">{{ band.name }}</a></li>
+                    <li><a href="{% url 'show-band' band.id %}">{{ band.name }}</a></li>
                 {% endfor %}
             </ul>
         {% else %}

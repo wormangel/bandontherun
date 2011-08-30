@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as login_auth, logout as logout_auth
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
@@ -89,7 +90,7 @@ def add_band_member(request, band_id):
         username = request.POST['username']
         if bands_manager.exists(band_id):
             if users_manager.exists(username):
-                bands_manager.add_band_member(band_id, username)
+                bands_manager.add_band_member(band_id, users_manager.get_user(username))
                 return redirect('/band/%d' % band_id)
             else:
                 context['error_msg'] = "There is no user called '" + username + "'."
@@ -103,15 +104,17 @@ def add_band_member(request, band_id):
 
 @login_required
 def remove_band_member(request, band_id, username):
-    if request.method == 'POST':
+    if request.method == 'POST': # DELETE
         # TODO: validate input / use form
         # validate if user updating the info is a member
+        print band_id
+        print username
         if bands_manager.exists(band_id):
             bands_manager.remove_band_member(band_id, username)
             return redirect('/band/%d' % band_id)
         else:
             # TODO: see how to handle this better
-            return HttpResponse(status_code=404)
+            return HttpResponse(status=404)
     else:
         # The response MUST include an Allow header containing a list of valid methods for the requested resource. 
-        return HttpResponse(status_code=405)
+        return HttpResponse(status=405)
