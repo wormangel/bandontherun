@@ -16,7 +16,7 @@
         <h4>Members:</h4>
         <ul>
         {% for member in band.member_list %}
-            <li><a href="{% url 'show-user' member.id %} ">{{ member.name }}</a> <a href="{% url 'remove-band-member' band_id=band.id username=member.username %} ">revoke</a></li>
+            <li><a href="{% url 'show-user' member.id %} ">{{ member.username }}</a> <a href="{% url 'remove-band-member' band_id=band.id username=member.username %} "><button class="btn inline small">Revoke</button></a></li>
         {% endfor %}
         </ul>
 

@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     url(r'^band/(?P<band_id>\d+)$', 'project.views_band.show_band', name='show-band'),
     url(r'^band/(?P<band_id>\d+)/edit$', 'project.views_band.edit_band', name='edit-band'),
     url(r'^band/(?P<band_id>\d+)/member/add$', 'project.views_band.add_band_member', name='add-band-member'),
-    url(r'^band/(?P<band_id>\d+)/member/(?P<username>\d+)/remove$', 'project.views_band.remove_band_member', name='remove-band-member'),
+    url(r'^band/(?P<band_id>\d+)/member/(?P<username>\w+)/remove$', 'project.views_band.remove_band_member', name='remove-band-member'),
 
     # users url
     url(r'^user/login$', 'project.views_user.login', name='user-login'),
