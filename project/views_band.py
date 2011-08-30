@@ -57,7 +57,7 @@ def edit_band(request, band_id):
     context = {}
     context_instance = RequestContext(request)
 
-    if band_manager.exists(band_id):
+    if bands_manager.exists(band_id):
         if request.method == 'POST':
             form = BandEditForm(request.POST)
             if form.is_valid():
@@ -68,10 +68,11 @@ def edit_band(request, band_id):
                 context['success'] = True
         else: # request.method == GET
             band = bands_manager.get_band(band_id)
-            data = {'band_name': band.name,
+            data = {'name': band.name,
                     'bio': band.bio,
                     'url': band.url,}
-            context['form'] = BandEditForm(data)
+        context['form'] = BandEditForm(data)
+        context['band_id'] = band_id
     else:
         context['error_msg'] = "There is no band with the specified shortcut name."
 

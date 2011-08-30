@@ -12,11 +12,11 @@
                 </div>
                 {% endif %}
             {% endif %}
-            <form action="/band/{{shortcut_name}}/edit" method="post" > {% csrf_token %}
+            <form action="/band/{{ band_id }}/edit" method="post"> {% csrf_token %}
               {% include "form_template.html" with form_title="Edit Band"  %}
               <div class="actions">
                   <button class="btn primary" type="submit">Save</button>
-                  <a href="{% url 'show-band' shortcut_name %}"><button class="btn">Cancel</button></a>
+                  <a href="{% url 'show-band' band_id %}"><button class="btn">Cancel</button></a>
               </div>
             </form>
         {% else %}

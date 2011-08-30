@@ -29,6 +29,9 @@ def update_user(user, first_name, last_name, new_password, email, phone):
     profile.phone = phone
     profile.save()
     return user
+    
+def exists(username):
+    return User.objects.filter(username=username).exists()
 
 def get_user(username):
     user = User.objects.filter(username=username)

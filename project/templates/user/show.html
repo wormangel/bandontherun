@@ -14,7 +14,7 @@
             <dt>Bands:</dt>
             {% if profile_user.bands %}
                 {% for band in profile_user.bands %}
-                    <dd><a href="{% url 'show-band' band.shortcut_name %}">{{ band.name }}</a></dd>
+                    <dd><a href="{% url 'show-band' band.id %}">{{ band.name }}</a></dd>
                 {% endfor %}
             {% else %}
                 <dd>None yet</dd>
