@@ -95,6 +95,7 @@ def create_invited_user(request, email, key):
         form = InvitedUserCreateForm({email: email})
     else:
         # 404
+        pass
 
     # GET / POST with invalid input
     context['form'] = form

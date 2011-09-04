@@ -20,7 +20,7 @@ class Band(models.Model):
 
 Band.member_list = property(lambda u: u.members.all())
     
-class UserInvitation(models.Model):
-    band = models.ForeignKey(Band, unique=True, primary_key=True)
-    email = models.EmailField(primary_key=True, verbose_name="email")
-    key = models.CharField()
+#class UserInvitation(models.Model):
+    #band = models.ForeignKey(Band, unique=True, primary_key=True)
+    #email = models.EmailField(primary_key=True, verbose_name="email")
+    #key = models.CharField()
