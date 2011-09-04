@@ -19,3 +19,8 @@ class Band(models.Model):
         return len(Band.objects.filter(members__username=user.username)) is not 0
 
 Band.member_list = property(lambda u: u.members.all())
+    
+class UserInvitation(models.Model):
+    band = models.ForeignKey(Band, unique=True, primary_key=True)
+    email = models.EmailField(primary_key=True, verbose_name="email")
+    key = models.CharField()

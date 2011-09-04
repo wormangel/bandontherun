@@ -42,7 +42,16 @@ def get_user(username):
     else:
         return user[0]
 
-def invite_user(email):
+def invitation_exists(email, key):
+    return UserInvitation.objects.filter(email=email, key=key).exists()
+    
+def get_invitation(email):
+    return UserInvitation.objects.filter(email)
+
+def create_invitation(email, key, band):
+    invitation = UserInvitation.objects.create(email=email, key=key, band=band)
+    return invitation
+
+def invite_user(band, inviter, email):
     if email is not None:
-        pass
-        # NewUserTask.delay(shortcut_name)
+        UserInvitationTask.delay(band, inviter, email)

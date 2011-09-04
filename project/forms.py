@@ -8,6 +8,14 @@ class UserCreateForm(forms.Form):
     email = forms.EmailField()
     phone = forms.CharField(max_length=20, required=False)
 
+class InvitedUserCreateForm(forms.Form):
+    first_name = forms.CharField(max_length=20)
+    last_name = forms.CharField(max_length=20)
+    username = forms.CharField(min_length=3, max_length=20)
+    password = forms.CharField(min_length=6, max_length=20, widget=forms.PasswordInput(render_value=False))
+    email = forms.EmailField() # needs to be disabled
+    phone = forms.CharField(max_length=20, required=False)
+
 class UserEditForm(forms.Form):
     first_name = forms.CharField(max_length=20)
     last_name = forms.CharField(max_length=20)

@@ -1,9 +1,10 @@
 # TODO: change some posts request to put / delete (investigate how to do that with django)
 
 from django.http import HttpResponse
-from django.contrib.auth import authenticate, login as login_auth, logout as logout_auth
-from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.template import RequestContext
+from django.contrib.auth import authenticate, login as login_auth, logout as logout_auth
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.shortcuts import render_to_response, redirect
 
 from models import Band
@@ -11,6 +12,7 @@ from forms import BandCreateForm, BandEditForm
 import users_manager
 import bands_manager
 
+@login_required
 @require_GET
 def show_band(request, band_id):
     context = {}
@@ -34,6 +36,7 @@ def show_band(request, band_id):
         context['error_msg'] = "Error ocurred: %s" % exc.message
         return render_to_response('band/show.html', context, context_instance=context_instance)
 
+@login_required
 @require_http_methods(["GET", "POST"])
 def create_band(request):
     context = {}
@@ -58,6 +61,7 @@ def create_band(request):
     context['form'] = form
     return render_to_response('band/create.html', context, context_instance=context_instance)
 
+@login_required
 @require_http_methods(["GET", "POST"])
 def edit_band(request, band_id):
     context = {}
@@ -85,6 +89,7 @@ def edit_band(request, band_id):
 
     return render_to_response('band/edit.html', context, context_instance=context_instance)
 
+@login_required
 @require_POST
 def add_band_member(request, band_id):
     context = {}
@@ -106,6 +111,7 @@ def add_band_member(request, band_id):
         context['error_msg'] = "There is no band associated with id '%d'." % band_id
         return render_to_response('band/show.html', context, context_instance=context_instance)
 
+@login_required
 @require_POST
 def remove_band_member(request, band_id, username):
     # TODO: validate input / use form
