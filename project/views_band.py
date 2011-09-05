@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods, require_GET, requ
 from django.shortcuts import render_to_response, redirect
 
 from models import Band
-from forms import BandCreateForm, BandEditForm
+from forms import BandCreateForm, BandEditForm, UploadBandFileForm, UploadBandFileForm
 import users_manager
 import bands_manager
 
@@ -22,6 +22,7 @@ def show_band(request, band_id):
         if band is not None:
             if band.is_member(request.user) is True:
                 context['band'] = band
+                context['upload_form'] = UploadBandFileForm()
                 return render_to_response('band/show.html', context, context_instance=context_instance)
             else:
                 # 403
@@ -122,3 +123,19 @@ def remove_band_member(request, band_id, username):
     else:
         # TODO: see how to handle this better
         return HttpResponse(status=404)
+        
+@login_required
+@require_POST
+def upload_file(request, band_id):
+    context_instance = RequestContext(request)
+    print request.FILES
+    form = UploadBandFileForm(request.POST, request.FILES)
+    if form.is_valid():
+        name = form.cleaned_data['name']
+        bands_manager.add_files(band_id, name, request.FILES['bandfile'])
+        return redirect('/band/%s' % band_id)
+    return render_to_response('band/show.html', {'form': form}, context_instance=context_instance)
+
+
+
+

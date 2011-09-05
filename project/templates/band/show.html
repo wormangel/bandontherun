@@ -41,6 +41,41 @@
         </label>
         <input type="submit" value="Invite" />
         </form>-->
+        
+        <h4>Files:</h4>
+        <form enctype="multpart/form-data" action="/band/{{ band.id }}/upload" method="post"> 
+            {% csrf_token %} {{ upload_form.as_p }}
+            <button class="btn inline primary" type="submit"/>Upload</button>
+        </form>   
+        
+        <script src="public/js/libs/jquery.tablesorter.min.js"></script>
+        <script >
+              $(function() {
+                $("table#sortTableExample").tablesorter({ sortList: [[1,0]] });
+              });
+        </script>
+        <table class="zebra-striped">
+            <thead>
+              <tr>
+                <th class="header headerSortUp">Name</th>
+                <th class="yellow header">Filename</th>
+                <th class="blue header">Size</th>
+                <th class="green header">Download</th>
+                <th class="red  header">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for file in band.file_list %}
+                <tr>
+                    <td name="name" type="text" > {{ file.name }} </td>
+                    <td name="filename" type="text" > {{ file.filename }} </td>
+                    <td name="size" type="text" > {{ file.size }} </td>
+                    <td name="download" type="text" > <button class="btn inline small" type="submit">Download</button> </td>
+                    <td name="delete" type="text" > <button class="btn inline small" type="submit">Delete</button> </td>
+                </tr>     
+            {% endfor %}
+            </tbody>
+        </table>   
     {% else %}
         <div class="alert-message error">
             {{ error_msg }}

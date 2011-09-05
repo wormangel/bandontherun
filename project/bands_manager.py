@@ -1,4 +1,4 @@
-from models import Band
+from models import Band, BandFile
 
 def create_band(name, bio, url, user):
     try:
@@ -52,3 +52,17 @@ def get_band(band_id):
         raise Exception("Unexpected! Call security!")
     else:
         return band[0]
+        
+def add_files(band_id, name, upload_file):
+    filename = upload_file.name
+    size = upload_file.size
+    band_file = BandFile.objects.create(name=name, filename=filename, size=size, uploader='', band=get_band(band_id))
+    try:
+        destination = open('project/upload_files/%s' % band_file.id, 'wb+')
+        for chunk in upload_file.chunks():
+            destination.write(chunk)
+        destination.close()
+    except Exception as exc:
+       raise Exception("Error adding a file. Reason: " + exc.message)
+    band_file.save()
+    

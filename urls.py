@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     # bands url
     url(r'^band/create$', 'project.views_band.create_band', name='create-band'),
     url(r'^band/(?P<band_id>\d+)$', 'project.views_band.show_band', name='show-band'),
+    url(r'^band/(?P<band_id>\d+)/upload$', 'project.views_band.upload_file', name='upload-band-file'),
     url(r'^band/(?P<band_id>\d+)/edit$', 'project.views_band.edit_band', name='edit-band'),
     url(r'^band/(?P<band_id>\d+)/member/add$', 'project.views_band.add_band_member', name='add-band-member'),
     url(r'^band/(?P<band_id>\d+)/member/(?P<username>\w+)/remove$', 'project.views_band.remove_band_member', name='remove-band-member'),

@@ -19,6 +19,14 @@ class Band(models.Model):
         return len(Band.objects.filter(members__username=user.username)) is not 0
 
 Band.member_list = property(lambda u: u.members.all())
+Band.file_list = property(lambda u: u.bandfile_set.all())
+
+class BandFile(models.Model):
+    name = models.CharField(verbose_name="name", max_length=50)
+    filename = models.CharField(verbose_name="filename", max_length=255)
+    size = models.CharField(verbose_name="size", max_length=20)
+    uploader = models.CharField(verbose_name="uploader", max_length=50)
+    band = models.ForeignKey(Band)
     
 #class UserInvitation(models.Model):
     #band = models.ForeignKey(Band, unique=True, primary_key=True)
