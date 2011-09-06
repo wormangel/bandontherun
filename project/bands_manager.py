@@ -60,7 +60,7 @@ def add_file(band_id, name, username, upload_file):
     band_file = BandFile(name=name, filename=filename, size=size, uploader=username, band=get_band(band_id), created=datetime.now())
     band_file.save()
     try:
-        destination = open('%s%s' % (FILES_PATH, band_file.id), 'wb+')
+        destination = open('%s%s_%s_%s' % (FILES_PATH, band_file.id, band_id, filename), 'wb+')
         for chunk in upload_file.chunks():
             destination.write(chunk)
         destination.close()
@@ -72,6 +72,9 @@ def delete_file(bandfile_id):
     bandfile = BandFile.objects.get(id=bandfile_id)
     if bandfile is None:
         raise Exception("There is no bandfile with this id.")
-    os.remove('%s%s' % (FILES_PATH, bandfile_id))
+    band_id = bandfile.band.id
+    filename = bandfile.filename
+    os.remove('%s%s_%s_%s' % (FILES_PATH, bandfile_id, band_id, filename))
     bandfile.delete()
+    
     

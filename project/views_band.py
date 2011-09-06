@@ -147,7 +147,7 @@ def delete_file(request, band_id, username, bandfile_id):
     
     context = {}
     context['band'] = bands_manager.get_band(band_id)
-    context['upload_form'] = UploadBandFileForm()
+    context['form'] = UploadBandFileForm()
     
     if BandFile.objects.get(id=bandfile_id):
         if Band.objects.get(id=band_id).is_member(User.objects.get(username=username)):
