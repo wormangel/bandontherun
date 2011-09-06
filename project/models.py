@@ -27,6 +27,7 @@ class BandFile(models.Model):
     size = models.CharField(verbose_name="size", max_length=20)
     uploader = models.CharField(verbose_name="uploader", max_length=50)
     band = models.ForeignKey(Band)
+    created = models.DateField()
     
 #class UserInvitation(models.Model):
     #band = models.ForeignKey(Band, unique=True, primary_key=True)

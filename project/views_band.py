@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.shortcuts import render_to_response, redirect
 
-from models import Band
+from models import Band, User, BandFile
 from forms import BandCreateForm, BandEditForm, UploadBandFileForm, UploadBandFileForm
 import users_manager
 import bands_manager
@@ -19,8 +19,9 @@ def show_band(request, band_id):
     context_instance = RequestContext(request)
     try:
         band = bands_manager.get_band(band_id)
+        user = request.user
         if band is not None:
-            if band.is_member(request.user) is True:
+            if band.is_member(user):
                 context['band'] = band
                 context['upload_form'] = UploadBandFileForm()
                 return render_to_response('band/show.html', context, context_instance=context_instance)
@@ -126,16 +127,37 @@ def remove_band_member(request, band_id, username):
         
 @login_required
 @require_POST
-def upload_file(request, band_id):
+def upload_file(request, band_id, username):
     context_instance = RequestContext(request)
-    print request.FILES
     form = UploadBandFileForm(request.POST, request.FILES)
     if form.is_valid():
-        name = form.cleaned_data['name']
-        bands_manager.add_files(band_id, name, request.FILES['bandfile'])
-        return redirect('/band/%s' % band_id)
+        if Band.objects.get(id=band_id).is_member(User.objects.get(username=username)):
+            name = form.cleaned_data['name']
+            bands_manager.add_file(band_id, name, username, request.FILES['bandfile'])
+            return redirect('/band/%s' % band_id)
+        else:
+            context['error_msg'] = "You have no permission to upload a file to this band cause you are not a member of it."
+            return render_to_response('band/show.html', context, context_instance=context_instance)            
     return render_to_response('band/show.html', {'form': form}, context_instance=context_instance)
 
-
+@login_required
+@require_POST
+def delete_file(request, band_id, username, bandfile_id):
+    context_instance = RequestContext(request)
+    
+    context = {}
+    context['band'] = bands_manager.get_band(band_id)
+    context['upload_form'] = UploadBandFileForm()
+    
+    if BandFile.objects.get(id=bandfile_id):
+        if Band.objects.get(id=band_id).is_member(User.objects.get(username=username)):
+            bands_manager.delete_file(bandfile_id)
+        else:
+            context['error_msg'] = "You have no permission to delete a file to this band cause you are not a member of it."
+            return render_to_response('band/show.html', context, context_instance=context_instance)   
+    else:
+        context['error_msg'] = "Invalid file."
+        return render_to_response('band/show.html', context, context_instance=context_instance)   
+    return render_to_response('band/show.html', context, context_instance=context_instance)
 
 

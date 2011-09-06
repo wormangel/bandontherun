@@ -1,5 +1,12 @@
 from models import Band, BandFile
 
+from datetime import datetime
+
+import os
+
+
+FILES_PATH = "project/upload_files/"
+
 def create_band(name, bio, url, user):
     try:
         band = Band.objects.create(name=name, bio=bio, url=url)
@@ -40,29 +47,31 @@ def remove_band_member(band_id, username):
     if not band.members.filter(username=username).exists():
         raise Exception(username + " is not a member of this band.")
 
-    band.members.remove(user)
+    band.members.remove(username)
     band.save()
     return band
     
 def get_band(band_id):
-    band = Band.objects.filter(id=band_id)
-    if len(band) == 0:
-        return None
-    elif len(band) != 1:
-        raise Exception("Unexpected! Call security!")
-    else:
-        return band[0]
+    return Band.objects.get(id=band_id)
         
-def add_files(band_id, name, upload_file):
+def add_file(band_id, name, username, upload_file):
     filename = upload_file.name
     size = upload_file.size
-    band_file = BandFile.objects.create(name=name, filename=filename, size=size, uploader='', band=get_band(band_id))
+    band_file = BandFile(name=name, filename=filename, size=size, uploader=username, band=get_band(band_id), created=datetime.now())
+    band_file.save()
     try:
-        destination = open('project/upload_files/%s' % band_file.id, 'wb+')
+        destination = open('%s%s' % (FILES_PATH, band_file.id), 'wb+')
         for chunk in upload_file.chunks():
             destination.write(chunk)
         destination.close()
     except Exception as exc:
+       band_file.delete()
        raise Exception("Error adding a file. Reason: " + exc.message)
-    band_file.save()
+    
+def delete_file(bandfile_id):
+    bandfile = BandFile.objects.get(id=bandfile_id)
+    if bandfile is None:
+        raise Exception("There is no bandfile with this id.")
+    os.remove('%s%s' % (FILES_PATH, bandfile_id))
+    bandfile.delete()
     
