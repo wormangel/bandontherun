@@ -6,24 +6,25 @@ from django.contrib.auth import authenticate, login as login_auth, logout as log
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.shortcuts import render_to_response, redirect
+from django.core.urlresolvers import reverse
 
+from filetransfers.api import prepare_upload
 from models import Band, User, BandFile
 from forms import BandCreateForm, BandEditForm, UploadBandFileForm, UploadBandFileForm
 import users_manager
 import bands_manager
 
+from datetime import datetime
+
 @login_required
 @require_GET
 def show_band(request, band_id):
-    context = {}
-    context_instance = RequestContext(request)
+    band = bands_manager.get_band(band_id)
+    context, context_instance = __prepare_context(request, band)
     try:
-        band = bands_manager.get_band(band_id)
         user = request.user
         if band is not None:
             if band.is_member(user):
-                context['band'] = band
-                context['upload_form'] = UploadBandFileForm()
                 return render_to_response('band/show.html', context, context_instance=context_instance)
             else:
                 # 403
@@ -127,31 +128,41 @@ def remove_band_member(request, band_id, username):
         
 @login_required
 @require_POST
-def upload_file(request, band_id, username):
-    context_instance = RequestContext(request)
+def upload_file(request, band_id):
+    view_url = reverse('project.views_band.upload_file', args=[band_id])
+    
+    user = User.objects.get(username=request.user.username)
+    band = Band.objects.get(id=band_id)
+    context, context_instance = __prepare_context(request, band)
     form = UploadBandFileForm(request.POST, request.FILES)
+    
     if form.is_valid():
-        if Band.objects.get(id=band_id).is_member(User.objects.get(username=username)):
-            name = form.cleaned_data['name']
-            bands_manager.add_file(band_id, name, username, request.FILES['bandfile'])
-            return redirect('/band/%s' % band_id)
+        if band.is_member(user):
+            file = request.FILES['file']    
+            band_file = form.save(commit=False)
+            band_file.filename= file.name
+            band_file.size = file.size
+            band_file.uploader = user.username
+            band_file.band = band
+            band_file.created = datetime.now()
+            band_file.save()
+            return render_to_response('band/show.html', context, context_instance=context_instance)
         else:
             context['error_msg'] = "You have no permission to upload a file to this band cause you are not a member of it."
-            return render_to_response('band/show.html', context, context_instance=context_instance)            
-    return render_to_response('band/show.html', {'form': form}, context_instance=context_instance)
+            return render_to_response('band/show.html', context, context_instance=context_instance) 
+    context['upload_form'] = form 
+    return render_to_response('band/show.html', context, context_instance=context_instance)
 
 @login_required
 @require_POST
 def delete_file(request, band_id, username, bandfile_id):
-    context_instance = RequestContext(request)
+    context, context_instance = __prepare_context(request, Band.objects.get(id=band_id))
     
-    context = {}
-    context['band'] = bands_manager.get_band(band_id)
-    context['form'] = UploadBandFileForm()
-    
-    if BandFile.objects.get(id=bandfile_id):
+    band_file = BandFile.objects.get(id=bandfile_id)
+    if band_file:
         if Band.objects.get(id=band_id).is_member(User.objects.get(username=username)):
-            bands_manager.delete_file(bandfile_id)
+            band_file.file.delete()
+            band_file.delete()
         else:
             context['error_msg'] = "You have no permission to delete a file to this band cause you are not a member of it."
             return render_to_response('band/show.html', context, context_instance=context_instance)   
@@ -161,3 +172,12 @@ def delete_file(request, band_id, username, bandfile_id):
     return render_to_response('band/show.html', context, context_instance=context_instance)
 
 
+def __prepare_context(request, band):
+    context = {}
+    context['band'] = band
+    view_url = reverse('project.views_band.upload_file', args=[band.id])
+    upload_url, upload_data = prepare_upload(request, view_url)
+    context['upload_form'] = UploadBandFileForm()
+    context['upload_url'] = upload_url
+    context['upload_data'] = upload_data
+    return context, RequestContext(request)

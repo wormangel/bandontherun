@@ -117,6 +117,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'project',
     'djcelery',
+    'filetransfers',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -171,3 +172,7 @@ BROKER_PORT = 5672
 BROKER_USER = "guest"
 BROKER_PASSWORD = "guest"
 BROKER_VHOST = "/"
+
+PREPARE_UPLOAD_BACKEND = 'filetransfers.backends.default.prepare_upload'
+SERVE_FILE_BACKEND = 'filetransfers.backends.default.serve_file'
+PUBLIC_DOWNLOAD_URL_BACKEND = 'filetransfers.backends.default.public_download_url'

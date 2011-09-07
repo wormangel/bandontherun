@@ -43,10 +43,14 @@
         </form>-->
         
         <h4>Files:</h4>
-        <form enctype="multpart/form-data" action="/band/{{ band.id }}/{{ user.username }}/upload" method="post"> 
-            {% csrf_token %} {{ upload_form.as_p }}
-            <button class="btn inline primary" type="submit"/>Upload</button>
-        </form>   
+        
+            {% load filetransfers %}
+            <form action="{{ upload_url }}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% render_upload_data upload_data %}
+                {{ upload_form.as_p }}
+                <button class="btn inline primary" type="submit"/>Upload</button>
+            </form>        
         
         <script src="public/js/libs/jquery.tablesorter.min.js"></script>
         <script >

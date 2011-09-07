@@ -28,7 +28,8 @@ class BandFile(models.Model):
     uploader = models.CharField(verbose_name="uploader", max_length=50)
     band = models.ForeignKey(Band)
     created = models.DateField()
-    
+    file = models.FileField(upload_to='project/upload_files/')
+
 #class UserInvitation(models.Model):
     #band = models.ForeignKey(Band, unique=True, primary_key=True)
     #email = models.EmailField(primary_key=True, verbose_name="email")
