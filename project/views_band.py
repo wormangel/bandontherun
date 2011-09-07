@@ -5,10 +5,10 @@ from django.template import RequestContext
 from django.contrib.auth import authenticate, login as login_auth, logout as logout_auth
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 
-from filetransfers.api import prepare_upload
+from filetransfers.api import prepare_upload, serve_file
 from models import Band, User, BandFile
 from forms import BandCreateForm, BandEditForm, UploadBandFileForm, UploadBandFileForm
 import users_manager
@@ -171,6 +171,11 @@ def delete_file(request, band_id, username, bandfile_id):
         return render_to_response('band/show.html', context, context_instance=context_instance)   
     return render_to_response('band/show.html', context, context_instance=context_instance)
 
+@login_required
+@require_GET
+def download_file(request, bandfile_id):
+    band_file = get_object_or_404(BandFile, pk=bandfile_id)
+    return serve_file(request, band_file.file, save_as=True)
 
 def __prepare_context(request, band):
     context = {}
