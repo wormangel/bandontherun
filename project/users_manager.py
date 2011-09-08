@@ -42,16 +42,16 @@ def get_user(username):
     else:
         return user[0]
 
-def invitation_exists(email, key):
-    return UserInvitation.objects.filter(email=email, key=key).exists()
+def invitation_exists(key):
+    return UserInvitation.objects.filter(key=key).exists()
     
-def get_invitation(email):
-    return UserInvitation.objects.filter(email)
+def get_invitation(key):
+    return UserInvitation.objects.filter(key)
 
 def create_invitation(email, key, band):
-    invitation = UserInvitation.objects.create(email=email, key=key, band=band)
+    invitation = UserInvitation.objects.create(key=key, email=email, band=band)
     return invitation
 
-def invite_user(band, inviter, email):
+def invite_user(email, inviter, band):
     if email is not None:
         UserInvitationTask.delay(band, inviter, email)

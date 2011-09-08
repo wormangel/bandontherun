@@ -182,8 +182,12 @@ def logout(request):
 
 # TODO
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_POST
 def invite_user(request):
-    if request.method == 'POST':
-        email = request.POST['email']
-        users_manager.invite_user(email)
+    band_id = request.POST['band']
+    email = request.POST['email']
+    if bands_manager.get_band(band_id).is_member(request.user):
+        if request.user
+        users_manager.invite_user(email, request.user, band)
+    else:
+        # 403

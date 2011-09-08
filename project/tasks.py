@@ -11,16 +11,16 @@ import users_manager
 
 class UserInvitationTask(Task):
 
-    def run(self, band, inviter, email, **kwargs):
+    def run(self, email, inviter, band, **kwargs):
         try:
             key = hashlib.sha224(email).hexdigest()
-            if not users_manager.invitation_exists(email, key):
+            if not users_manager.invitation_exists(key):
                 invitation = users_manager.create_invitation(email, key, band)
                 invitation.save()
             else:
-                invitation = users_manager.get_invitation(email)
+                invitation = users_manager.get_invitation(key)
             
-            link = "http://localhost:8000/create/user/%s/%s" % invitation.email invitation.key
+            link = "http://localhost:8000/create/user/%s" % invitation.key
             body = "You were invited by %s to be part of %s on Band on the Run plataform. \
                     Please visit the follow link to create your profile. %\
                     <a href=\"%s\">%s</a>" % inviter.first_name band.name link link
