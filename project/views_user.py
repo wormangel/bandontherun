@@ -21,17 +21,12 @@ def show_user(request, username):
     context_instance = RequestContext(request)
     
     try:
-        if users_manager.exists(username):
-            context['profile_user'] = users_manager.get_user(username)
-            return render_to_response('user/show.html', context, context_instance=context_instance)
-        else:
-            # 404
-            context['error_msg'] = "There is no user called '%s'." % username
-            return render_to_response('user/show.html', context, context_instance=context_instance)
+        user = users_manager.get_user(username)
+        context['profile_user'] = user
     except Exception as exc:
         # 500
         context['error_msg'] = "Error ocurred: %s" % exc.message
-        return render_to_response('user/show.html', context, context_instance=context_instance)
+    return render_to_response('user/show.html', context, context_instance=context_instance)
 
 @require_http_methods(["GET", "POST"])
 def create_user(request):

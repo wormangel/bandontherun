@@ -43,10 +43,14 @@
         </form>-->
         
         <h4>Files:</h4>
-        <form enctype="multpart/form-data" action="/band/{{ band.id }}/upload" method="post"> 
-            {% csrf_token %} {{ upload_form.as_p }}
-            <button class="btn inline primary" type="submit"/>Upload</button>
-        </form>   
+        
+            {% load filetransfers %}
+            <form action="{{ upload_url }}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% render_upload_data upload_data %}
+                {{ upload_form.as_p }}
+                <button class="btn inline primary" type="submit"/>Upload</button>
+            </form>        
         
         <script src="public/js/libs/jquery.tablesorter.min.js"></script>
         <script >
@@ -60,6 +64,8 @@
                 <th class="header headerSortUp">Name</th>
                 <th class="yellow header">Filename</th>
                 <th class="blue header">Size</th>
+                <th class="purple header">Created</th>
+                <th class="orange  header">Uploader</th>
                 <th class="green header">Download</th>
                 <th class="red  header">Delete</th>
               </tr>
@@ -70,8 +76,20 @@
                     <td name="name" type="text" > {{ file.name }} </td>
                     <td name="filename" type="text" > {{ file.filename }} </td>
                     <td name="size" type="text" > {{ file.size }} </td>
-                    <td name="download" type="text" > <button class="btn inline small" type="submit">Download</button> </td>
-                    <td name="delete" type="text" > <button class="btn inline small" type="submit">Delete</button> </td>
+                    <td name="created" type="text" > {{ file.created }} </td>
+                    <td name="uploader" type="text" > {{ file.uploader }} </td>
+                    <td name="download" type="text" >
+                        <form action="/band/{{ band.id }}/download/{{ file.id }}" method="get">
+                            {% csrf_token %}
+                            <button class="btn inline small" type="submit">Download</button>
+                        </form>
+                    </td>
+                    <td name="delete" type="text" > 
+                        <form action="/band/{{ band.id }}/{{ user.username }}/{{ file.id }}/deletefile" method="post">
+                            {% csrf_token %}
+                            <button class="btn inline small" type="submit">Delete</button>
+                        </form>
+                    </td>
                 </tr>     
             {% endfor %}
             </tbody>

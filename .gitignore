@@ -1,3 +1,5 @@
 db
 *.pyc
 remove_pyc.sh
+project/upload_files/*
+.idea

@@ -1,3 +1,5 @@
+from telepathy._generated.errors import DoesNotExist
+from ubuntuone.storageprotocol.errors import DoesNotExistError
 from django.contrib.auth.models import User
 
 def create_user(first_name, last_name, username, password, email, phone):
@@ -34,13 +36,11 @@ def exists(username):
     return User.objects.filter(username=username).exists()
 
 def get_user(username):
-    user = User.objects.filter(username=username)
-    if len(user) == 0:
-        return None
-    elif len(user) != 1:
-        raise Exception("Unexpected! Call security!")
-    else:
-        return user[0]
+    try:
+        user = User.objects.get(username=username)
+        return user
+    except User.DoesNotExist:
+        raise Exception("There is no user called '%s'." % username)
 
 def invitation_exists(key):
     return UserInvitation.objects.filter(key=key).exists()

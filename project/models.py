@@ -16,7 +16,7 @@ class Band(models.Model):
     members = models.ManyToManyField(User)
 
     def is_member(self, user):
-        return len(Band.objects.filter(members__username=user.username)) is not 0
+        return len(self.members.filter(username=user.username)) is not 0
 
 Band.member_list = property(lambda u: u.members.all())
 Band.file_list = property(lambda u: u.bandfile_set.all())
@@ -27,9 +27,10 @@ class BandFile(models.Model):
     size = models.CharField(verbose_name="size", max_length=20)
     uploader = models.CharField(verbose_name="uploader", max_length=50)
     band = models.ForeignKey(Band)
-    
+    created = models.DateField()
+    file = models.FileField(upload_to='project/upload_files/')
+
 class UserInvitation(models.Model):
     key = models.CharField(primary_key=True, max_length=100)
     email = models.EmailField(unique=True)
     band = models.ForeignKey(Band, unique=True)
-

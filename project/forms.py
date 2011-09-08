@@ -1,4 +1,5 @@
 from django import forms
+from project.models import BandFile
 
 
 class UserCreateForm(forms.Form):
@@ -39,6 +40,7 @@ class BandEditForm(forms.Form):
     bio = forms.CharField(label='Band Bio', widget=forms.Textarea(), required=False)
     url = forms.URLField(label='Your Web site', required=False)
 
-class UploadBandFileForm(forms.Form):
-    name = forms.CharField(max_length=50, required=True)
-    bandfile  = forms.FileField(required=True)
+class UploadBandFileForm(forms.ModelForm):
+    class Meta:
+        model = BandFile
+        fields = ('name', 'file')
