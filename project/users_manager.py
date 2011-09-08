@@ -3,8 +3,8 @@ from ubuntuone.storageprotocol.errors import DoesNotExistError
 from django.contrib.auth.models import User
 
 def create_user(first_name, last_name, username, password, email, phone):
-    exists = get_user(username)
-    if exists:
+
+    if exists(username):
         raise Exception("Username already in use.")
 
     try:

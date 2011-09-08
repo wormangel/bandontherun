@@ -3,7 +3,7 @@
         
 {% block body %}
     {% if not error_msg %}
-        <h2>{{ band.name }}</h2>
+        <h2>{{ band.name }} </h2>
         <dl>
             <dt>URL:</dt>
             <dd><a href="{{ band.url }}">{{ band.url }}</a></dd>
@@ -12,7 +12,7 @@
         </dl>
 
         <a href="{% url 'edit-band' band.id %}"><button class="btn">Edit</button></a>
-
+        <hr size="20"/>
         <h4>Members:</h4>
         <ul id="members">
         {% for member in band.member_list %}
@@ -41,7 +41,7 @@
         </label>
         <input type="submit" value="Invite" />
         </form>-->
-        
+        <hr size="20"/>
         <h4>Files:</h4>
         
             {% load filetransfers %}
@@ -93,7 +93,29 @@
                 </tr>     
             {% endfor %}
             </tbody>
-        </table>   
+        </table>
+        <hr size="20"/>
+        <h4>Setlist:</h4>
+        <ul id="setlist">
+        {% for song in setlist.song_list %}
+            <li>
+                <form action="/band/{{ band.id }}/setlist/{{ song.id }}/remove" method="post">
+                    {% csrf_token %}
+                    {{ song.artist }} - {{ song.title }}
+                    <button class="btn inline small" type="submit">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+        </ul>
+
+
+        <h4>Add a new song:</h4>
+        <form action="/band/{{ band.id }}/setlist/add" method="post">
+            {% csrf_token %}
+            Artist: <input id="artist" name="artist" type="text" placeholder="song artist" />
+            Title:  <input id="title" name="title" type="text" placeholder="song title" />
+            <button class="btn inline primary" type="submit">Add</button>
+        </form>
     {% else %}
         <div class="alert-message error">
             {{ error_msg }}

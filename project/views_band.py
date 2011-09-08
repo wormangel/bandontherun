@@ -95,7 +95,6 @@ def edit_band(request, band_id):
 @require_POST
 def add_band_member(request, band_id):
     context = {}
-    context_instance = RequestContext(request)
     username = request.POST['username']
 
     try:
@@ -113,7 +112,6 @@ def add_band_member(request, band_id):
 @require_POST
 def remove_band_member(request, band_id, username):
     context = {}
-    context_instance = RequestContext(request)
 
     try:
         band = bands_manager.get_band(band_id)
@@ -154,7 +152,7 @@ def upload_file(request, band_id):
 
         context['upload_form'] = form
     except Exception as exc:
-        context['error_msg'] = "You have no permission to upload a file to this band cause you are not a member of it."
+        context['error_msg'] = "Error: %s" % exc.message
         
     return render_to_response('band/show.html', context, context_instance=RequestContext(request))
 
@@ -205,3 +203,29 @@ def __prepare_context(request, band):
     context['upload_url'] = upload_url
     context['upload_data'] = upload_data
     return context
+
+# TODO Vitor, falta isso aih embaixo. O cod ta certo ja, falta o backend. Falta tbm o codigo de remover
+# TODO (copia do de membro e muda) :P
+
+@login_required
+@require_POST
+def remove_setlist_song(request, band_id, song_id):
+    pass
+
+@login_required
+@require_POST
+def add_setlist_song(request, band_id):
+    context = {}
+    artist = request.POST['artist']
+    title = request.POST['title']
+
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
+
+        bands_manager.add_setlist_song(band_id, artist, title)
+        return redirect('/band/%s' % band_id)
+    except Exception as exc:
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+        return render_to_response('band/show.html', context, context_instance=RequestContext(request))
