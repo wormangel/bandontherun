@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+{% block body %}
+    <div class="row">
+        <div class="span12 columns">
+            <div class="alert-message error">
+                {{ error_msg }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

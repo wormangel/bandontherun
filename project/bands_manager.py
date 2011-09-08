@@ -1,8 +1,5 @@
-from models import Band, BandFile
-
-from datetime import datetime
-
-import os
+from models import Band
+import users_manager
 
 
 FILES_PATH = "project/upload_files/"
@@ -27,30 +24,37 @@ def update_band(band_id, name, bio, url):
 def exists(band_id):
     return Band.objects.filter(id=band_id).exists()
 
-def add_band_member(band_id, user):
-    band = get_band(band_id)
-    if band is None:
-        raise Exception("There is no band with this id.")
+def add_band_member(band_id, username):
+    try:
+        band = get_band(band_id)
+        user = users_manager.get_user(username)
 
-    if band.members.filter(username=user.username).exists():
-        raise Exception(user.username + " is already rocking in this band!")
+        if band.is_member(user):
+            raise Exception(username + " is already rocking in this band!")
 
-    band.members.add(user)
-    band.save()
-    return band
+        band.members.add(user)
+        band.save()
+        return band
+    except Exception as exc:
+        raise Exception("Error adding member: %s" % exc.message)
     
 def remove_band_member(band_id, username):
-    band = get_band(band_id)
-    if band is None:
-        raise Exception("There is no band with this id.")
-
-    if not band.members.filter(username=username).exists():
-        raise Exception(username + " is not a member of this band.")
-
-    band.members.remove(username)
-    band.save()
-    return band
-    
-def get_band(band_id):
-    return Band.objects.get(id=band_id)
+    try:
+        band = get_band(band_id)
+        user = users_manager.get_user(username)
         
+        if not band.is_member(user):
+            raise Exception(username + " is not a member of this band.")
+
+        band.members.remove(user)
+        band.save()
+        return band
+    except Exception as exc:
+        raise Exception("Error removing member: %s" % exc.message)
+
+def get_band(band_id):
+    try:
+        band = Band.objects.get(id=band_id)
+        return band
+    except Band.DoesNotExist:
+        raise Exception("There is no band associated with id %s." % band_id)

@@ -16,7 +16,7 @@ class Band(models.Model):
     members = models.ManyToManyField(User)
 
     def is_member(self, user):
-        return len(Band.objects.filter(members__username=user.username)) is not 0
+        return len(self.members.filter(username=user.username)) is not 0
 
 Band.member_list = property(lambda u: u.members.all())
 Band.file_list = property(lambda u: u.bandfile_set.all())
