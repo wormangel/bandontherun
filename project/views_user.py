@@ -182,7 +182,8 @@ def invite_user(request):
     band_id = request.POST['band']
     email = request.POST['email']
     if bands_manager.get_band(band_id).is_member(request.user):
-        if request.user
-        users_manager.invite_user(email, request.user, band)
+        if request.user:
+            users_manager.invite_user(email, request.user, band)
     else:
+        pass
         # 403
