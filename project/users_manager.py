@@ -1,5 +1,3 @@
-from telepathy._generated.errors import DoesNotExist
-from ubuntuone.storageprotocol.errors import DoesNotExistError
 from django.contrib.auth.models import User
 
 def create_user(first_name, last_name, username, password, email, phone):
