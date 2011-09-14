@@ -5,6 +5,8 @@ from os.path import abspath, join, dirname
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )

@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import patterns, include, url
+from django.contrib.auth.views import password_reset, password_reset_done, password_reset_complete, password_reset_confirm
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -26,6 +27,10 @@ urlpatterns = patterns('',
     url(r'^user/login$', 'project.views_user.login', name='user-login'),
     url(r'^user/create$', 'project.views_user.create_user', name='create-user'),
     url(r'^user/logout$', 'project.views_user.logout', name='user-logout'),
+    url(r'^user/password-reset-done', password_reset_done, {'template_name': 'user/password-reset-done.html'}, name='password-reset-done'),
+    url(r'^user/password-reset-confirm/(?P<uidb36>\w+)/(?P<token>\w+)', password_reset_confirm, {'template_name': 'user/password-reset-confirm.html'}, name='password-reset-confirm'),
+    url(r'^user/password-reset-complete', password_reset_complete, {'template_name': 'user/password-reset-complete.html'}, name='password-reset-complete.html'),
+    url(r'^user/password-reset', password_reset, {'template_name': 'user/password-reset.html', 'email_template_name': 'user/password-reset-email.html'}, name='password-reset'),
     url(r'^user/edit$', 'project.views_user.edit_user', name='edit-user'),
     url(r'^user/dashboard$', 'project.views_user.dashboard', name='user-dashboard'),
     url(r'^user/invite$', 'project.views_user.invite_user', name='invite-user'),
