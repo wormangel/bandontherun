@@ -21,6 +21,7 @@ def show_band(request, band_id):
     context = {}
     try:
         band = bands_manager.get_band(band_id)
+        
         context = __prepare_context(request, band)
 
         if not band.is_member(request.user):
@@ -210,7 +211,18 @@ def __prepare_context(request, band):
 @login_required
 @require_POST
 def remove_setlist_song(request, band_id, song_id):
-    pass
+    context = {}
+
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to remove songs from this band's setlist cause you are not a member of it.")
+
+        bands_manager.remove_setlist_song(band_id, song_id)
+        return redirect('/band/%s' % band_id)
+    except Exception as exc:
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+        return render_to_response('band/show.html', context, context_instance=RequestContext(request))
 
 @login_required
 @require_POST

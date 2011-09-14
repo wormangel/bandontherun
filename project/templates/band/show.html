@@ -94,10 +94,10 @@
             {% endfor %}
             </tbody>
         </table>
-        <!--<hr size="20"/>
+        <hr size="20"/>
         <h4>Setlist:</h4>
         <ul id="setlist">
-        {% for song in setlist.song_list %}
+        {% for song in band.setlist.song_list %}
             <li>
                 <form action="/band/{{ band.id }}/setlist/{{ song.id }}/remove" method="post">
                     {% csrf_token %}
@@ -106,6 +106,9 @@
                 </form>
             </li>
         {% endfor %}
+        {% if band.setlist.count == 0 %}
+            No songs yet.
+        {% endif %}
         </ul>
 
 
@@ -115,7 +118,7 @@
             Artist: <input id="artist" name="artist" type="text" placeholder="song artist" />
             Title:  <input id="title" name="title" type="text" placeholder="song title" />
             <button class="btn inline primary" type="submit">Add</button>
-        </form>-->
+        </form>
     {% else %}
         <div class="alert-message error">
             {{ error_msg }}

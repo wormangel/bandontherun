@@ -13,6 +13,7 @@ class Setlist(models.Model):
         return len(self.songs.filter(artist=song.artist, title=song.title)) is not 0
 
 Setlist.song_list = property(lambda s: s.songs.all())
+Setlist.count = property(lambda s: len(s.song_list))
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, primary_key=True)
@@ -27,14 +28,13 @@ class Band(models.Model):
     url = models.URLField(verbose_name="url", blank=True)
     logo = models.ImageField(upload_to="public/bands/") #research this further
     members = models.ManyToManyField(User)
-    setlist = models.ForeignKey(Setlist, null=True, unique=True)
+    setlist = models.OneToOneField(Setlist, null=True)
 
     def is_member(self, user):
         return len(self.members.filter(username=user.username)) is not 0
 
 Band.member_list = property(lambda u: u.members.all())
 Band.file_list = property(lambda u: u.bandfile_set.all())
-Band.set_list = property(lambda b: Setlist.objects.get_or_create(pk=b.id)[0])
 
 class BandFile(models.Model):
     def get_save_path(instance, filename):

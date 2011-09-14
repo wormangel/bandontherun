@@ -7,9 +7,12 @@ FILES_PATH = "project/upload_files/"
 
 def create_band(name, bio, url, user):
     try:
-        band = Band.objects.create(name=name, bio=bio, url=url, setlist=Setlist())
+        band = Band.objects.create(name=name, bio=bio, url=url)
+
         band.members.add(user)
+        band.setlist = Setlist.objects.create()
         band.save()
+
         return band
     except Exception as exc:
        raise Exception("Error creating band. Reason: " + exc.message)
@@ -53,22 +56,39 @@ def remove_band_member(band_id, username):
     except Exception as exc:
         raise Exception("Error removing member: %s" % exc.message)
 
-# TODO Vitor, falta isso embaixo :P esse e o remove_setlist_song (provavelmente eh so copiar o remove_member e sair mudando)
-
 def add_setlist_song(band_id, artist, title):
     try:
         band = get_band(band_id)
-        song = Song(artist=artist, title=title)
 
-        if band.set_list.contains(song):
-            raise Exception("This song is already on the setlist!")
+        song = Song.objects.filter(artist = artist, title = title)
+        if len(song) == 0:
+            song = Song.objects.create(artist = artist, title = title)
+        else:
+            song = song[0]
 
         print band.setlist
-        band.setlist.song_list.add(song)
+        if band.setlist.contains(song):
+            raise Exception("This song is already on the setlist!")
+
+        band.setlist.songs.add(song)
         band.save()
         return band
     except Exception as exc:
         raise Exception("Error adding song: %s" % exc.message)
+
+def remove_setlist_song(band_id, song_id):
+    try:
+        band = get_band(band_id)
+        song = Song.objects.get(id=song_id)
+
+        if not band.setlist.contains(song):
+            raise Exception("This song is not on the setlist!")
+
+        band.setlist.songs.remove(song)
+        band.save()
+        return band
+    except Exception as exc:
+        raise Exception("Error removing song: %s" % exc.message)
 
 def get_band(band_id):
     try:
