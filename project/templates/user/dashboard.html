@@ -2,15 +2,16 @@
 {% load url from future %}
         
 {% block body %}
-      This is a dashboard!<br/>
-        {% if user.bands %}
-            <p> Check what's happening now with these bands you play on! </p>
-            <ul>
-                {% for band in user.bands %}
-                    <li><a href="{% url 'show-band' band.id %}">{{ band.name }}</a></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>You do not belong to a band. What do you think about <a href="{% url 'create-band' %}">creating</a> a new one?</p>
-        {% endif %}
+<h2>Dashboard</h2>
+<p>This is a dashboard!</p>
+    {% if user.bands %}
+    <p> Check what's happening now with these bands you play on! </p>
+    <ul>
+        {% for band in user.bands %}
+        <li><a href="{% url 'show-band' band.id %}">{{ band.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>You do not belong to a band. What do you think about <a href="{% url 'create-band' %}">creating</a> a new one?</p>
+    {% endif %}
 {% endblock %}

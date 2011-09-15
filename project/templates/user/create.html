@@ -1,13 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'base-external.html' %}
 {% block body %}
-    <div class="row">
-        <div class="span12 columns">
-            <form action="/user/create" method="post"> {% csrf_token %}
-                {% include "form_template.html" with form_title="User Registration"  %}
-                <div class="actions">
-                    <button class="btn primary" type="submit"/>Create</button>
-                </div>
-            </form>
+    <form action="/user/create" method="post"> {% csrf_token %}
+        {% include "form_template.html" with form_title="User Registration"  %}
+        <div class="actions">
+            <button class="btn primary" type="submit"/>Create</button>
         </div>
-    </div>
+    </form>
 {% endblock %}

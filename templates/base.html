@@ -2,88 +2,80 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="author" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="author" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Band on the Run!</title>
+        <title>Band on the Run!</title>
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}favicon.png" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css">
-    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap-1.1.1.min.css">
-    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/modernizr-2.0.6.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/head.load.min.js"></script>
-    <!--[if lt IE 9]>
-      <script type="text/javascript" src="{{ STATIC_URL }}js/libs/selectivizr-min.js"></script>
-    <![endif]-->
-  </head>
-
-  <body>
-    <div id="container" class="container-fluid">
-        <div class="sidebar">
-            <h2>
-                Menu
-            </h2>
-            {% if user.is_authenticated %}
-                Logged in as <strong>{{ user.username }}</strong><br/><br/>
-            {% endif %}
-
-            {% block menu %}
-                <ul id="main-menu" class="unstyled">
-
-                    <li>Logon
-                        <ul>
-                            {% if user.is_authenticated %}
-                                <li><a href="{% url 'user-logout' %}">Logout</a></li>
-                            {% else %}
-                                <li><a href="{% url 'user-login' %}">Login</a></li>
-                                <li><a href="{% url 'create-user' %}">Create account</a></li>
-                            {% endif %}
+        <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}favicon.png" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css">
+        <script type="text/javascript" src="{{ STATIC_URL }}js/libs/modernizr-2.0.6.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/libs/head.load.min.js"></script>
+        <!--[if lt IE 9]>
+          <script type="text/javascript" src="{{ STATIC_URL }}js/libs/selectivizr-min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div style="z-index: 5;" class="topbar-wrapper">
+            <div class="topbar">
+                <div class="topbar-inner">
+                    <div class="container">
+                        <h3><a href="/">Band on the Run</a></h3>
+                        <ul class="nav">
+                            <li><a href="{% url 'user-dashboard' %}">Dashboard</a></li>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" href="#">My bands</a>
+                                <ul class="dropdown-menu">
+                                {% if user.bands %}
+                                   {% for band in user.bands %}
+                                    <li><a href="{% url 'show-band' band.id %}">{{ band.name }}</a></li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li><a href="{% url 'create-band' %}">None yet. Create one!</a></li>
+                                {% endif %}
+                                </ul>
+                            </li>
+                            <li><a href="{% url 'create-band' %}">Create a band!</a></li>
                         </ul>
-                    </li>
-
-                    {% if user.is_authenticated %}
-                        <li>User
-                            <ul id="user-menu">
-                                <li><a href="{% url 'user-dashboard' %}">Dashboard</a></li>
-                                <li><a href="{% url 'show-user' user.username %}">Profile</a></li>
-                            </ul>
-                        </li>
-                        <li>Band
-                            <ul id="band-menu">
-                                <li><a href="{% url 'create-band' %}">Create band</a></li>
-                            </ul>
-                        </li>
-                    {% endif %}
-                </ul>
-            {% endblock %}
+                        <ul class="nav secondary-nav">
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" href="#">{{ user.username }}</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{% url 'show-user' user.username %}">Profile</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="{% url 'user-logout' %}">Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div><!-- /topbar-inner -->
+            </div><!-- /topbar -->
         </div>
-
-        <div class="content">
-            <h1>Band on the Run!</h1>
-            {% block body %}{% endblock %}
-        </div>
-    </div>
-    <script>
-      head.js("http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js", "{{ STATIC_URL }}js/script.js");
-    </script>
-    <script>
-      var _gaq=[["_setAccount","UA-XXXXXXXX-X"],["_trackPageview"]];
-      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
-      g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
-      s.parentNode.insertBefore(g,s)}(document,"script"));
-    </script>
-    <footer>
-        {% block footer %}
-            <div class="span16 columns">
-                    <a href="{% url 'index' %}">Homepage</a>
-                    <a href="{% url 'about' %}">About</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Privacy Policy</a>
+        <div class="container">
+            <div id="content" class="content">
+                {% block body %}{% endblock %}
             </div>
-        {% endblock %}
-    </footer>
-  </body>
+        </div>
+        <footer>
+            <ul class="unstyled">
+                <li><a href="{% url 'index' %}">Homepage</a></li>
+                <li><a href="{% url 'about' %}">About</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+            </ul>
+        </footer>
+        <script>
+          head.js("http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js", "{{ STATIC_URL }}js/script.js");
+        </script>
+        <script>
+          var _gaq=[["_setAccount","UA-XXXXXXXX-X"],["_trackPageview"]];
+          (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
+          g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
+          s.parentNode.insertBefore(g,s)}(document,"script"));
+        </script>
+    </body>
 </html>

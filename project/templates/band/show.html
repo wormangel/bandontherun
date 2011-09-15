@@ -2,8 +2,18 @@
 {% load url from future %}
         
 {% block body %}
+    <div id="band-sidebar">
+        <img src="http://lorempixum.com/180/180" alt="Logo of {{ band.name }}" title="{{ band.name }}"/>
+        <ul class="unstyled">
+            <li><a href="#">Info</a></li>
+            <li><a href="#">Setlist</a></li>
+            <li><a href="#">Files</a></li>
+        </ul>
+    </div>
+    <div id="band-content">
     {% if not error_msg %}
-        <h2>{{ band.name }} </h2>
+        <!-- #info -->
+        <h2>{{ band.name }}</h2>
         <dl>
             <dt>URL:</dt>
             <dd><a href="{{ band.url }}">{{ band.url }}</a></dd>
@@ -52,7 +62,7 @@
                 <button class="btn inline primary" type="submit"/>Upload</button>
             </form>        
         
-        <script src="public/js/libs/jquery.tablesorter.min.js"></script>
+        <script src="{{ STATIC_URL }}js/libs/jquery.tablesorter.min.js"></script>
         <script >
               $(function() {
                 $("table#sortTableExample").tablesorter({ sortList: [[1,0]] });
@@ -124,5 +134,6 @@
             {{ error_msg }}
         </div>
     {% endif %}
+    </div>
 {% endblock %}
 

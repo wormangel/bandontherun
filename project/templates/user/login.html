@@ -1,15 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'base-external.html' %}
 {% load url from future %}
+
 {% block body %}
-    <div class="row">
-        <div class="span9 columns">
-            <form action="/user/login" method="post"> {% csrf_token %}
-                {% include "form_template.html" with form_title="Login" %}
-                <div class="actions">
-                    <button class="btn primary" type="submit"/>Login</button><br/>
-                </div>
-                <a href="{% url 'password-reset' %}">Forgot your password?</a>
-            </form>
+    <form action="/user/login" method="post"> {% csrf_token %}
+        {% include "form_template.html" with form_title="Login" %}
+        <div class="actions">
+            <button class="btn primary" type="submit"/>Login</button> | 
+            <a href="{% url 'password-reset' %}">Forgot your password?</a>
         </div>
-    </div>
+    </form>
 {% endblock %}
