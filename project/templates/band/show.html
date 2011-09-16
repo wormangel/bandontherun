@@ -1,139 +1,50 @@
-{% extends 'base.html' %}
+{% extends 'band-base.html' %}
 {% load url from future %}
         
-{% block body %}
-    <div id="band-sidebar">
-        <img src="http://lorempixum.com/180/180" alt="Logo of {{ band.name }}" title="{{ band.name }}"/>
-        <ul class="unstyled">
-            <li><a href="#">Info</a></li>
-            <li><a href="#">Setlist</a></li>
-            <li><a href="#">Files</a></li>
-        </ul>
-    </div>
-    <div id="band-content">
+{% block band-content %}
     {% if not error_msg %}
-        <!-- #info -->
-        <h2>{{ band.name }}</h2>
-        <dl>
-            <dt>URL:</dt>
-            <dd><a href="{{ band.url }}">{{ band.url }}</a></dd>
-            <dt>Bio:</dt>
-            <dd>{{ band.bio|safe }}</dd>
-        </dl>
-
-        <a href="{% url 'edit-band' band.id %}"><button class="btn">Edit</button></a>
-        <hr size="20"/>
-        <h4>Members:</h4>
-        <ul id="members">
-        {% for member in band.member_list %}
-            <li>
-                <form action="/band/{{ band.id }}/member/{{ member.username }}/remove" method="post">
-                    {% csrf_token %}
-                    <a href="{% url 'show-user' member.username %} ">{{ member.username }}</a>
-                    <button class="btn inline small" type="submit">Revoke</button>
-                </form>
-            </li>
-        {% endfor %}
-        </ul>
-
-        <h4>Add a new member:</h4>
-        <form action="/band/{{ band.id }}/member/add" method="post">
-            {% csrf_token %}
-            <input id="username" name="username" type="text" placeholder="member username" />
-            <button class="btn inline primary" type="submit">Add</button>
-        </form>
-
-        <!--(Form abaixo será mostrado se não existir o usuário. Escondê-lo quando for aplicar css.)
-        <form action="/user/invite" method="post">
-        {% csrf_token %}
-        <label for="email">
-          <input id="email" name="email" type="email" placeholder="new member email" />
-        </label>
-        <input type="submit" value="Invite" />
-        </form>-->
-        <hr size="20"/>
-        <h4>Files:</h4>
-        
-            {% load filetransfers %}
-            <form action="{{ upload_url }}" method="POST" enctype="multipart/form-data">
+    <h2>{{ band.name }}</h2>
+    <dl>
+        <dt>URL:</dt>
+        <dd><a href="{{ band.url }}">{{ band.url }}</a></dd>
+        <dt>Bio:</dt>
+        <dd>{{ band.bio|safe }}</dd>
+    </dl>
+    <a href="{% url 'edit-band' band.id %}"><button class="btn">Edit</button></a>
+    <hr size="20"/>
+    <h4>Members:</h4>
+    <ul id="members">
+    {% for member in band.member_list %}
+        <li>
+            <form action="/band/{{ band.id }}/member/{{ member.username }}/remove" method="post">
                 {% csrf_token %}
-                {% render_upload_data upload_data %}
-                {{ upload_form.as_p }}
-                <button class="btn inline primary" type="submit"/>Upload</button>
-            </form>        
-        
-        <script src="{{ STATIC_URL }}js/libs/jquery.tablesorter.min.js"></script>
-        <script >
-              $(function() {
-                $("table#sortTableExample").tablesorter({ sortList: [[1,0]] });
-              });
-        </script>
-        <table class="zebra-striped">
-            <thead>
-              <tr>
-                <th class="header headerSortUp">Name</th>
-                <th class="yellow header">Filename</th>
-                <th class="blue header">Size</th>
-                <th class="purple header">Created</th>
-                <th class="orange  header">Uploader</th>
-                <th class="green header">Download</th>
-                <th class="red  header">Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-            {% for file in band.file_list %}
-                <tr>
-                    <td name="name" type="text" > {{ file.name }} </td>
-                    <td name="filename" type="text" > {{ file.filename }} </td>
-                    <td name="size" type="text" > {{ file.size }} </td>
-                    <td name="created" type="text" > {{ file.created }} </td>
-                    <td name="uploader" type="text" > {{ file.uploader }} </td>
-                    <td name="download" type="text" >
-                        <form action="/band/{{ band.id }}/download/{{ file.id }}" method="get">
-                            {% csrf_token %}
-                            <button class="btn inline small" type="submit">Download</button>
-                        </form>
-                    </td>
-                    <td name="delete" type="text" > 
-                        <form action="/band/{{ band.id }}/{{ user.username }}/{{ file.id }}/deletefile" method="post">
-                            {% csrf_token %}
-                            <button class="btn inline small" type="submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>     
-            {% endfor %}
-            </tbody>
-        </table>
-        <hr size="20"/>
-        <h4>Setlist:</h4>
-        <ul id="setlist">
-        {% for song in band.setlist.song_list %}
-            <li>
-                <form action="/band/{{ band.id }}/setlist/{{ song.id }}/remove" method="post">
-                    {% csrf_token %}
-                    {{ song.artist }} - {{ song.title }}
-                    <button class="btn inline small" type="submit">Delete</button>
-                </form>
-            </li>
-        {% endfor %}
-        {% if band.setlist.count == 0 %}
-            No songs yet.
-        {% endif %}
-        </ul>
+                <a href="{% url 'show-user' member.username %} ">{{ member.username }}</a>
+                <button class="btn inline small" type="submit">Revoke</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
 
+    <h4>Add a new member:</h4>
+    <form action="/band/{{ band.id }}/member/add" method="post">
+        {% csrf_token %}
+        <input id="username" name="username" type="text" placeholder="member username" />
+        <button class="btn inline primary" type="submit">Add</button>
+    </form>
 
-        <h4>Add a new song:</h4>
-        <form action="/band/{{ band.id }}/setlist/add" method="post">
-            {% csrf_token %}
-            Artist: <input id="artist" name="artist" type="text" placeholder="song artist" />
-            Title:  <input id="title" name="title" type="text" placeholder="song title" />
-            <button class="btn inline primary" type="submit">Add</button>
-        </form>
+    <!--(Form abaixo será mostrado se não existir o usuário. Escondê-lo quando for aplicar css.)
+    <form action="/user/invite" method="post">
+    {% csrf_token %}
+    <label for="email">
+      <input id="email" name="email" type="email" placeholder="new member email" />
+    </label>
+    <input type="submit" value="Invite" />
+    </form>-->
+    <hr size="20"/>
     {% else %}
-        <div class="alert-message error">
-            {{ error_msg }}
-        </div>
-    {% endif %}
+    <div class="alert-message error">
+        {{ error_msg }}
     </div>
+    {% endif %}
 {% endblock %}
 

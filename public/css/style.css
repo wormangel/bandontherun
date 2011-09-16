@@ -3,7 +3,7 @@ body { padding-top: 40px; }
 
 /* general */
 #content {
-    padding-top: 10px;
+    padding: 10px 0;
     overflow: hidden;
     position: relative;
     background-color: #fff;

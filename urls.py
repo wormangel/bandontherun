@@ -12,14 +12,18 @@ urlpatterns = patterns('',
     # bands url
     url(r'^band/create$', 'project.views_band.create_band', name='create-band'),
     url(r'^band/(?P<band_id>\d+)$', 'project.views_band.show_band', name='show-band'),
-    url(r'^band/(?P<band_id>\d+)/upload$', 'project.views_band.upload_file', name='upload-band-file'),
-    url(r'^band/(?P<band_id>\d+)/download/(?P<bandfile_id>\d+)$', 'project.views_band.download_file', name='download-band-file'),
-    url(r'^band/(?P<band_id>\d+)/(?P<username>\w+)/(?P<bandfile_id>\d+)/deletefile$', 'project.views_band.delete_file', name='delete-band-file'),
     url(r'^band/(?P<band_id>\d+)/edit$', 'project.views_band.edit_band', name='edit-band'),
     url(r'^band/(?P<band_id>\d+)/member/add$', 'project.views_band.add_band_member', name='add-band-member'),
     url(r'^band/(?P<band_id>\d+)/member/(?P<username>\w+)/remove$', 'project.views_band.remove_band_member', name='remove-band-member'),
 
+    # files url
+    url(r'^band/(?P<band_id>\d+)/files$', 'project.views_band.show_files', name='show-files'),
+    url(r'^band/(?P<band_id>\d+)/upload$', 'project.views_band.upload_file', name='upload-band-file'),
+    url(r'^band/(?P<band_id>\d+)/download/(?P<bandfile_id>\d+)$', 'project.views_band.download_file', name='download-band-file'),
+    url(r'^band/(?P<band_id>\d+)/(?P<username>\w+)/(?P<bandfile_id>\d+)/deletefile$', 'project.views_band.delete_file', name='delete-band-file'),
+
     # setlists url
+    url(r'^band/(?P<band_id>\d+)/setlist$', 'project.views_band.show_setlist', name='show-setlist'),
     url(r'^band/(?P<band_id>\d+)/setlist/(?P<song_id>\w+)/remove$', 'project.views_band.remove_setlist_song', name='remove-setlist-song'),
     url(r'^band/(?P<band_id>\d+)/setlist/add$', 'project.views_band.add_setlist_song', name='add-setlist-song'),
 

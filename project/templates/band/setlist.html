@@ -1,0 +1,36 @@
+{% extends 'band-base.html' %}
+{% load url from future %}
+        
+{% block band-content %}
+    {% if not error_msg %}
+    <h2>{{ band.name }}</h2>
+    <h3>Setlist:</h3>
+    <ul id="setlist">
+    {% for song in band.setlist.song_list %}
+        <li>
+            <form action="/band/{{ band.id }}/setlist/{{ song.id }}/remove" method="post">
+                {% csrf_token %}
+                {{ song.artist }} - {{ song.title }}
+                <button class="btn inline small" type="submit">Delete</button>
+            </form>
+        </li>
+    {% endfor %}
+    {% if band.setlist.count == 0 %}
+        No songs yet.
+    {% endif %}
+    </ul>
+
+    <h4>Add a new song:</h4>
+    <form action="/band/{{ band.id }}/setlist/add" method="post">
+        {% csrf_token %}
+        Artist: <input id="artist" name="artist" type="text" placeholder="song artist" />
+        Title:  <input id="title" name="title" type="text" placeholder="song title" />
+        <button class="btn inline primary" type="submit">Add</button>
+    </form>
+    {% else %}
+    <div class="alert-message error">
+        {{ error_msg }}
+    </div>
+    {% endif %}
+{% endblock %}
+

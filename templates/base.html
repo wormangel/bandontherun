@@ -68,6 +68,7 @@
                 <li><a href="#">Privacy Policy</a></li>
             </ul>
         </footer>
+        {% block scripts %}
         <script>
           head.js("http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js", "{{ STATIC_URL }}js/script.js");
         </script>
@@ -77,5 +78,6 @@
           g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
           s.parentNode.insertBefore(g,s)}(document,"script"));
         </script>
+        {% endblock %}
     </body>
 </html>

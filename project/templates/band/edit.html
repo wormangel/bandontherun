@@ -1,27 +1,25 @@
-{% extends 'base.html' %}
+{% extends 'band-base.html' %}
 {% load url from future %}
         
-{% block body %}
-    <div class="row">
-        <div class="span12 columns">
-        {% if not error_msg %}
-            {% if success != None %}
-                {% if success %}
-                <div class="alert-message success">
-                    Information updated successfully!
-                </div>
-                {% endif %}
-            {% endif %}
-            <form action="/band/{{ band_id }}/edit" method="post"> {% csrf_token %}
-              {% include "form_template.html" with form_title="Edit Band"  %}
-              <div class="actions">
-                  <button class="btn primary" type="submit">Save</button>
-                  <a href="{% url 'show-band' band_id %}"><button class="btn">Cancel</button></a>
-              </div>
-            </form>
-        {% else %}
-            <div class="alert-message error">
-                {{ error_msg }}
+{% block band-content %}
+    {% if not error_msg %}
+        {% if success != None %}
+            {% if success %}
+            <div class="alert-message success">
+                Information updated successfully!
             </div>
+            {% endif %}
         {% endif %}
+        <form action="/band/{{ band.id }}/edit" method="post"> {% csrf_token %}
+          {% include "form_template.html" with form_title="Edit Band"  %}
+          <div class="actions">
+              <button class="btn primary" type="submit">Save</button>
+              <a href="{% url 'show-band' band.id %}"><button class="btn">Cancel</button></a>
+          </div>
+        </form>
+    {% else %}
+        <div class="alert-message error">
+            {{ error_msg }}
+        </div>
+    {% endif %}
 {% endblock %}

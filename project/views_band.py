@@ -21,9 +21,7 @@ def show_band(request, band_id):
     context = {}
     try:
         band = bands_manager.get_band(band_id)
-        
         context = __prepare_context(request, band)
-
         if not band.is_member(request.user):
             # 403
             raise Exception("You have no permission to view this band cause you are not a member of it.")
@@ -36,7 +34,6 @@ def show_band(request, band_id):
 @require_http_methods(["GET", "POST"])
 def create_band(request):
     context = {}
-    context_instance = RequestContext(request)
 
     if request.method == 'POST':
         form = BandCreateForm(request.POST)
@@ -61,7 +58,6 @@ def create_band(request):
 @require_http_methods(["GET", "POST"])
 def edit_band(request, band_id):
     context = {}
-    context_instance = RequestContext(request)
 
     try:
         band = bands_manager.get_band(band_id)
@@ -85,7 +81,7 @@ def edit_band(request, band_id):
             form = BandEditForm(data)
             
         context['form'] = form
-        context['band_id'] = band_id
+        context['band'] = band
     except Exception as exc:
         # 404
         context['error_msg'] = "Error ocurred: %s" % exc.message
@@ -149,13 +145,13 @@ def upload_file(request, band_id):
             band_file.band = band
             band_file.created = datetime.now()
             band_file.save()
-            return render_to_response('band/show.html', context, context_instance=RequestContext(request))
+            return render_to_response('band/files.html', context, context_instance=RequestContext(request))
 
         context['upload_form'] = form
     except Exception as exc:
         context['error_msg'] = "Error: %s" % exc.message
         
-    return render_to_response('band/show.html', context, context_instance=RequestContext(request))
+    return render_to_response('band/files.html', context, context_instance=RequestContext(request))
 
 @login_required
 @require_POST
@@ -169,11 +165,11 @@ def delete_file(request, band_id, username, bandfile_id):
             band_file.delete()
         else:
             context['error_msg'] = "You have no permission to delete a file from this band cause you are not a member of it."
-            return render_to_response('band/show.html', context, context_instance=RequestContext(request))
+            return render_to_response('band/files.html', context, context_instance=RequestContext(request))
     else:
         context['error_msg'] = "Invalid file."
-        return render_to_response('band/show.html', context, context_instance=RequestContext(request))
-    return render_to_response('band/show.html', context, context_instance=RequestContext(request))
+        return render_to_response('band/files.html', context, context_instance=RequestContext(request))
+    return render_to_response('band/files.html', context, context_instance=RequestContext(request))
 
 @login_required
 @require_GET
@@ -195,6 +191,26 @@ def download_file(request, band_id, bandfile_id):
         context['error_msg'] = "Error: " + exc.message
         return render_to_response('error.html', context, context_instance=RequestContext(request))
 
+@login_required
+@require_GET
+def show_files(request, band_id):
+    context = {}
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            # 403
+            raise Exception("You have no permission to view this band cause you are not a member of it.")
+        context['band'] = band
+        view_url = reverse('project.views_band.upload_file', args=[band.id])
+        upload_url, upload_data = prepare_upload(request, view_url)
+        context['upload_form'] = UploadBandFileForm()
+        context['upload_url'] = upload_url
+        context['upload_data'] = upload_data
+    except Exception as exc:
+        # 500
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+    return render_to_response('band/files.html', context, context_instance=RequestContext(request))
+
 def __prepare_context(request, band):
     context = {}
     context['band'] = band
@@ -205,9 +221,21 @@ def __prepare_context(request, band):
     context['upload_data'] = upload_data
     return context
 
-# TODO Vitor, falta isso aih embaixo. O cod ta certo ja, falta o backend. Falta tbm o codigo de remover
-# TODO (copia do de membro e muda) :P
-
+@login_required
+@require_GET
+def show_setlist(request, band_id):
+    context = {}
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            # 403
+            raise Exception("You have no permission to view this band cause you are not a member of it.")
+        context['band'] = band
+    except Exception as exc:
+        # 500
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+    return render_to_response('band/setlist.html', context, context_instance=RequestContext(request))
+    
 @login_required
 @require_POST
 def remove_setlist_song(request, band_id, song_id):
@@ -217,12 +245,11 @@ def remove_setlist_song(request, band_id, song_id):
         band = bands_manager.get_band(band_id)
         if not band.is_member(request.user):
             raise Exception("You have no permission to remove songs from this band's setlist cause you are not a member of it.")
-
         bands_manager.remove_setlist_song(band_id, song_id)
-        return redirect('/band/%s' % band_id)
+        return redirect('/band/%s/setlist' % band_id)
     except Exception as exc:
         context['error_msg'] = "Error ocurred: %s" % exc.message
-        return render_to_response('band/show.html', context, context_instance=RequestContext(request))
+        return render_to_response('band/setlist.html', context, context_instance=RequestContext(request))
 
 @login_required
 @require_POST
@@ -235,9 +262,8 @@ def add_setlist_song(request, band_id):
         band = bands_manager.get_band(band_id)
         if not band.is_member(request.user):
             raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
-
         bands_manager.add_setlist_song(band_id, artist, title)
-        return redirect('/band/%s' % band_id)
+        return redirect('/band/%s/setlist' % band_id)
     except Exception as exc:
         context['error_msg'] = "Error ocurred: %s" % exc.message
-        return render_to_response('band/show.html', context, context_instance=RequestContext(request))
+        return render_to_response('band/setlist.html', context, context_instance=RequestContext(request))
