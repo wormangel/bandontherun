@@ -8,7 +8,9 @@ TEMPLATE_DEBUG = DEBUG
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+     ('Lucas Azevedo', 'wormangel@gmail.com'),
+     ('Otacilio Lacerda', 'otaciliolacerda@gmail.com'),
+     ('Vitor Avelino', 'vitor88@gmail.com'),
 )
 
 MANAGERS = ADMINS
