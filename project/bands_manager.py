@@ -1,5 +1,5 @@
 from models import Band
-from project.models import Song, Setlist
+from project.models import Song, Setlist, Contact
 import users_manager
 
 
@@ -96,3 +96,39 @@ def get_band(band_id):
         return band
     except Band.DoesNotExist:
         raise Exception("There is no band associated with id %s." % band_id)
+        
+def remove_contact(band_id, contact_id):
+    try:
+        band = get_band(band_id)
+        contact = Contact.objects.get(id=contact_id)
+
+        if not band.contains_contact(contact):
+            raise Exception("This contact is not exists!")
+
+        band.contacts.remove(contact)
+        band.save()
+        return band
+    except Exception as exc:
+        raise Exception("Error removing contact: %s" % exc.message)
+
+
+def add_contact(band_id, name, phone, service, cost, added, added_by):
+    try:
+        band = get_band(band_id)
+
+        contact = Contact.objects.filter(name = name, phone = phone)
+        if len(contact) == 0:
+            contact = Contact.objects.create(name=name, phone=phone, service=service, cost=cost, added=added, added_by=added_by)
+        else:
+            contact = contact[0]
+
+        print band.contacts
+        if band.contains_contact(contact):
+            raise Exception("This contact is already on the band list!")
+
+        band.contacts.add(contact)
+        band.save()
+        return band
+    except Exception as exc:
+        raise Exception("Error adding contact: %s" % exc.message)
+

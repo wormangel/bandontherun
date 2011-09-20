@@ -267,3 +267,54 @@ def add_setlist_song(request, band_id):
     except Exception as exc:
         context['error_msg'] = "Error ocurred: %s" % exc.message
         return render_to_response('band/setlist.html', context, context_instance=RequestContext(request))
+        
+###################################################################################        
+@login_required
+@require_GET
+def show_contacts(request, band_id):
+    context = {}
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            # 403
+            raise Exception("You have no permission to view this band cause you are not a member of it.")
+        context['band'] = band
+    except Exception as exc:
+        # 500
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+    return render_to_response('band/contacts.html', context, context_instance=RequestContext(request))
+    
+@login_required
+@require_POST
+def remove_contact(request, band_id, contact_id):
+    context = {}
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to remove songs from this band's setlist cause you are not a member of it.")
+        bands_manager.remove_contact(band_id, contact_id)
+        return redirect('/band/%s/contacts' % band_id)
+    except Exception as exc:
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+        return render_to_response('band/contacts.html', context, context_instance=RequestContext(request))
+        
+@login_required
+@require_POST
+def add_contact(request, band_id):
+    context = {}
+    name = request.POST['name']
+    phone = request.POST['phone']
+    service = request.POST.has_key('service')
+    cost = request.POST['cost']
+    added = datetime.now()
+    added_by = User.objects.get(username=request.user.username)
+    try:
+        band = bands_manager.get_band(band_id)
+        context['band'] = band
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
+        bands_manager.add_contact(band_id, name, phone, service, cost, added, added_by)
+        return redirect('/band/%s/contacts' % band_id)
+    except Exception as exc:
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+        return render_to_response('band/contacts.html', context, context_instance=RequestContext(request))

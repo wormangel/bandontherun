@@ -26,6 +26,11 @@ urlpatterns = patterns('',
     url(r'^band/(?P<band_id>\d+)/setlist$', 'project.views_band.show_setlist', name='show-setlist'),
     url(r'^band/(?P<band_id>\d+)/setlist/(?P<song_id>\w+)/remove$', 'project.views_band.remove_setlist_song', name='remove-setlist-song'),
     url(r'^band/(?P<band_id>\d+)/setlist/add$', 'project.views_band.add_setlist_song', name='add-setlist-song'),
+    
+    # band contacts url
+    url(r'^band/(?P<band_id>\d+)/contacts$', 'project.views_band.show_contacts', name='show-contacts'),
+    url(r'^band/(?P<band_id>\d+)/contacts/(?P<contact_id>\w+)/remove$', 'project.views_band.remove_contact', name='remove-contact'),
+    url(r'^band/(?P<band_id>\d+)/contacts/add$', 'project.views_band.add_contact', name='add-contact'),
 
     # users url
     url(r'^user/login$', 'project.views_user.login', name='user-login'),
