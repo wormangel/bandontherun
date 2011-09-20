@@ -268,7 +268,6 @@ def add_setlist_song(request, band_id):
         context['error_msg'] = "Error ocurred: %s" % exc.message
         return render_to_response('band/setlist.html', context, context_instance=RequestContext(request))
         
-###################################################################################        
 @login_required
 @require_GET
 def show_contacts(request, band_id):

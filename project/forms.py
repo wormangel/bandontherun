@@ -43,4 +43,4 @@ class BandEditForm(forms.Form):
 class UploadBandFileForm(forms.ModelForm):
     class Meta:
         model = BandFile
-        fields = ('name', 'file')
+        fields = ('description', 'file')
