@@ -44,3 +44,9 @@ class UploadBandFileForm(forms.ModelForm):
     class Meta:
         model = BandFile
         fields = ('description', 'file')
+        
+class ContactBandForm(forms.Form):
+    name = forms.CharField(max_length=50)
+    phone = forms.CharField(max_length=20)
+    service = forms.BooleanField()
+    cost = forms.DecimalField(min_value = 0, max_digits = 6, decimal_places = 2)

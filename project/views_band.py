@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 
 from filetransfers.api import prepare_upload, serve_file
 from models import Band, User, BandFile
-from forms import BandCreateForm, BandEditForm, UploadBandFileForm
+from forms import BandCreateForm, BandEditForm, UploadBandFileForm, ContactBandForm
 import users_manager
 import bands_manager
 
@@ -272,6 +272,7 @@ def add_setlist_song(request, band_id):
 @require_GET
 def show_contacts(request, band_id):
     context = {}
+    context['contact_form'] = ContactBandForm()
     try:
         band = bands_manager.get_band(band_id)
         if not band.is_member(request.user):
@@ -295,25 +296,34 @@ def remove_contact(request, band_id, contact_id):
         return redirect('/band/%s/contacts' % band_id)
     except Exception as exc:
         context['error_msg'] = "Error ocurred: %s" % exc.message
+        context['contact_form'] = ContactBandForm()
         return render_to_response('band/contacts.html', context, context_instance=RequestContext(request))
         
 @login_required
 @require_POST
 def add_contact(request, band_id):
     context = {}
-    name = request.POST['name']
-    phone = request.POST['phone']
-    service = request.POST.has_key('service')
-    cost = request.POST['cost']
-    added = datetime.now()
-    added_by = User.objects.get(username=request.user.username)
-    try:
-        band = bands_manager.get_band(band_id)
-        context['band'] = band
-        if not band.is_member(request.user):
-            raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
-        bands_manager.add_contact(band_id, name, phone, service, cost, added, added_by)
-        return redirect('/band/%s/contacts' % band_id)
-    except Exception as exc:
-        context['error_msg'] = "Error ocurred: %s" % exc.message
-        return render_to_response('band/contacts.html', context, context_instance=RequestContext(request))
+    
+    band = bands_manager.get_band(band_id)
+    form = ContactBandForm(request.POST)
+    
+    context['band'] = band
+    context['contact_form'] = form
+    
+    if form.is_valid():
+        name = form.cleaned_data['name']
+        phone = form.cleaned_data['phone']
+        service = form.cleaned_data['service']
+        cost = form.cleaned_data['cost']
+        added = datetime.now()
+        added_by = User.objects.get(username=request.user.username)
+        try:
+            if not band.is_member(request.user):
+                raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
+            bands_manager.add_contact(band_id, name, phone, service, cost, added, added_by)
+            return redirect('/band/%s/contacts' % band_id)
+        except Exception as exc:
+            context['error_msg'] = "Error ocurred: %s" % exc.message
+    return render_to_response('band/contacts.html', context, context_instance=RequestContext(request))
+    
+    
