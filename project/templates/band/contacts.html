@@ -1,0 +1,44 @@
+{% extends 'band-base.html' %}
+{% load url from future %}
+
+{% block band-content %}
+    <h2>{{ band.name }}</h2>
+    <h3>Useful contacts</h3>
+    <table id="setlist">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Service</th>
+                <th>Cost</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for contact in band.contact_list %}
+        <tr>
+            <td>{{ contact.name }}</td>
+            <td>{{ contact.phone }}</td>
+            <td>{{ contact.service }}</td>
+            <td>{{ contact.cost }}</td>
+            <td>
+                <form action="/band/{{ band.id }}/contact/{{ contact.id }}/remove" method="post">
+                    {% csrf_token %}
+                    <button class="btn inline small" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="4">No contacts yet.</td></tr>
+    {% endfor %}
+        </tbody>
+    </table>
+
+    <form action="/band/{{ band.id }}/contacts/add" method="post"> {% csrf_token %}
+      {% include "form_template.html" with form_title="Add contact" %}
+      <div class="actions">
+          <button class="btn primary" type="submit">Save</button>
+          <button class="btn" type="reset">Cancel</button>
+      </div>
+    </form>
+{% endblock %}

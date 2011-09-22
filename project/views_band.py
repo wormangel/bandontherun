@@ -272,7 +272,7 @@ def add_setlist_song(request, band_id):
 @require_GET
 def show_contacts(request, band_id):
     context = {}
-    context['contact_form'] = ContactBandForm()
+    context['form'] = ContactBandForm()
     try:
         band = bands_manager.get_band(band_id)
         if not band.is_member(request.user):
@@ -308,7 +308,7 @@ def add_contact(request, band_id):
     form = ContactBandForm(request.POST)
     
     context['band'] = band
-    context['contact_form'] = form
+    context['form'] = form
     
     if form.is_valid():
         name = form.cleaned_data['name']

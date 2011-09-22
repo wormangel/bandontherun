@@ -14,10 +14,9 @@
                 <button class="btn inline small" type="submit">Delete</button>
             </form>
         </li>
-    {% endfor %}
-    {% if band.setlist.count == 0 %}
+    {% empty %}
         No songs yet.
-    {% endif %}
+    {% endfor %}
     </ul>
 
     <h4>Add a new song:</h4>
