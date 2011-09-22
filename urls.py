@@ -32,10 +32,10 @@ urlpatterns = patterns('',
     url(r'^band/(?P<band_id>\d+)/contact/(?P<contact_id>\w+)/remove$', 'project.views_band.remove_contact', name='remove-contact'),
     url(r'^band/(?P<band_id>\d+)/contact/add$', 'project.views_band.add_contact', name='add-contact'),
 
-    # band calendar
-    url(r'^band/(?P<band_id>\d+)/calendar$', 'project.views_band.show_calendar', name='show-calendar'),
-    url(r'^band/(?P<band_id>\d+)/calendar/entries$', 'project.views_band.get_calendar_entries', name='get-calendar-entries'),
-    url(r'^band/(?P<band_id>\d+)/calendar/entry/add$', 'project.views_band.add_calendar_entry', name='add-calendar-entry'),
+    # band events
+    url(r'^band/(?P<band_id>\d+)/events$', 'project.views_band.show_events', name='show-events'),
+    url(r'^band/(?P<band_id>\d+)/events/entries$', 'project.views_band.get_calendar_entries', name='get-calendar-entries'),
+    url(r'^band/(?P<band_id>\d+)/events/unavailability/add$', 'project.views_band.add_unavailability_entry', name='add-calendar-entry'),
 
     # users url
     url(r'^user/login$', 'project.views_user.login', name='user-login'),

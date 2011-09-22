@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 
 from datetime import datetime
 from filetransfers.api import prepare_upload, serve_file
-from models import Band, User, BandFile, CalendarEntry, Contact
+from models import Band, User, BandFile
 from forms import BandCreateForm, BandEditForm, UploadBandFileForm, ContactBandForm, CalendarEntryForm
 
 import users_manager, bands_manager
@@ -327,11 +327,11 @@ def add_contact(request, band_id):
     return render_to_response('band/contacts.html', context, context_instance=RequestContext(request))
     
 ####################
-# Calendar feature #
+# Events feature #
 ####################
 @login_required
 @require_GET
-def show_calendar(request, band_id):
+def show_events(request, band_id):
     context = {}
     try:
         band = bands_manager.get_band(band_id)
@@ -343,7 +343,7 @@ def show_calendar(request, band_id):
     except Exception as exc:
         # 500
         context['error_msg'] = "Error ocurred: %s" % exc.message
-    return render_to_response('band/calendar.html', context, context_instance=RequestContext(request))
+    return render_to_response('band/events.html', context, context_instance=RequestContext(request))
     
 @login_required
 @require_GET
@@ -362,7 +362,7 @@ def get_calendar_entries(request, band_id):
     
 @login_required
 @require_POST
-def add_calendar_entry(request, band_id):
+def add_unavailability_entry(request, band_id):
     context = {}
     band = bands_manager.get_band(band_id)
     form = CalendarEntryForm(request.POST)
@@ -377,8 +377,8 @@ def add_calendar_entry(request, band_id):
         try:
             if not band.is_member(request.user):
                 raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
-            bands_manager.add_calendar_entry(band_id, date, start, end)
-            return redirect('/band/%s/calendar' % band_id)
+            bands_manager.add_unavailability_entry(band_id, date, start, end, request.user)
+            return redirect('/band/%s/events' % band_id)
         except Exception as exc:
             context['error_msg'] = "Error ocurred: %s" % exc.message
-    return render_to_response('band/calendar.html', context, context_instance=RequestContext(request))
+    return render_to_response('band/events.html', context, context_instance=RequestContext(request))

@@ -7,18 +7,28 @@
 
 {% block band-content %}
     <h2>{{ band.name }}</h2>
-    <h3>Calendar</h3>
-    <form action="/band/{{ band.id }}/calendar/entry/add" method="post"> {% csrf_token %}
-      {% include "form_template.html" with form_title="Add entry" %}
-      <div class="actions">
-          <button class="btn primary" type="submit">Save</button>
-          <button class="btn" type="reset">Cancel</button>
-      </div>
-    </form>
-
-    <hr size="20"/>
-
-    <div id="calendar"></div>
+    <h3>Events</h3>
+    <ul class="tabs">
+        <li class="active"><a href="#calendar">Calendar</a></li>
+        <li><a href="#unavailability">Unavailabilities</a></li>
+        <li><a href="#gigs">Gigs</a></li>
+        <li><a href="#rehearsal">Rehearsal</a></li>
+    </ul>
+    
+    <div id="event-containers">
+        <div id="calendar"></div>
+        <div id="unavailability">
+            <form action="/band/{{ band.id }}/events/unavailability/add" method="post"> {% csrf_token %}
+              {% include "form_template.html" with form_title="Add unavailability" %}
+              <div class="actions">
+                  <button class="btn primary" type="submit">Save</button>
+                  <button class="btn" type="reset">Cancel</button>
+              </div>
+            </form>
+        </div>
+        <div id="gigs">Gigs</div>
+        <div id="rehearsal">Rehearsal</div>
+    </div>
 {% endblock %}
 
 {% block scripts %}
@@ -26,11 +36,16 @@
     <script type="text/javascript" src="{{ STATIC_URL }}js/libs/fullcalendar.min.js"></script>
     <script>
         $(function() {
-            var date = new Date();
-            var d = date.getDate();
-            var m = date.getMonth();
-            var y = date.getFullYear();
-            var i;
+            $("ul.tabs a").click(function(e) {
+                var $this = $(this);
+                var controls = $("#event-containers");
+                $this.closest('ul').find('li.active').removeClass('active');
+                $this.closest('li').addClass('active');
+                controls.find('> div').hide();
+                controls.find($this.attr('href')).show();
+                
+                e.preventDefault();
+              });
             
             function CalendarEntry(title, date, start, end) {
                 this.title = title;
@@ -38,10 +53,11 @@
                 this.start = start;
                 this.end = end;
                 this.allDay = false;
+                this.color = "#000"
             }
             
-            $.getJSON('/band/{{ band.id }}/calendar/entries', function(data) {
-                var events = [], dateSplitted, date, start, end;
+            $.getJSON('/band/{{ band.id }}/events/entries', function(data) {
+                var events = [], i, dateSplitted, date, start, end;
                 for (i = 0; i < data.length; i+=1) {
                     dateSplitted = data[i].fields.date.split("-");
                     date = new Date(dateSplitted[0], dateSplitted[1], dateSplitted[2]);
@@ -57,7 +73,6 @@
                         center: 'title',
                         right: 'month,agendaWeek,agendaDay'
                     },
-                    editable: true,
                     dayClick: function(date, allDay, jsEvent, view) {
                         console.log(view);
                     },
