@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.shortcuts import render_to_response, redirect, get_object_or_404
-from django.utils import simplejson as json
+from django.core import serializers
 from django.core.urlresolvers import reverse
 
 from datetime import datetime
@@ -12,8 +12,9 @@ from filetransfers.api import prepare_upload, serve_file
 from models import Band, User, BandFile, CalendarEntry, Contact
 from forms import BandCreateForm, BandEditForm, UploadBandFileForm, ContactBandForm, CalendarEntryForm
 
-import users_manager
-import bands_manager
+import users_manager, bands_manager
+
+json_serializer = serializers.get_serializer("json")()
 
 @login_required
 @require_GET
@@ -347,17 +348,17 @@ def show_calendar(request, band_id):
 @login_required
 @require_GET
 def get_calendar_entries(request, band_id):
-    context = {}
     try:
         band = bands_manager.get_band(band_id)
         if not band.is_member(request.user):
             # 403
             raise Exception("You have no permission to view this band cause you are not a member of it.")
-        context['entries'] = list(band.calendar_entries)
     except Exception as exc:
         # 500
         context['error_msg'] = "Error ocurred: %s" % exc.message
-    return HttpResponse(json.dumps(context), mimetype='application/json')
+    response = HttpResponse(mimetype='application/json')
+    json_serializer.serialize(band.calendar_entries, ensure_ascii=False, stream=response)
+    return response
     
 @login_required
 @require_POST

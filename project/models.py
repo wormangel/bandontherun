@@ -68,7 +68,7 @@ class CalendarEntry(models.Model):
     start = models.CharField(verbose_name="start", max_length=5)
     end = models.CharField(verbose_name="end", max_length=5)
     band = models.ForeignKey(Band)
-    
+
 class Unavailability(CalendarEntry):
     user = models.ForeignKey(User)
 
