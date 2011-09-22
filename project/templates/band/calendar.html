@@ -30,31 +30,44 @@
             var d = date.getDate();
             var m = date.getMonth();
             var y = date.getFullYear();
-            $('#calendar').fullCalendar({
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
-                },
-                editable: true,
-                events: [
-                    {
-                        title: 'All Day Event',
-                        start: new Date(y, m, 1)
+            var i;
+            
+            function CalendarEntry(title, date, start, end) {
+                this.title = title;
+                this.date = date;
+                this.start = start;
+                this.end = end;
+                this.allDay = false;
+            }
+            
+            $.getJSON('/band/{{ band.id }}/calendar/entries', function(data) {
+                var events = [], dateSplitted, date, start, end;
+                for (i = 0; i < data.length; i+=1) {
+                    dateSplitted = data[i].fields.date.split("-");
+                    date = new Date(dateSplitted[0], dateSplitted[1], dateSplitted[2]);
+                    startSplitted = data[i].fields.start.split(":");
+                    start = new Date(dateSplitted[0], dateSplitted[1], dateSplitted[2], startSplitted[0], startSplitted[1]);
+                    endSplitted = data[i].fields.end.split(":");
+                    end = new Date(dateSplitted[0], dateSplitted[1], dateSplitted[2], endSplitted[0], endSplitted[1]);
+                    events.push(new CalendarEntry("Evento", date, start, end));
+                }
+                $('#calendar').fullCalendar({
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,agendaWeek,agendaDay'
                     },
-                    {
-                        title: 'Long Event',
-                        start: new Date(y, m, d-5),
-                        end: new Date(y, m, d-2)
+                    editable: true,
+                    dayClick: function(date, allDay, jsEvent, view) {
+                        console.log(view);
                     },
-                    {
-                        id: 999,
-                        title: 'Repeating Event',
-                        start: new Date(y, m, d-3, 16, 0),
-                        allDay: false
-                    }
-                ]
+                    eventClick: function(calEvent, jsEvent, view) {
+                        console.log(view);
+                    },
+                    events: events
+                });
             });
         });
     </script>
 {% endblock %}
+
