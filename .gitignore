@@ -3,3 +3,4 @@ db
 remove_pyc.sh
 project/upload_files/*
 .idea
+upload_files

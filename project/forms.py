@@ -50,3 +50,9 @@ class ContactBandForm(forms.Form):
     phone = forms.CharField(max_length=20)
     service = forms.BooleanField()
     cost = forms.DecimalField(min_value = 0, max_digits = 6, decimal_places = 2)
+
+class CalendarEntryForm(forms.Form):
+    date = forms.DateField() # input_formats=("%d/%m/%Y")
+    start = forms.CharField(max_length=5)
+    end = forms.CharField(max_length=5)
+

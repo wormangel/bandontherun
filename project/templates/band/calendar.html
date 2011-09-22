@@ -1,0 +1,60 @@
+{% extends 'band-base.html' %}
+{% load url from future %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/fullcalendar.css" />
+{% endblock %}
+
+{% block band-content %}
+    <h2>{{ band.name }}</h2>
+    <h3>Calendar</h3>
+    <form action="/band/{{ band.id }}/calendar/entry/add" method="post"> {% csrf_token %}
+      {% include "form_template.html" with form_title="Add entry" %}
+      <div class="actions">
+          <button class="btn primary" type="submit">Save</button>
+          <button class="btn" type="reset">Cancel</button>
+      </div>
+    </form>
+
+    <hr size="20"/>
+
+    <div id="calendar"></div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery-ui-1.8.11.custom.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/fullcalendar.min.js"></script>
+    <script>
+        $(function() {
+            var date = new Date();
+            var d = date.getDate();
+            var m = date.getMonth();
+            var y = date.getFullYear();
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                editable: true,
+                events: [
+                    {
+                        title: 'All Day Event',
+                        start: new Date(y, m, 1)
+                    },
+                    {
+                        title: 'Long Event',
+                        start: new Date(y, m, d-5),
+                        end: new Date(y, m, d-2)
+                    },
+                    {
+                        id: 999,
+                        title: 'Repeating Event',
+                        start: new Date(y, m, d-3, 16, 0),
+                        allDay: false
+                    }
+                ]
+            });
+        });
+    </script>
+{% endblock %}

@@ -16,13 +16,12 @@
     <table class="zebra-striped">
         <thead>
           <tr>
-            <th class="header headerSortUp">Name</th>
+            <th class="header headerSortUp">Description</th>
             <th class="yellow header">Filename</th>
             <th class="blue header">Size</th>
             <th class="purple header">Created</th>
             <th class="orange  header">Uploader</th>
-            <th class="green header">Download</th>
-            <th class="red  header">Delete</th>
+            <th class="green header">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -33,13 +32,11 @@
                 <td name="size" type="text" > {{ file.size }} </td>
                 <td name="created" type="text" > {{ file.created }} </td>
                 <td name="uploader" type="text" > {{ file.uploader }} </td>
-                <td name="download" type="text" >
+                <td name="actions" type="text" >
                     <form action="/band/{{ band.id }}/download/{{ file.id }}" method="get">
                         {% csrf_token %}
                         <button class="btn inline small" type="submit">Download</button>
                     </form>
-                </td>
-                <td name="delete" type="text" > 
                     <form action="/band/{{ band.id }}/{{ user.username }}/{{ file.id }}/deletefile" method="post">
                         {% csrf_token %}
                         <button class="btn inline small" type="submit">Delete</button>

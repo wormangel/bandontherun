@@ -11,10 +11,10 @@
         <title>Band on the Run!</title>
 
         <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}favicon.png" />
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css">
+        {% block stylesheet %} {% endblock %}
         <script type="text/javascript" src="{{ STATIC_URL }}js/libs/modernizr-2.0.6.min.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/libs/head.load.min.js"></script>
         <!--[if lt IE 9]>
           <script type="text/javascript" src="{{ STATIC_URL }}js/libs/selectivizr-min.js"></script>
         <![endif]-->
@@ -68,16 +68,15 @@
                 <li><a href="#">Privacy Policy</a></li>
             </ul>
         </footer>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery-1.6.4.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/script.js"></script>
         {% block scripts %}
-        <script>
-          head.js("http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js", "{{ STATIC_URL }}js/script.js");
-        </script>
+        {% endblock %}
         <script>
           var _gaq=[["_setAccount","UA-XXXXXXXX-X"],["_trackPageview"]];
           (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
           g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
           s.parentNode.insertBefore(g,s)}(document,"script"));
         </script>
-        {% endblock %}
     </body>
 </html>

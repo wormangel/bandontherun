@@ -38,7 +38,7 @@ class Band(models.Model):
     members = models.ManyToManyField(User)
     setlist = models.OneToOneField(Setlist, null=True)
     contacts = models.ManyToManyField(Contact)
-
+    
     def is_member(self, user):
         return len(self.members.filter(username=user.username)) is not 0
         
@@ -47,6 +47,7 @@ class Band(models.Model):
 
 Band.member_list = property(lambda u: u.members.all())
 Band.file_list = property(lambda u: u.bandfile_set.all())
+Band.calendar_entries = property(lambda u: u.calendarentry_set.all())
 Band.contact_list = property(lambda u: u.contacts.all())
 
 class BandFile(models.Model):
@@ -61,6 +62,21 @@ class BandFile(models.Model):
     created = models.DateField()
     file = models.FileField(upload_to=get_save_path)
     attachments = models.ManyToManyField(Song)
+
+class CalendarEntry(models.Model):
+    date = models.DateField()
+    start = models.CharField(verbose_name="start", max_length=5)
+    end = models.CharField(verbose_name="end", max_length=5)
+    band = models.ForeignKey(Band)
+    
+class Unavailability(CalendarEntry):
+    user = models.ForeignKey(User)
+
+class Audition(CalendarEntry):
+    pass # TBD
+
+class Gig(CalendarEntry):
+    pass # TBD
 
 class EventSetlist(Setlist):
     pass # eventually will hold the event-specific setlist (subset of songs from main setlist)

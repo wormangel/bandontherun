@@ -1,19 +1,19 @@
 # TODO: change some posts request to put / delete (investigate how to do that with django)
-from django.http import Http404
-
+from django.http import Http404, HttpResponse
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.shortcuts import render_to_response, redirect, get_object_or_404
+from django.utils import simplejson as json
 from django.core.urlresolvers import reverse
 
+from datetime import datetime
 from filetransfers.api import prepare_upload, serve_file
-from models import Band, User, BandFile
-from forms import BandCreateForm, BandEditForm, UploadBandFileForm, ContactBandForm
+from models import Band, User, BandFile, CalendarEntry, Contact
+from forms import BandCreateForm, BandEditForm, UploadBandFileForm, ContactBandForm, CalendarEntryForm
+
 import users_manager
 import bands_manager
-
-from datetime import datetime
 
 @login_required
 @require_GET
@@ -316,14 +316,68 @@ def add_contact(request, band_id):
         service = form.cleaned_data['service']
         cost = form.cleaned_data['cost']
         added = datetime.now()
-        added_by = User.objects.get(username=request.user.username)
         try:
             if not band.is_member(request.user):
                 raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
-            bands_manager.add_contact(band_id, name, phone, service, cost, added, added_by)
+            bands_manager.add_contact(band_id, name, phone, service, cost, added, added_by=request.user)
             return redirect('/band/%s/contacts' % band_id)
         except Exception as exc:
             context['error_msg'] = "Error ocurred: %s" % exc.message
     return render_to_response('band/contacts.html', context, context_instance=RequestContext(request))
     
+####################
+# Calendar feature #
+####################
+@login_required
+@require_GET
+def show_calendar(request, band_id):
+    context = {}
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            # 403
+            raise Exception("You have no permission to view this band cause you are not a member of it.")
+        context['band'] = band
+        context['form'] = CalendarEntryForm()
+    except Exception as exc:
+        # 500
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+    return render_to_response('band/calendar.html', context, context_instance=RequestContext(request))
     
+@login_required
+@require_GET
+def get_calendar_entries(request, band_id):
+    context = {}
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            # 403
+            raise Exception("You have no permission to view this band cause you are not a member of it.")
+        context['entries'] = list(band.calendar_entries)
+    except Exception as exc:
+        # 500
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+    return HttpResponse(json.dumps(context), mimetype='application/json')
+    
+@login_required
+@require_POST
+def add_calendar_entry(request, band_id):
+    context = {}
+    band = bands_manager.get_band(band_id)
+    form = CalendarEntryForm(request.POST)
+
+    context['band'] = band
+    context['form'] = form
+
+    if form.is_valid():
+        date = form.cleaned_data['date'] 
+        start = form.cleaned_data['start']
+        end = form.cleaned_data['end']
+        try:
+            if not band.is_member(request.user):
+                raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
+            bands_manager.add_calendar_entry(band_id, date, start, end)
+            return redirect('/band/%s/calendar' % band_id)
+        except Exception as exc:
+            context['error_msg'] = "Error ocurred: %s" % exc.message
+    return render_to_response('band/calendar.html', context, context_instance=RequestContext(request))

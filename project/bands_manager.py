@@ -1,7 +1,7 @@
+from datetime import date as date
 from models import Band
-from project.models import Song, Setlist, Contact
+from project.models import Song, Setlist, Contact, CalendarEntry
 import users_manager
-
 
 FILES_PATH = "project/upload_files/"
 
@@ -131,4 +131,9 @@ def add_contact(band_id, name, phone, service, cost, added, added_by):
         return band
     except Exception as exc:
         raise Exception("Error adding contact: %s" % exc.message)
+
+def add_calendar_entry(band_id, date, start, end):
+    band = get_band(band_id)
+    entry = CalendarEntry.objects.create(date=date, start=start, end=end, band=band)
+    entry.save()
 
