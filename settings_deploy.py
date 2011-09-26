@@ -19,7 +19,7 @@ DATABASES = {
     }
 }
 
-MEDIA_ROOT = '/home/ubuntu/bandontherun/database/botr.db'
+MEDIA_ROOT = '/home/ubuntu/bandontherun/upload_files'
 
 STATIC_ROOT = '/home/ubuntu/static'
 
