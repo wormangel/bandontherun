@@ -29,8 +29,8 @@ urlpatterns = patterns('',
 
     # band contacts url
     url(r'^band/(?P<band_id>\d+)/contacts$', 'project.views_band.show_contacts', name='show-contacts'),
-    url(r'^band/(?P<band_id>\d+)/contact/(?P<contact_id>\w+)/remove$', 'project.views_band.remove_contact', name='remove-contact'),
-    url(r'^band/(?P<band_id>\d+)/contact/add$', 'project.views_band.add_contact', name='add-contact'),
+    url(r'^band/(?P<band_id>\d+)/contacts/(?P<contact_id>\w+)/remove$', 'project.views_band.remove_contact', name='remove-contact'),
+    url(r'^band/(?P<band_id>\d+)/contacts/add$', 'project.views_band.add_contact', name='add-contact'),
 
     # band events
     url(r'^band/(?P<band_id>\d+)/events$', 'project.views_band.show_events', name='show-events'),

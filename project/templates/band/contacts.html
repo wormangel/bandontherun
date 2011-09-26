@@ -22,7 +22,7 @@
             <td>{{ contact.service }}</td>
             <td>{{ contact.cost }}</td>
             <td>
-                <form action="/band/{{ band.id }}/contact/{{ contact.id }}/remove" method="post">
+                <form action="/band/{{ band.id }}/contacts/{{ contact.id }}/remove" method="post">
                     {% csrf_token %}
                     <button class="btn inline small" type="submit">Delete</button>
                 </form>
