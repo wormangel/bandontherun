@@ -7,4 +7,8 @@ register = template.Library()
 def currency(number):
     number = float(number)
     return "$ %s%s" % (intcomma(int(number)), ("%0.2f" % number)[-3:])
+        
+@register.filter
+def yes_no(boolean):
+    return 'Yes' if boolean == True else 'No'
 
