@@ -26,7 +26,7 @@ class Contact(models.Model):
     name = models.CharField(verbose_name="name", max_length=50)
     phone = models.CharField(verbose_name="phone", max_length=15)
     service = models.BooleanField()
-    cost = models.DecimalField(max_digits=6, decimal_places=2, blank=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
     added = models.DateField()
     added_by = models.ForeignKey(User)
     
