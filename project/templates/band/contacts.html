@@ -1,5 +1,6 @@
 {% extends 'band-base.html' %}
 {% load url from future %}
+{% load formatter %}
 
 {% block band-content %}
     <h2>{{ band.name }}</h2>
@@ -20,7 +21,7 @@
             <td>{{ contact.name }}</td>
             <td>{{ contact.phone }}</td>
             <td>{{ contact.service }}</td>
-            <td>{{ contact.cost }}</td>
+            <td>{{ contact.cost|currency }}</td>
             <td>
                 <form action="/band/{{ band.id }}/contacts/{{ contact.id }}/remove" method="post">
                     {% csrf_token %}
