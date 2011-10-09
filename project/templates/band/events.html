@@ -67,8 +67,9 @@
     <script type="text/javascript" src="{{ STATIC_URL }}js/libs/fullcalendar.min.js"></script>
     <script>
         $(function() {
-            function CalendarEntry(id, title, timeStart, timeEnd) {
-                this.id = id;
+            function CalendarEntry(pk, title, timeStart, timeEnd, type) {
+                this.id = type+pk;
+                this.pk = pk;
                 this.title = title;
                 this.start = timeStart;
                 this.end = timeEnd;
@@ -81,22 +82,23 @@
             Rehearsel.prototype = new CalendarEntry;
             Rehearsel.prototype.constructor = Rehearsel;
   
-            function Unavailability(id, title, timeStart, timeEnd, allDay, type) {
+            function Unavailability(pk, title, timeStart, timeEnd, allDay) {
                 this.allDay = allDay;
+                this.type = "unavailability";
                 this.color = "#000"
-                CalendarEntry.call(this, id, title, timeStart, timeEnd);
+                CalendarEntry.call(this, pk, title, timeStart, timeEnd, this.type);
             }
             
-            function Gig(id, title, timeStart, timeEnd, allDay, type) {
+            function Gig(pk, title, timeStart, timeEnd) {
                 this.color = "#444"
                 // TODO complete with other attrs
-                CalendarEntry.call(this, id, title, timeStart, timeEnd);
+                CalendarEntry.call(this, pk, title, timeStart, timeEnd);
             }
             
-            function Rehearsel(id, title, timeStart, timeEnd, allDay, type) {
+            function Rehearsel(pk, title, timeStart, timeEnd) {
                 this.color = "#ccc"
                 // TODO complete with other attrs
-                CalendarEntry.call(this, id, title, timeStart, timeEnd);
+                CalendarEntry.call(this, pk, title, timeStart, timeEnd);
             }
             
             function CalendarManager() {
@@ -124,7 +126,7 @@
                     dateEndSplitted = data.fields.date_end.split("-");
                     endSplitted = data.fields.time_end.split(":");
                     timeEnd = new Date(dateEndSplitted[0], dateEndSplitted[1]-1, dateEndSplitted[2], endSplitted[0], endSplitted[1]);
-                    return new Unavailability(data.pk, 'Unavailability of ' + data.fields.added_by, timeStart, timeEnd, allDay, 'unavailability');
+                    return new Unavailability(data.pk, 'Unavailability of ' + data.fields.added_by, timeStart, timeEnd, allDay);
                 }
                 
                 function createGig(data) {
@@ -214,7 +216,8 @@
                         $bubble = $("#bubble");
                         $bubble.css('top', (jsEvent.pageY-5) + 'px');
                         $bubble.css('left', (jsEvent.pageX+10) + 'px');
-                        $bubble.find('form').attr('action', actionURI.replace('#type', event.type).replace('#id', event.id));
+                        $bubble.find('form').attr('action', actionURI.replace('#type', event.type).replace('#id', event.pk));
+                        $bubble.data('event', event.id);
                         $bubble.show();
                     },
                     events: calendarManager.getEntries()
@@ -224,10 +227,11 @@
         
         $("#bubble form").submit(function(e) {
             var $this = $(this),
-            $csrfInput = $this.find('input[type=hidden]').first();
+            $csrfInput = $this.find('input[type=hidden]').first(),
+            $bubble = $this.closest("#bubble");
             $.post($this.attr('action'), { 'csrfmiddlewaretoken': $csrfInput.val() }).success(function(data) {
-                $this.closest("#bubble").hide();
-                $('#calendar').fullCalendar('removeEvents');
+                $bubble.hide();
+                $('#calendar').fullCalendar('removeEvents', $bubble.data('event'));
             }).error(function(data) {
                 console.log("TODO send notice");
             });
