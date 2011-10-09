@@ -84,3 +84,17 @@ footer a {
     text-decoration: none;
     padding-right: 8px;
 }
+
+/* misc */
+#bubble {
+    padding: 5px;
+    z-index: 1001;
+    position: absolute;
+    display: none;
+    background-color: #fff;
+    border: 1px solid #eee;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    box-shadow: 0 0 2px 0 #000;
+}

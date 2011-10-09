@@ -47,7 +47,7 @@ class Band(models.Model):
 
 Band.member_list = property(lambda u: u.members.all())
 Band.file_list = property(lambda u: u.bandfile_set.all())
-Band.calendar_entries = property(lambda u: u.calendarentry_set.all())
+Band.calendar_entries = property(lambda u: list(Unavailability.objects.filter(band=u)) + list(Gig.objects.filter(band=u)) + list(Rehearsel.objects.filter(band=u)))
 Band.contact_list = property(lambda u: u.contacts.all())
 
 class BandFile(models.Model):
@@ -64,19 +64,23 @@ class BandFile(models.Model):
     attachments = models.ManyToManyField(Song)
 
 class CalendarEntry(models.Model):
-    date = models.DateField()
-    start = models.CharField(verbose_name="start", max_length=5)
-    end = models.CharField(verbose_name="end", max_length=5)
+    class Meta:
+        abstract = True
+    date_start = models.DateField()
+    time_start = models.CharField(verbose_name="start", max_length=5)
+    time_end = models.CharField(verbose_name="end", max_length=5)
     band = models.ForeignKey(Band)
+    added_by = models.ForeignKey(User)
 
 class Unavailability(CalendarEntry):
-    user = models.ForeignKey(User)
+    all_day = models.BooleanField()
+    date_end = models.DateField(null=True)
 
-class Audition(CalendarEntry):
+class Rehearsel(CalendarEntry):
     pass # TBD
 
 class Gig(CalendarEntry):
-    pass # TBD
+    place = models.CharField(max_length=30)
 
 class EventSetlist(Setlist):
     pass # eventually will hold the event-specific setlist (subset of songs from main setlist)

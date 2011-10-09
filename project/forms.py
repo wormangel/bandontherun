@@ -48,11 +48,13 @@ class UploadBandFileForm(forms.ModelForm):
 class ContactBandForm(forms.Form):
     name = forms.CharField(max_length=50)
     phone = forms.CharField(max_length=20)
-    service = forms.BooleanField()
+    service = forms.BooleanField(label="Service?")
     cost = forms.DecimalField(min_value = 0, max_digits = 6, decimal_places = 2)
 
-class CalendarEntryForm(forms.Form):
-    date = forms.DateField() # input_formats=("%d/%m/%Y")
-    start = forms.CharField(max_length=5)
-    end = forms.CharField(max_length=5)
+class UnavailabilityEntryForm(forms.Form):
+    all_day = forms.BooleanField(label="All day?", required=False)
+    date_start = forms.DateField()
+    date_end = forms.DateField()
+    time_start = forms.CharField(max_length=5)
+    time_end = forms.CharField(max_length=5)
 

@@ -122,7 +122,6 @@ def add_contact(band_id, name, phone, service, cost, added, added_by):
         else:
             contact = contact[0]
 
-        print band.contacts
         if band.contains_contact(contact):
             raise Exception("This contact is already on the band list!")
 
@@ -132,8 +131,12 @@ def add_contact(band_id, name, phone, service, cost, added, added_by):
     except Exception as exc:
         raise Exception("Error adding contact: %s" % exc.message)
 
-def add_unavailability_entry(band_id, date, start, end, user):
+def add_unavailability_entry(band_id, date_start, date_end, time_start, time_end, all_day, user):
     band = get_band(band_id)
-    entry = Unavailability.objects.create(date=date, start=start, end=end, band=band, user=user)
+    entry = Unavailability.objects.create(date_start=date_start, date_end=date_end, time_start=time_start, time_end=time_end, all_day=all_day, band=band, added_by=user)
     entry.save()
+    
+def remove_unavailability(band_id, entry_id, user):
+    entry = Unavailability.objects.filter(id=entry_id)
+    entry.delete()
 

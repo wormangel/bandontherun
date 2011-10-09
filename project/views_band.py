@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from datetime import datetime
 from filetransfers.api import prepare_upload, serve_file
 from models import Band, User, BandFile
-from forms import BandCreateForm, BandEditForm, UploadBandFileForm, ContactBandForm, CalendarEntryForm
+from forms import BandCreateForm, BandEditForm, UploadBandFileForm, ContactBandForm, UnavailabilityEntryForm
 
 import users_manager, bands_manager
 
@@ -339,7 +339,9 @@ def show_events(request, band_id):
             # 403
             raise Exception("You have no permission to view this band cause you are not a member of it.")
         context['band'] = band
-        context['form'] = CalendarEntryForm()
+        context['unavailability_form'] = UnavailabilityEntryForm()
+        context['gig_form'] = UnavailabilityEntryForm()
+        context['rehearsal_form'] = UnavailabilityEntryForm()
     except Exception as exc:
         # 500
         context['error_msg'] = "Error ocurred: %s" % exc.message
@@ -362,23 +364,43 @@ def get_calendar_entries(request, band_id):
     
 @login_required
 @require_POST
-def add_unavailability_entry(request, band_id):
+def add_unavailability(request, band_id):
     context = {}
     band = bands_manager.get_band(band_id)
-    form = CalendarEntryForm(request.POST)
+    form = UnavailabilityEntryForm(request.POST)
 
     context['band'] = band
     context['form'] = form
 
     if form.is_valid():
-        date = form.cleaned_data['date'] 
-        start = form.cleaned_data['start']
-        end = form.cleaned_data['end']
+        date_start = form.cleaned_data['date_start']
+        date_end = form.cleaned_data['date_end']
+        time_start = form.cleaned_data['time_start']
+        time_end = form.cleaned_data['time_end']
+        all_day = form.cleaned_data['all_day']
         try:
             if not band.is_member(request.user):
                 raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
-            bands_manager.add_unavailability_entry(band_id, date, start, end, request.user)
+            bands_manager.add_unavailability_entry(band_id, date_start, date_end, time_start, time_end, all_day, request.user)
+            context['success'] = "Unavailability added successfully!" # TODO: make this work with redirect or change the flow
             return redirect('/band/%s/events' % band_id)
         except Exception as exc:
-            context['error_msg'] = "Error ocurred: %s" % exc.message
-    return render_to_response('band/events.html', context, context_instance=RequestContext(request))
+            pass
+            # 500
+    else:
+        print form.errors
+        return render_to_response('band/events.html', context, context_instance=RequestContext(request))
+    
+@login_required
+@require_POST 
+def remove_unavailability(request, band_id, entry_id):
+    context = {}
+    band = bands_manager.get_band(band_id)
+    try:
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to remove this band's event cause you are not a member of it.")
+        bands_manager.remove_unavailability(band_id, entry_id, request.user)
+        return HttpResponse()
+    except Exception as exc:
+        pass
+        # 500
