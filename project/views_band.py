@@ -104,6 +104,7 @@ def add_band_member(request, band_id):
         return redirect('/band/%s' % band_id)
     except Exception as exc:
         context['error_msg'] = "Error ocurred: %s" % exc.message
+        context['band'] = band
         return render_to_response('band/show.html', context, context_instance=RequestContext(request))
 
 @login_required
@@ -120,6 +121,7 @@ def remove_band_member(request, band_id, username):
         return redirect('/band/%s' % band_id)
     except Exception as exc:
         context['error_msg'] = "Error ocurred: %s" % exc.message
+        context['band'] = band
         return render_to_response('band/show.html', context, context_instance=RequestContext(request))
         
 @login_required
