@@ -76,7 +76,7 @@ class Unavailability(CalendarEntry):
     all_day = models.BooleanField()
     date_end = models.DateField(null=True)
 
-class Rehearsel(CalendarEntry):
+class Rehearsal(CalendarEntry):
     pass # TBD
 
 class Gig(CalendarEntry):

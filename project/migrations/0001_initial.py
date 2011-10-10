@@ -98,32 +98,39 @@ class Migration(SchemaMigration):
         ))
         db.create_unique('project_bandfile_attachments', ['bandfile_id', 'song_id'])
 
-        # Adding model 'CalendarEntry'
-        db.create_table('project_calendarentry', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('date', self.gf('django.db.models.fields.DateField')()),
-            ('start', self.gf('django.db.models.fields.CharField')(max_length=5)),
-            ('end', self.gf('django.db.models.fields.CharField')(max_length=5)),
-            ('band', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['project.Band'])),
-        ))
-        db.send_create_signal('project', ['CalendarEntry'])
-
         # Adding model 'Unavailability'
         db.create_table('project_unavailability', (
-            ('calendarentry_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['project.CalendarEntry'], unique=True, primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('date_start', self.gf('django.db.models.fields.DateField')()),
+            ('time_start', self.gf('django.db.models.fields.CharField')(max_length=5)),
+            ('time_end', self.gf('django.db.models.fields.CharField')(max_length=5)),
+            ('band', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['project.Band'])),
+            ('added_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('all_day', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('date_end', self.gf('django.db.models.fields.DateField')(null=True)),
         ))
         db.send_create_signal('project', ['Unavailability'])
 
-        # Adding model 'Audition'
-        db.create_table('project_audition', (
-            ('calendarentry_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['project.CalendarEntry'], unique=True, primary_key=True)),
+        # Adding model 'Rehearsal'
+        db.create_table('project_rehearsal', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('date_start', self.gf('django.db.models.fields.DateField')()),
+            ('time_start', self.gf('django.db.models.fields.CharField')(max_length=5)),
+            ('time_end', self.gf('django.db.models.fields.CharField')(max_length=5)),
+            ('band', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['project.Band'])),
+            ('added_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
         ))
-        db.send_create_signal('project', ['Audition'])
+        db.send_create_signal('project', ['Rehearsal'])
 
         # Adding model 'Gig'
         db.create_table('project_gig', (
-            ('calendarentry_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['project.CalendarEntry'], unique=True, primary_key=True)),
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('date_start', self.gf('django.db.models.fields.DateField')()),
+            ('time_start', self.gf('django.db.models.fields.CharField')(max_length=5)),
+            ('time_end', self.gf('django.db.models.fields.CharField')(max_length=5)),
+            ('band', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['project.Band'])),
+            ('added_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('place', self.gf('django.db.models.fields.CharField')(max_length=30)),
         ))
         db.send_create_signal('project', ['Gig'])
 
@@ -174,14 +181,11 @@ class Migration(SchemaMigration):
         # Removing M2M table for field attachments on 'BandFile'
         db.delete_table('project_bandfile_attachments')
 
-        # Deleting model 'CalendarEntry'
-        db.delete_table('project_calendarentry')
-
         # Deleting model 'Unavailability'
         db.delete_table('project_unavailability')
 
-        # Deleting model 'Audition'
-        db.delete_table('project_audition')
+        # Deleting model 'Rehearsal'
+        db.delete_table('project_rehearsal')
 
         # Deleting model 'Gig'
         db.delete_table('project_gig')
@@ -230,10 +234,6 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'project.audition': {
-            'Meta': {'object_name': 'Audition', '_ormbases': ['project.CalendarEntry']},
-            'calendarentry_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['project.CalendarEntry']", 'unique': 'True', 'primary_key': 'True'})
-        },
         'project.band': {
             'Meta': {'object_name': 'Band'},
             'bio': ('django.db.models.fields.TextField', [], {'max_length': '1000', 'blank': 'True'}),
@@ -257,14 +257,6 @@ class Migration(SchemaMigration):
             'size': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             'uploader': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },
-        'project.calendarentry': {
-            'Meta': {'object_name': 'CalendarEntry'},
-            'band': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['project.Band']"}),
-            'date': ('django.db.models.fields.DateField', [], {}),
-            'end': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'start': ('django.db.models.fields.CharField', [], {'max_length': '5'})
-        },
         'project.contact': {
             'Meta': {'object_name': 'Contact'},
             'added': ('django.db.models.fields.DateField', [], {}),
@@ -280,8 +272,23 @@ class Migration(SchemaMigration):
             'setlist_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['project.Setlist']", 'unique': 'True', 'primary_key': 'True'})
         },
         'project.gig': {
-            'Meta': {'object_name': 'Gig', '_ormbases': ['project.CalendarEntry']},
-            'calendarentry_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['project.CalendarEntry']", 'unique': 'True', 'primary_key': 'True'})
+            'Meta': {'object_name': 'Gig'},
+            'added_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
+            'band': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['project.Band']"}),
+            'date_start': ('django.db.models.fields.DateField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'place': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
+            'time_end': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
+            'time_start': ('django.db.models.fields.CharField', [], {'max_length': '5'})
+        },
+        'project.rehearsal': {
+            'Meta': {'object_name': 'Rehearsal'},
+            'added_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
+            'band': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['project.Band']"}),
+            'date_start': ('django.db.models.fields.DateField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'time_end': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
+            'time_start': ('django.db.models.fields.CharField', [], {'max_length': '5'})
         },
         'project.setlist': {
             'Meta': {'object_name': 'Setlist'},
@@ -296,9 +303,15 @@ class Migration(SchemaMigration):
             'title': ('django.db.models.fields.CharField', [], {'max_length': '80'})
         },
         'project.unavailability': {
-            'Meta': {'object_name': 'Unavailability', '_ormbases': ['project.CalendarEntry']},
-            'calendarentry_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['project.CalendarEntry']", 'unique': 'True', 'primary_key': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
+            'Meta': {'object_name': 'Unavailability'},
+            'added_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
+            'all_day': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'band': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['project.Band']"}),
+            'date_end': ('django.db.models.fields.DateField', [], {'null': 'True'}),
+            'date_start': ('django.db.models.fields.DateField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'time_end': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
+            'time_start': ('django.db.models.fields.CharField', [], {'max_length': '5'})
         },
         'project.userinvitation': {
             'Meta': {'object_name': 'UserInvitation'},
