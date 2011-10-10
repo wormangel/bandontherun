@@ -48,7 +48,10 @@ def remove_band_member(band_id, username):
         user = users_manager.get_user(username)
         
         if not band.is_member(user):
-            raise Exception(username + " is not a member of this band.")
+            raise Exception(username.username + " is not a member of this band.")
+        
+        if len(band.members.all()) <= 1:
+            raise Exception(username.username + " is the unique representant of this band. Please delete the band to get out.")
 
         band.members.remove(user)
         band.save()
