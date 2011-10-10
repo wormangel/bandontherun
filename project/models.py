@@ -54,7 +54,7 @@ class BandFile(models.Model):
     def get_save_path(instance, filename):
         return '/'.join(['upload_files', str(instance.band.id), filename])
 
-    description = models.CharField(verbose_name="name", max_length=50, blank=True)
+    description = models.CharField(verbose_name="description", max_length=50, blank=True)
     filename = models.CharField(verbose_name="filename", max_length=255)
     size = models.CharField(verbose_name="size", max_length=20)
     uploader = models.CharField(verbose_name="uploader", max_length=50)
