@@ -77,10 +77,13 @@ class Unavailability(CalendarEntry):
     date_end = models.DateField(null=True)
 
 class Rehearsal(CalendarEntry):
-    pass # TBD
-
-class Gig(CalendarEntry):
     place = models.CharField(max_length=30)
+    costs = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
+    setlist = models.OneToOneField(Setlist, null=True)
+
+class Gig(Rehearsal):
+    ticket = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
+    contract = models.ForeignKey(BandFile)
 
 class EventSetlist(Setlist):
     pass # eventually will hold the event-specific setlist (subset of songs from main setlist)

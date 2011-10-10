@@ -57,4 +57,12 @@ class UnavailabilityEntryForm(forms.Form):
     date_end = forms.DateField()
     time_start = forms.CharField(max_length=5)
     time_end = forms.CharField(max_length=5)
+    
+#class RehearsalEntryForm(forms.Form):
+#    date_start = forms.DateField()
+#    time_start = forms.CharField(max_length=5)
+#    duration = forms.CharField(max_length=5)
+#    place = forms.CharField(max_length=30)
+#    costs = forms.DecimalField(max_digits=10, decimal_places=2)
+
 
