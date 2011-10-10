@@ -47,7 +47,7 @@ class Band(models.Model):
 
 Band.member_list = property(lambda u: u.members.all())
 Band.file_list = property(lambda u: u.bandfile_set.all())
-Band.calendar_entries = property(lambda u: list(Unavailability.objects.filter(band=u)) + list(Gig.objects.filter(band=u)) + list(Rehearsel.objects.filter(band=u)))
+Band.calendar_entries = property(lambda u: list(Unavailability.objects.filter(band=u)) + list(Gig.objects.filter(band=u)) + list(Rehearsal.objects.filter(band=u)))
 Band.contact_list = property(lambda u: u.contacts.all())
 
 class BandFile(models.Model):
