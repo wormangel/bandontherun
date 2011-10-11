@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery-ui-1.8.16.custom.css" />
+{% endblock %}
+
+{% block body %}
+    <div id="band-sidebar">
+        <img src="http://lorempixum.com/180/180" alt="Logo of {{ band.name }}" title="{{ band.name }}"/>
+        <ul class="unstyled">
+            <li><a href="{% url 'show-band' band.id %}">Info</a></li>
+            <li><a href="{% url 'show-setlist' band.id %}">Setlist</a></li>
+            <li><a href="{% url 'show-files' band.id %}">Files</a></li>
+            <li>
+                <a href="{% url 'show-events' band.id %}">Events</a>
+                <ul>
+                    <li><a href="{% url 'add-unavailability' band.id %}">New unavailability</a></li>
+                    <li><a href="{% url 'add-gig' band.id %}">New gig</a></li>
+                    <li><a href="{% url 'add-rehearsal' band.id %}">New rehearsal</a></li>
+                </ul>
+            </li>
+            <li><a href="{% url 'show-contacts' band.id %}">Contacs</a></li>
+        </ul>
+    </div>
+    <div id="band-content">
+        <h2>{{ band.name }}</h2>
+        <h3>Rehearsals</h3>
+        {% if success %}
+            <div class="alert-message success">
+                <a class="close" href="#">×</a>
+                <p>{{ success }}</p>
+            </div>
+        {% endif %}
+        
+        <form action="/band/{{ band.id }}/events/rehearsal/add" method="post"> {% csrf_token %}
+          {% include "form_template.html" with form_title="Add rehearsal" %}
+          <div class="actions">
+              <button class="btn primary" type="submit">Save</button>
+              <button class="btn" type="reset">Cancel</button>
+          </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery-ui-1.8.16.custom.min.js"></script>
+    <script>
+        $(function() {
+            var dates = $("#id_date_start, #id_date_end").datepicker({
+                defaultDate: "+1w",
+                onSelect: function( selectedDate ) {
+                    var option = this.id == "id_date_start" ? "minDate" : "maxDate",
+                        instance = $( this ).data( "datepicker" ),
+                        date = $.datepicker.parseDate(
+                            instance.settings.dateFormat ||
+                            $.datepicker._defaults.dateFormat,
+                            selectedDate, instance.settings );
+                    dates.not( this ).datepicker( "option", option, date );
+                }
+            });
+            
+            $(".alert-message.close").click(function(e) {
+                $this.closest('.alert-message').remove();
+                e.preventDefault();
+            });
+        });
+    </script>
+{% endblock %}

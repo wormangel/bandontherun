@@ -1,4 +1,4 @@
-{% extends 'band-base.html' %}
+{% extends 'base.html' %}
 {% load url from future %}
 
 {% block stylesheet %}
@@ -6,59 +6,44 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery-ui-1.8.16.custom.css" />
 {% endblock %}
 
-{% block band-content %}
-    <h2>{{ band.name }}</h2>
-    <h3>Events</h3>
-    {{ success }}
-    {% if success %}
-        <div class="alert-message success">
-            <a class="close" href="#">×</a>
-            <p>{{ success }}</p>
-        </div>
-    {% endif %}
-    
-    <ul class="tabs">
-        <li class="active"><a href="#calendar">Calendar</a></li>
-        <li><a href="#unavailability">Unavailabilities</a></li>
-        <li><a href="#gigs">Gigs</a></li>
-        <li><a href="#rehearsal">Rehearsal</a></li>
-    </ul>
-    
-    <div id="event-containers">
-        <div id="calendar"></div>
-        <div id="unavailability">
-            <form action="/band/{{ band.id }}/events/unavailability/add" method="post"> {% csrf_token %}
-              {% include "form_template.html" with form_title="Add unavailability" form=unavailability_form%}
-              <div class="actions">
-                  <button class="btn primary" type="submit">Save</button>
-                  <button class="btn" type="reset">Cancel</button>
-              </div>
-            </form>
-        </div>
-        <div id="gigs">
-            <form action="/band/{{ band.id }}/events/gigs/add" method="post"> {% csrf_token %}
-              {% include "form_template.html" with form_title="Add a gig" form=gig_form%}
-              <div class="actions">
-                  <button class="btn primary" type="submit">Save</button>
-                  <button class="btn" type="reset">Cancel</button>
-              </div>
-            </form>
-            
-        </div>
-        <div id="rehearsal">
-            <form action="/band/{{ band.id }}/events/rehearsal/add" method="post"> {% csrf_token %}
-              {% include "form_template.html" with form_title="Add a rehearsal" form=rehearsal_form%}
-              <div class="actions">
-                  <button class="btn primary" type="submit">Save</button>
-                  <button class="btn" type="reset">Cancel</button>
-              </div>
-            </form>
+{% block body %}
+    <div id="band-sidebar">
+        <img src="http://lorempixum.com/180/180" alt="Logo of {{ band.name }}" title="{{ band.name }}"/>
+        <ul class="unstyled">
+            <li><a href="{% url 'show-band' band.id %}">Info</a></li>
+            <li><a href="{% url 'show-setlist' band.id %}">Setlist</a></li>
+            <li><a href="{% url 'show-files' band.id %}">Files</a></li>
+            <li>
+                <a href="{% url 'show-events' band.id %}">Events</a>
+                <ul>
+                    <li><a href="{% url 'add-unavailability' band.id %}">New unavailability</a></li>
+                    <li><a href="{% url 'add-gig' band.id %}">New gig</a></li>
+                    <li><a href="{% url 'add-rehearsal' band.id %}">New rehearsal</a></li>
+                </ul>
+            </li>
+            <li><a href="{% url 'show-contacts' band.id %}">Contacs</a></li>
+        </ul>
+    </div>
+    <div id="band-content">
+        <h2>{{ band.name }}</h2>
+        <h3>Events</h3>
+        {{ success }}
+        {% if success %}
+            <div class="alert-message success">
+                <a class="close" href="#">×</a>
+                <p>{{ success }}</p>
+            </div>
+        {% endif %}
+        
+        <div id="event-containers">
+            <div id="calendar"></div>
         </div>
     </div>
 {% endblock %}
 
 {% block scripts %}
     <div id="bubble">
+        <a href="#">Edit</a>
         <form method="post"> {% csrf_token %}
             <input type="submit" value="Remove it?" />
         </form>
@@ -79,24 +64,31 @@
             Unavailability.prototype.constructor = Unavailability;
             Gig.prototype = new CalendarEntry;
             Gig.prototype.constructor = Gig;
-            Rehearsel.prototype = new CalendarEntry;
-            Rehearsel.prototype.constructor = Rehearsel;
+            Rehearsal.prototype = new CalendarEntry;
+            Rehearsal.prototype.constructor = Rehearsal;
   
             function Unavailability(pk, title, timeStart, timeEnd, allDay) {
                 this.allDay = allDay;
                 this.type = "unavailability";
-                this.color = "#000"
+                this.color = "#000";
                 CalendarEntry.call(this, pk, title, timeStart, timeEnd, this.type);
             }
             
-            function Gig(pk, title, timeStart, timeEnd) {
-                this.color = "#444"
+            function Gig(pk, title, timeStart, timeEnd, place, costs, ticket) {
+                this.place = place
+                this.costs = costs;
+                this.ticket = ticket;
+                this.type = "gig";
+                this.color = "#444";
                 // TODO complete with other attrs
                 CalendarEntry.call(this, pk, title, timeStart, timeEnd);
             }
             
-            function Rehearsel(pk, title, timeStart, timeEnd) {
-                this.color = "#ccc"
+            function Rehearsal(pk, title, timeStart, timeEnd) {
+                this.place = place
+                this.costs = costs;
+                this.type = "rehearsal";
+                this.color = "#ccc";
                 // TODO complete with other attrs
                 CalendarEntry.call(this, pk, title, timeStart, timeEnd);
             }
@@ -109,8 +101,8 @@
                             return createUnavailability(data);
                         case 'project.gig':
                             return createGig(data);
-                        case 'project.rehearsel':
-                            return createRehearsel(data);
+                        case 'project.rehearsal':
+                            return createRehearsal(data);
                         default:
                             break;
                     }
@@ -130,11 +122,24 @@
                 }
                 
                 function createGig(data) {
-                    return null;
+                    var dateSplitted, timeStart, timeEnd;
+                    dateSplitted = data.fields.date_start.split("-");
+                    startSplitted = data.fields.time_start.split(":");
+                    timeStart = new Date(dateSplitted[0], dateSplitted[1]-1, dateSplitted[2], startSplitted[0], startSplitted[1]);
+                    endSplitted = data.fields.time_end.split(":");
+                    timeEnd = new Date(dateSplitted[0], dateSplitted[1]-1, dateSplitted[2], endSplitted[0], endSplitted[1]);
+                    return new Gig(data.pk, 'Gig at ' + data.fields.place, timeStart, timeEnd, data.fields.place, data.fields.costs, data.fields.ticket);
                 }
                 
-                function createRehearsel(data) {
-                    return null;
+                function createRehearsal(data) {
+                    var dateSplitted, timeStart, timeEnd;
+                    dateSplitted = data.fields.date_start.split("-");
+                    startSplitted = data.fields.time_start.split(":");
+                    timeStart = new Date(dateSplitted[0], dateSplitted[1]-1, dateSplitted[2], startSplitted[0], startSplitted[1]);
+                    endSplitted = data.fields.time_end.split(":");
+                    timeEnd = new Date(dateSplitted[0], dateSplitted[1]-1, dateSplitted[2], endSplitted[0], endSplitted[1]);
+
+                    return new Rehearsal(data.pk, 'Rehearsal at ' + data.fields.place, timeStart, timeEnd, data.fields.place, data.fields.costs);
                 }
             }
             
@@ -151,53 +156,11 @@
                 }
             } // end of CalendarManager.prototype
             
-            var dates = $( "#id_date_start, #id_date_end" ).datepicker({
-                defaultDate: "+1w",
-                onSelect: function( selectedDate ) {
-                    var option = this.id == "id_date_start" ? "minDate" : "maxDate",
-                        instance = $( this ).data( "datepicker" ),
-                        date = $.datepicker.parseDate(
-                            instance.settings.dateFormat ||
-                            $.datepicker._defaults.dateFormat,
-                            selectedDate, instance.settings );
-                    dates.not( this ).datepicker( "option", option, date );
-                }
-            }),
-            time_start = $("#id_time_start"),
-            time_end = $("#id_time_end"),
-            calendarManager = new CalendarManager();
-            
-            $("#id_all_day").change(function(e) {
-                if (this.checked) {
-                    time_start.closest(".clearfix").hide();
-                    time_end.closest(".clearfix").hide();
-                    time_start.val("00:00");
-                    time_end.val("23:59");
-                } else {
-                    time_start.closest(".clearfix").show();
-                    time_end.closest(".clearfix").show();
-                    time_start.val("");
-                    time_end.val("");
-                }
-            });
-            $("ul.tabs a").click(function(e) {
-                var $this = $(this);
-                var $controls = $("#event-containers");
-                $this.closest('ul').find('li.active').removeClass('active');
-                $this.closest('li').addClass('active');
-                $controls.find('> div').hide();
-                $controls.find($this.attr('href')).show();
-                e.preventDefault();
-            });
+            var calendarManager = new CalendarManager();
             
             $(".alert-message.close").click(function(e) {
                 $this.closest('.alert-message').remove();
                 e.preventDefault();
-            });
-            
-            $("#id_date").datepicker({
-                dateFormat: 'yy-mm-dd',
-                minDate: new Date()
             });
             
             $.getJSON('/band/{{ band.id }}/events/entries', function(data) {
@@ -212,30 +175,32 @@
                         console.log(date);
                     },
                     eventClick: function(event, jsEvent, view) {
-                        var actionURI = '/band/{{ band.id }}/events/#type/#id/remove',
+                        var removeURI = '/band/{{ band.id }}/events/#type/#id/remove',
+                        editURI = '/band/{{ band.id }}/events/#type/#id/edit'
                         $bubble = $("#bubble");
                         $bubble.css('top', (jsEvent.pageY-5) + 'px');
                         $bubble.css('left', (jsEvent.pageX+10) + 'px');
-                        $bubble.find('form').attr('action', actionURI.replace('#type', event.type).replace('#id', event.pk));
+                        $bubble.find("> a").attr('href', editURI.replace('#type', event.type).replace('#id', event.pk));
+                        $bubble.find('form').attr('action', removeURI.replace('#type', event.type).replace('#id', event.pk));
                         $bubble.data('event', event.id);
                         $bubble.show();
                     },
                     events: calendarManager.getEntries()
                 });
             });
-        });
         
-        $("#bubble form").submit(function(e) {
-            var $this = $(this),
-            $csrfInput = $this.find('input[type=hidden]').first(),
-            $bubble = $this.closest("#bubble");
-            $.post($this.attr('action'), { 'csrfmiddlewaretoken': $csrfInput.val() }).success(function(data) {
-                $bubble.hide();
-                $('#calendar').fullCalendar('removeEvents', $bubble.data('event'));
-            }).error(function(data) {
-                console.log("TODO send notice");
+            $("#bubble form").submit(function(e) {
+                var $this = $(this),
+                $csrfInput = $this.find('input[type=hidden]').first(),
+                $bubble = $this.closest("#bubble");
+                $.post($this.attr('action'), { 'csrfmiddlewaretoken': $csrfInput.val() }).success(function(data) {
+                    $bubble.hide();
+                    $('#calendar').fullCalendar('removeEvents', $bubble.data('event'));
+                }).error(function(data) {
+                    console.log("TODO send notice");
+                });
+                e.preventDefault();
             });
-            e.preventDefault();
         });
     </script>
 {% endblock %}
