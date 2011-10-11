@@ -125,9 +125,9 @@
                     var dateSplitted, timeStart, timeEnd;
                     dateSplitted = data.fields.date_start.split("-");
                     startSplitted = data.fields.time_start.split(":");
-                    timeStart = new Date(dateSplitted[0], dateSplitted[1]-1, dateSplitted[2], startSplitted[0], startSplitted[1]);
+                    timeStart = new Date(dateSplitted[0], dateSplitted[1]-1, dateSplitted[2]);<!--, startSplitted[0], startSplitted[1]);-->
                     endSplitted = data.fields.time_end.split(":");
-                    timeEnd = new Date(dateSplitted[0], dateSplitted[1]-1, dateSplitted[2], endSplitted[0], endSplitted[1]);
+                    timeEnd = new Date(dateSplitted[0], dateSplitted[1]-1, dateSplitted[2]);<!--, endSplitted[0], endSplitted[1]);-->
                     return new Gig(data.pk, 'Gig at ' + data.fields.place, timeStart, timeEnd, data.fields.place, data.fields.costs, data.fields.ticket);
                 }
                 
@@ -138,7 +138,6 @@
                     timeStart = new Date(dateSplitted[0], dateSplitted[1]-1, dateSplitted[2], startSplitted[0], startSplitted[1]);
                     endSplitted = data.fields.time_end.split(":");
                     timeEnd = new Date(dateSplitted[0], dateSplitted[1]-1, dateSplitted[2], endSplitted[0], endSplitted[1]);
-
                     return new Rehearsal(data.pk, 'Rehearsal at ' + data.fields.place, timeStart, timeEnd, data.fields.place, data.fields.costs);
                 }
             }

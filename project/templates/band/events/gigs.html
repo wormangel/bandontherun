@@ -33,7 +33,7 @@
             </div>
         {% endif %}
         
-        <form action="/band/{{ band.id }}/events/gigs/add" method="post"> {% csrf_token %}
+        <form action="/band/{{ band.id }}/events/gig/add" method="post"> {% csrf_token %}
           {% include "form_template.html" with form_title="Add gig" %}
           <div class="actions">
               <button class="btn primary" type="submit">Save</button>
