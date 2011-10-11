@@ -359,6 +359,7 @@ def get_calendar_entries(request, band_id):
         context['error_msg'] = "Error ocurred: %s" % exc.message
     response = HttpResponse(mimetype='application/json')
     json_serializer.serialize(band.calendar_entries, ensure_ascii=False, stream=response)
+    print response
     return response
     
 @login_required

@@ -155,10 +155,13 @@ def remove_gig(band_id, entry_id, user):
     entry = Gig.objects.filter(id=entry_id)
     entry.delete()
     
-def add_rehearsal_entry(band_id, date_start, time_start, time_end, place, costs, ticket, user):
+def add_rehearsal_entry(band_id, date_start, time_start, time_end, place, costs, user):
     band = get_band(band_id)
     entry = Rehearsal.objects.create(date_start=date_start, time_start=time_start, time_end=time_end, place=place, costs=costs, band=band, added_by=user)
-    entry.save()
+    try:
+        entry.save()
+    except Exception as exc:
+        print exc
     
 def remove_rehearsal(band_id, entry_id, user):
     entry = Rehearsal.objects.filter(id=entry_id)
