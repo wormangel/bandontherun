@@ -406,3 +406,47 @@ def remove_unavailability(request, band_id, entry_id):
     except Exception as exc:
         pass
         # 500
+        
+@login_required
+@require_POST 
+def add_gig(request, band_id):
+    context = {}
+    band = bands_manager.get_band(band_id)
+    form = GigEntryForm(request.POST)
+
+    context['band'] = band
+    context['form'] = form
+
+    if form.is_valid():
+        date_start = form.cleaned_data['date_start']
+        date_end = form.cleaned_data['date_end']
+        time_start = form.cleaned_data['time_start']
+        time_end = form.cleaned_data['time_end']
+        all_day = form.cleaned_data['all_day']
+        try:
+            if not band.is_member(request.user):
+                raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
+            bands_manager.add_gig_entry(band_id, date_start, date_end, time_start, time_end, all_day, request.user)
+            context['success'] = "Unavailability added successfully!" # TODO: make this work with redirect or change the flow
+            return redirect('/band/%s/events' % band_id)
+        except Exception as exc:
+            pass
+            # 500
+    else:
+        print form.errors
+        return render_to_response('band/events.html', context, context_instance=RequestContext(request))
+    
+@login_required
+@require_POST 
+def remove_gig(request, band_id, entry_id):
+    pass
+    
+@login_required
+@require_POST 
+def add_rehearsal(request, band_id):
+    pass
+    
+@login_required
+@require_POST 
+def remove_rehearsal(request, band_id, entry_id):
+    pass
