@@ -1,6 +1,6 @@
 from datetime import date as date
 from models import Band
-from project.models import Song, Setlist, Contact, Unavailability
+from project.models import Song, Setlist, Contact, Unavailability, Gig, Rehearsal
 import users_manager
 
 FILES_PATH = "project/upload_files/"
@@ -141,5 +141,23 @@ def add_unavailability_entry(band_id, date_start, date_end, time_start, time_end
     
 def remove_unavailability(band_id, entry_id, user):
     entry = Unavailability.objects.filter(id=entry_id)
+    entry.delete()
+
+def add_gig_entry(band_id, date_start, time_start, time_end, place, costs, ticket, user):
+    band = get_band(band_id)
+    entry = Gig.objects.create(date_start=date_start, time_start=time_start, time_end=time_end, place=place, costs=costs, ticket=ticket, band=band, added_by=user)
+    entry.save()
+    
+def remove_gig(band_id, entry_id, user):
+    entry = Gig.objects.filter(id=entry_id)
+    entry.delete()
+    
+def add_rehearsal_entry(band_id, date_start, time_start, time_end, place, costs, ticket, user):
+    band = get_band(band_id)
+    entry = Rehearsal.objects.create(date_start=date_start, time_start=time_start, time_end=time_end, place=place, costs=costs, band=band, added_by=user)
+    entry.save()
+    
+def remove_rehearsal(band_id, entry_id, user):
+    entry = Rehearsal.objects.filter(id=entry_id)
     entry.delete()
 
