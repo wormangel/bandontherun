@@ -127,17 +127,19 @@ class Migration(SchemaMigration):
 
         # Adding model 'Gig'
         db.create_table('project_gig', (
-            ('rehearsal_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['project.Rehearsal'], unique=True, primary_key=True)),
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('date_start', self.gf('django.db.models.fields.DateField')()),
+            ('time_start', self.gf('django.db.models.fields.CharField')(max_length=5)),
+            ('time_end', self.gf('django.db.models.fields.CharField')(max_length=5)),
+            ('band', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['project.Band'])),
+            ('added_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('place', self.gf('django.db.models.fields.CharField')(max_length=30)),
+            ('costs', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2, blank=True)),
+            ('setlist', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['project.Setlist'], unique=True, null=True)),
             ('ticket', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2, blank=True)),
             ('contract', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['project.BandFile'])),
         ))
         db.send_create_signal('project', ['Gig'])
-
-        # Adding model 'EventSetlist'
-        db.create_table('project_eventsetlist', (
-            ('setlist_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['project.Setlist'], unique=True, primary_key=True)),
-        ))
-        db.send_create_signal('project', ['EventSetlist'])
 
         # Adding model 'UserInvitation'
         db.create_table('project_userinvitation', (
@@ -188,9 +190,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Gig'
         db.delete_table('project_gig')
-
-        # Deleting model 'EventSetlist'
-        db.delete_table('project_eventsetlist')
 
         # Deleting model 'UserInvitation'
         db.delete_table('project_userinvitation')
@@ -266,15 +265,19 @@ class Migration(SchemaMigration):
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '15'}),
             'service': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         },
-        'project.eventsetlist': {
-            'Meta': {'object_name': 'EventSetlist', '_ormbases': ['project.Setlist']},
-            'setlist_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['project.Setlist']", 'unique': 'True', 'primary_key': 'True'})
-        },
         'project.gig': {
-            'Meta': {'object_name': 'Gig', '_ormbases': ['project.Rehearsal']},
+            'Meta': {'object_name': 'Gig'},
+            'added_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
+            'band': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['project.Band']"}),
             'contract': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['project.BandFile']"}),
-            'rehearsal_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['project.Rehearsal']", 'unique': 'True', 'primary_key': 'True'}),
-            'ticket': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2', 'blank': 'True'})
+            'costs': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
+            'date_start': ('django.db.models.fields.DateField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'place': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
+            'setlist': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['project.Setlist']", 'unique': 'True', 'null': 'True'}),
+            'ticket': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
+            'time_end': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
+            'time_start': ('django.db.models.fields.CharField', [], {'max_length': '5'})
         },
         'project.rehearsal': {
             'Meta': {'object_name': 'Rehearsal'},
