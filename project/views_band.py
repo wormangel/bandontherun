@@ -386,7 +386,7 @@ def add_unavailability(request, band_id):
                 context['success'] = "Unavailability added successfully!" # TODO: make this work with redirect or change the flow
                 return redirect('/band/%s/events/unavailability/add' % band_id)
             except Exception as exc:
-                pass
+                print exc
                 # 500
     else:
         context['form'] = UnavailabilityEntryForm()
@@ -403,7 +403,7 @@ def remove_unavailability(request, band_id, entry_id):
         bands_manager.remove_unavailability(band_id, entry_id, request.user)
         return HttpResponse()
     except Exception as exc:
-        pass
+        print exc
         # 500
         
 @login_required
@@ -430,7 +430,7 @@ def add_gig(request, band_id):
                 context['success'] = "Gig added successfully!" # TODO: make this work with redirect or change the flow
                 return redirect('/band/%s/events' % band_id)
             except Exception as exc:
-                pass
+                print exc
                 # 500
     else:
         context['form'] = GigEntryForm()
@@ -447,7 +447,7 @@ def remove_gig(request, band_id, entry_id):
         bands_manager.remove_gig(band_id, entry_id, request.user)
         return HttpResponse()
     except Exception as exc:
-        pass
+        print exc
         # 500
     
 @login_required
@@ -474,7 +474,7 @@ def add_rehearsal(request, band_id):
                 context['success'] = "Rehearsal added successfully!" # TODO: make this work with redirect or change the flow
                 return redirect('/band/%s/events' % band_id)
             except Exception as exc:
-                pass
+                print exc
                 # 500
     else:
         context['form'] = RehearsalEntryForm()
@@ -491,5 +491,5 @@ def remove_rehearsal(request, band_id, entry_id):
         bands_manager.remove_rehearsal(band_id, entry_id, request.user)
         return HttpResponse()
     except Exception as exc:
-        pass
+        print exc
         # 500
