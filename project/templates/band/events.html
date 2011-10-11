@@ -188,6 +188,13 @@
                     events: calendarManager.getEntries()
                 });
             });
+            
+            $(document).bind('click', function(e) {
+                if (($(e.target).hasClass('fc-event') || $(e.target).closest('.fc-event')).length === 0) {
+                    $("#bubble").hide();
+                }
+                
+            });
         
             $("#bubble form").submit(function(e) {
                 var $this = $(this),
