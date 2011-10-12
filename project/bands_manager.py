@@ -135,29 +135,47 @@ def add_contact(band_id, name, phone, service, cost, added, added_by):
         raise Exception("Error adding contact: %s" % exc.message)
 
 def add_unavailability_entry(band_id, date_start, date_end, time_start, time_end, all_day, user):
-    band = get_band(band_id)
-    entry = Unavailability.objects.create(date_start=date_start, date_end=date_end, time_start=time_start, time_end=time_end, all_day=all_day, band=band, added_by=user)
-    entry.save()
+    try:
+        band = get_band(band_id)
+        entry = Unavailability.objects.create(date_start=date_start, date_end=date_end, time_start=time_start, time_end=time_end, all_day=all_day, band=band, added_by=user)
+        entry.save()
+    except Exception as exc:
+        raise Exception("Error adding unavailability: %s" % exc.message)
     
 def remove_unavailability(band_id, entry_id, user):
-    entry = Unavailability.objects.filter(id=entry_id)
-    entry.delete()
+    try:
+        entry = Unavailability.objects.filter(id=entry_id)
+        entry.delete()
+    except Exception as exc:
+        raise Exception("Error removing unavailability: %s" % exc.message)
 
 def add_gig_entry(band_id, date_start, time_start, time_end, place, costs, ticket, user):
-    band = get_band(band_id)
-    entry = Gig.objects.create(date_start=date_start, time_start=time_start, time_end=time_end, place=place, costs=costs, ticket=ticket, band=band, added_by=user)
-    entry.save()
+    try:
+        band = get_band(band_id)
+        entry = Gig.objects.create(date_start=date_start, time_start=time_start, time_end=time_end, place=place, costs=costs, ticket=ticket, band=band, added_by=user)
+        entry.save()
+    except Exception as exc:
+        raise Exception("Error adding gig: %s" % exc.message)
     
 def remove_gig(band_id, entry_id, user):
-    entry = Gig.objects.filter(id=entry_id)
-    entry.delete()
+    try:
+        entry = Gig.objects.filter(id=entry_id)
+        entry.delete()
+    except Exception as exc:
+        raise Exception("Error removing gig: %s" % exc.message)
     
 def add_rehearsal_entry(band_id, date_start, time_start, time_end, place, costs, user):
-    band = get_band(band_id)
-    entry = Rehearsal.objects.create(date_start=date_start, time_start=time_start, time_end=time_end, place=place, costs=costs, band=band, added_by=user)
-    entry.save()
+    try:
+        band = get_band(band_id)
+        entry = Rehearsal.objects.create(date_start=date_start, time_start=time_start, time_end=time_end, place=place, costs=costs, band=band, added_by=user)
+        entry.save()
+    except Exception as exc:
+        raise Exception("Error adding rehearsal: %s" % exc.message)
     
 def remove_rehearsal(band_id, entry_id, user):
-    entry = Rehearsal.objects.filter(id=entry_id)
-    entry.delete()
+    try:
+        entry = Rehearsal.objects.filter(id=entry_id)
+        entry.delete()
+    except Exception as exc:
+        raise Exception("Error removing rehearsal: %s" % exc.message)
 
