@@ -137,7 +137,7 @@ class Migration(SchemaMigration):
             ('costs', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2, blank=True)),
             ('setlist', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['project.Setlist'], unique=True, null=True)),
             ('ticket', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2, blank=True)),
-            ('contract', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['project.BandFile'])),
+            ('contract', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['project.BandFile'], null=True)),
         ))
         db.send_create_signal('project', ['Gig'])
 
@@ -269,7 +269,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Gig'},
             'added_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
             'band': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['project.Band']"}),
-            'contract': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['project.BandFile']"}),
+            'contract': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['project.BandFile']", 'null': 'True'}),
             'costs': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
             'date_start': ('django.db.models.fields.DateField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
