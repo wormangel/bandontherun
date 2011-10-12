@@ -8,20 +8,27 @@
 {% block band-content %}
     <h2>{{ band.name }}</h2>
     <h3>Gigs</h3>
-    {% if success %}
-        <div class="alert-message success">
-            <a class="close" href="gigs.html#">×</a>
-            <p>{{ success }}</p>
+
+    {% if not error_msg %}
+        {% if success %}
+            <div class="alert-message success">
+                <a class="close" href="#">×</a>
+                <p>{{ success }}</p>
+            </div>
+        {% endif %}
+
+        <form action="/band/{{ band.id }}/events/gig/add" method="post"> {% csrf_token %}
+          {% include "form_template.html" with form_title="Add gig" %}
+          <div class="actions">
+              <button class="btn primary" type="submit">Save</button>
+              <button class="btn" type="reset">Cancel</button>
+          </div>
+        </form>
+    {% else %}
+        <div class="alert-message error">
+            {{ error_msg }}
         </div>
     {% endif %}
-
-    <form action="/band/{{ band.id }}/events/gig/add" method="post"> {% csrf_token %}
-      {% include "form_template.html" with form_title="Add gig" %}
-      <div class="actions">
-          <button class="btn primary" type="submit">Save</button>
-          <button class="btn" type="reset">Cancel</button>
-      </div>
-    </form>
 {% endblock %}
 
 {% block scripts %}
