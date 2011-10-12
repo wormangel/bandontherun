@@ -434,7 +434,7 @@ def add_gig(request, band_id):
                 # 500
     else:
         context['form'] = GigEntryForm()
-    return render_to_response('band/events/gigs.html', context, context_instance=RequestContext(request))
+    return render_to_response('band/events/gig/create.html', context, context_instance=RequestContext(request))
 
 @login_required
 @require_POST 
@@ -478,7 +478,7 @@ def add_rehearsal(request, band_id):
                 # 500
     else:
         context['form'] = RehearsalEntryForm()
-    return render_to_response('band/events/rehearsal.html', context, context_instance=RequestContext(request))
+    return render_to_response('band/events/rehearsal/create.html', context, context_instance=RequestContext(request))
     
 @login_required
 @require_POST 

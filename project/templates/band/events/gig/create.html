@@ -25,16 +25,16 @@
     </div>
     <div id="band-content">
         <h2>{{ band.name }}</h2>
-        <h3>Rehearsals</h3>
+        <h3>Gigs</h3>
         {% if success %}
             <div class="alert-message success">
-                <a class="close" href="#">×</a>
+                <a class="close" href="gigs.html#">×</a>
                 <p>{{ success }}</p>
             </div>
         {% endif %}
         
-        <form action="/band/{{ band.id }}/events/rehearsal/add" method="post"> {% csrf_token %}
-          {% include "form_template.html" with form_title="Add rehearsal" %}
+        <form action="/band/{{ band.id }}/events/gig/add" method="post"> {% csrf_token %}
+          {% include "form_template.html" with form_title="Add gig" %}
           <div class="actions">
               <button class="btn primary" type="submit">Save</button>
               <button class="btn" type="reset">Cancel</button>

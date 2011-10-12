@@ -35,10 +35,13 @@ urlpatterns = patterns('',
     # band events
     url(r'^band/(?P<band_id>\d+)/events$', 'project.views_band.show_events', name='show-events'),
     url(r'^band/(?P<band_id>\d+)/events/entries$', 'project.views_band.get_calendar_entries', name='get-calendar-entries'),
+    
     url(r'^band/(?P<band_id>\d+)/events/unavailability/add$', 'project.views_band.add_unavailability', name='add-unavailability'),
     url(r'^band/(?P<band_id>\d+)/events/unavailability/(?P<entry_id>\d+)/remove$', 'project.views_band.remove_unavailability', name='remove-unavailability'),
+
     url(r'^band/(?P<band_id>\d+)/events/gig/add$', 'project.views_band.add_gig', name='add-gig'),
     url(r'^band/(?P<band_id>\d+)/events/gig/(?P<entry_id>\d+)/remove$', 'project.views_band.remove_gig', name='remove-gig'),
+
     url(r'^band/(?P<band_id>\d+)/events/rehearsal/add$', 'project.views_band.add_rehearsal', name='add-rehearsal'),
     url(r'^band/(?P<band_id>\d+)/events/rehearsal/(?P<entry_id>\d+)/remove$', 'project.views_band.remove_rehearsal', name='remove-rehearsal'),
 
@@ -46,10 +49,12 @@ urlpatterns = patterns('',
     url(r'^user/login$', 'project.views_user.login', name='user-login'),
     url(r'^user/create$', 'project.views_user.create_user', name='create-user'),
     url(r'^user/logout$', 'project.views_user.logout', name='user-logout'),
+
     url(r'^user/password-reset-done$', password_reset_done, {'template_name': 'user/password-reset-done.html'}, name='password-reset-done'),
     url(r'^user/password-reset-confirm/(?P<uidb36>\w+)/(?P<token>[-\w]+)$', password_reset_confirm, {'template_name': 'user/password-reset-confirm.html'}, name='password-reset-confirm'),
     url(r'^user/password-reset-complete$', password_reset_complete, {'template_name': 'user/password-reset-complete.html'}, name='password-reset-complete.html'),
     url(r'^user/password-reset$', password_reset, {'template_name': 'user/password-reset.html', 'email_template_name': 'user/password-reset-email.html'}, name='password-reset'),
+    
     url(r'^user/edit$', 'project.views_user.edit_user', name='edit-user'),
     url(r'^user/dashboard$', 'project.views_user.dashboard', name='user-dashboard'),
     url(r'^user/invite$', 'project.views_user.invite_user', name='invite-user'),
