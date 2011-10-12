@@ -8,7 +8,14 @@
             <li><a href="{% url 'show-band' band.id %}">Info</a></li>
             <li><a href="{% url 'show-setlist' band.id %}">Setlist</a></li>
             <li><a href="{% url 'show-files' band.id %}">Files</a></li>
-            <li><a href="{% url 'show-events' band.id %}">Events</a></li>
+            <li>
+                <a href="{% url 'show-events' band.id %}">Events</a>
+                <ul>
+                    <li><a href="{% url 'add-unavailability' band.id %}">New unavailability</a></li>
+                    <li><a href="{% url 'add-gig' band.id %}">New gig</a></li>
+                    <li><a href="{% url 'add-rehearsal' band.id %}">New rehearsal</a></li>
+                </ul>
+            </li>
             <li><a href="{% url 'show-contacts' band.id %}">Contacs</a></li>
         </ul>
     </div>
