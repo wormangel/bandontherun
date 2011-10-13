@@ -1,6 +1,6 @@
 from datetime import date as date
 from models import Band
-from project.models import Song, Setlist, Contact, Unavailability, Gig, Rehearsal
+from project.models import Song, Setlist, Contact, Unavailability, Gig, Rehearsal, AllocatedSong
 import users_manager
 
 FILES_PATH = "project/upload_files/"
@@ -69,76 +69,26 @@ def add_setlist_song(band_id, artist, title):
         else:
             song = song[0]
 
-        print band.setlist
         if band.setlist.contains(song):
             raise Exception("This song is already on the setlist!")
 
-        band.setlist.songs.add(song)
-        band.save()
+        aSong = AllocatedSong(setlist=band.setlist, song=song)
+        aSong.save()
+
         return band
     except Exception as exc:
         raise Exception("Error adding song: %s" % exc.message)
 
-def add_gig_song(gig_id, song_id):
-    try:
-        gig = get_gig(gig_id)
-        song = get_song(song_id)
-
-        gig.setlist.songs.add(song)
-        gig.save()
-        return gig
-    except Exception as exc:
-        raise Exception("Error adding song to gig's setlist: %s" % exc.message)
-
-def add_rehearsal_song(rehearsal_id, song_id):
-    try:
-        rehearsal = get_rehearsal(rehearsal_id)
-        song = get_song(song_id)
-
-        rehearsal.setlist.songs.add(song)
-        rehearsal.save()
-        return rehearsal
-    except Exception as exc:
-        raise Exception("Error adding song to rehearsal's setlist: %s" % exc.message)
-
-def remove_gig_song(gig_id, song_id):
-    try:
-        gig = get_gig(gig_id)
-        song = get_song(song_id)
-
-        if not gig.setlist.contains(song):
-            raise Exception("This song is not on the gig setlist!")
-
-        gig.setlist.songs.remove(song)
-        gig.save()
-        return gig
-    except Exception as exc:
-        raise Exception("Error removing song to gig's setlist: %s" % exc.message)
-
-def remove_rehearsal_song(rehearsal_id, song_id):
-    try:
-        rehearsal = get_rehearsal(rehearsal_id)
-        song = get_song(song_id)
-
-        if not rehearsal.setlist.contains(song):
-            raise Exception("This song is not on the rehearsal setlist!")
-
-        rehearsal.setlist.songs.remove(song)
-        rehearsal.save()
-        return rehearsal
-    except Exception as exc:
-        raise Exception("Error removing song to rehearsal's setlist: %s" % exc.message)
-
 def remove_setlist_song(band_id, song_id):
     try:
         band = get_band(band_id)
-        song = get_song(id=song_id)
+        song = get_song(song_id)
 
         if not band.setlist.contains(song):
             raise Exception("This song is not on the setlist!")
 
-        band.setlist.songs.remove(song)
-        band.save()
+        aSong = AllocatedSong.objects.get(song=song, setlist=band.setlist)
+        aSong.delete()
         return band
     except Exception as exc:
         raise Exception("Error removing song: %s" % exc.message)
@@ -149,20 +99,6 @@ def get_band(band_id):
         return band
     except Band.DoesNotExist:
         raise Exception("There is no band associated with id %s." % band_id)
-
-def get_gig(gig_id):
-    try:
-        gig = Gig.objects.get(id=gig_id)
-        return gig
-    except Gig.DoesNotExist:
-        raise Exception("There is no gig associated with id %s." % gig_id)
-
-def get_rehearsal(rehearsal_id):
-    try:
-        rehearsal = Rehearsal.objects.get(id=rehearsal_id)
-        return rehearsal
-    except Rehearsal.DoesNotExist:
-        raise Exception("There is no rehearsal associated with id %s." % gig_id)
 
 def get_song(song_id):
     try:
@@ -184,7 +120,6 @@ def remove_contact(band_id, contact_id):
         return band
     except Exception as exc:
         raise Exception("Error removing contact: %s" % exc.message)
-
 
 def add_contact(band_id, name, phone, service, cost, added, added_by):
     try:
@@ -220,6 +155,15 @@ def remove_unavailability(band_id, entry_id, user):
     except Exception as exc:
         raise Exception("Error removing unavailability: %s" % exc.message)
 
+### Gigs ###
+
+def get_gig(gig_id):
+    try:
+        gig = Gig.objects.get(id=gig_id)
+        return gig
+    except Gig.DoesNotExist:
+        raise Exception("There is no gig associated with id %s." % gig_id)
+
 def add_gig_entry(band_id, date_start, time_start, time_end, place, costs, ticket, user):
     try:
         band = get_band(band_id)
@@ -249,7 +193,56 @@ def remove_gig(band_id, entry_id, user):
         entry.delete()
     except Exception as exc:
         raise Exception("Error removing gig: %s" % exc.message)
-    
+
+def add_gig_song(gig_id, song_id, pos):
+    try:
+        gig = get_gig(gig_id)
+        song = get_song(song_id)
+
+        newSong = AllocatedSong(setlist=gig.setlist, song=song, position = pos)
+        newSong.save()
+
+        # advances each song in the setlist after my new position by 1 position
+        if (gig.setlist.count > 0):
+            for aSong in AllocatedSong.objects.filter(setlist=gig.setlist, position__gte=pos).exclude(song=song):
+                aSong.position += 1
+                aSong.save()
+                
+        return gig
+    except Exception as exc:
+        raise Exception("Error adding song to gig's setlist: %s" % exc.message)
+
+def remove_gig_song(gig_id, song_id):
+    try:
+        gig = get_gig(gig_id)
+        song = get_song(song_id)
+
+        if not gig.setlist.contains(song):
+            raise Exception("This song is not on the gig setlist!")
+
+        aSong = AllocatedSong.objects.get(song=song, setlist=gig.setlist)
+        pos = aSong.position # my old position
+        
+        aSong.delete()
+
+        # rewinds each song in the setlist before my position by 1 position
+        for aSong in AllocatedSong.objects.filter(setlist=gig.setlist, position__gte=pos).exclude(song=song):
+            aSong.position -= 1
+            aSong.save()
+
+        return gig
+    except Exception as exc:
+        raise Exception("Error removing song to gig's setlist: %s" % exc.message)
+
+### Rehearsals ###
+
+def get_rehearsal(rehearsal_id):
+    try:
+        rehearsal = Rehearsal.objects.get(id=rehearsal_id)
+        return rehearsal
+    except Rehearsal.DoesNotExist:
+        raise Exception("There is no rehearsal associated with id %s." % gig_id)
+
 def add_rehearsal_entry(band_id, date_start, time_start, time_end, place, costs, user):
     try:
         band = get_band(band_id)
@@ -278,4 +271,44 @@ def remove_rehearsal(band_id, entry_id, user):
         entry.delete()
     except Exception as exc:
         raise Exception("Error removing rehearsal: %s" % exc.message)
+
+def add_rehearsal_song(rehearsal_id, song_id, pos):
+    try:
+        rehearsal = get_rehearsal(rehearsal_id)
+        song = get_song(song_id)
+
+        aSong = AllocatedSong(setlist=rehearsal.setlist, song=song, position=pos)
+        aSong.save()
+
+        # advances each song in the setlist after my new position by 1 position
+        if (rehearsal.setlist.count > 0):
+            for aSong in AllocatedSong.objects.filter(setlist=rehearsal.setlist, position__gte=pos).exclude(song=song):
+                aSong.position += 1
+                aSong.save()
+
+        return rehearsal
+    except Exception as exc:
+        raise Exception("Error adding song to rehearsal's setlist: %s" % exc.message)
+
+def remove_rehearsal_song(rehearsal_id, song_id):
+    try:
+        rehearsal = get_rehearsal(rehearsal_id)
+        song = get_song(song_id)
+
+        if not rehearsal.setlist.contains(song):
+            raise Exception("This song is not on the rehearsal setlist!")
+
+        aSong = AllocatedSong.objects.get(song=song, setlist=rehearsal.setlist)
+        pos = aSong.position # my old position
+        
+        aSong.delete()
+
+        # rewinds each song in the setlist before my position by 1 position
+        for aSong in AllocatedSong.objects.filter(setlist=rehearsal.setlist, position__gte=pos).exclude(song=song):
+            aSong.position -= 1
+            aSong.save()
+
+        return rehearsal
+    except Exception as exc:
+        raise Exception("Error removing song to rehearsal's setlist: %s" % exc.message)
 

@@ -7,14 +7,19 @@ class Song(models.Model):
 
 class Setlist(models.Model):
     name = models.CharField(verbose_name="name", max_length=50)
-    songs = models.ManyToManyField(Song)
+    songs = models.ManyToManyField(Song, through='AllocatedSong')
 
     def contains(self, song):
         return len(self.songs.filter(artist=song.artist, title=song.title)) is not 0
 
-Setlist.song_list = property(lambda s: s.songs.all())
+Setlist.song_list = property(lambda s: s.songs.order_by('allocatedsong__position'))
 Setlist.count = property(lambda s: len(s.song_list))
-    
+
+class AllocatedSong(models.Model):
+    setlist = models.ForeignKey(Setlist)
+    song = models.ForeignKey(Song)
+    position = models.IntegerField(null=True, default=0)
+
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, primary_key=True)
     phone = models.CharField(verbose_name="phone", max_length=15, blank=True)

@@ -23,13 +23,14 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('project', ['Setlist'])
 
-        # Adding M2M table for field songs on 'Setlist'
-        db.create_table('project_setlist_songs', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('setlist', models.ForeignKey(orm['project.setlist'], null=False)),
-            ('song', models.ForeignKey(orm['project.song'], null=False))
+        # Adding model 'AllocatedSong'
+        db.create_table('project_allocatedsong', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('setlist', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['project.Setlist'])),
+            ('song', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['project.Song'])),
+            ('position', self.gf('django.db.models.fields.IntegerField')(default=0, null=True)),
         ))
-        db.create_unique('project_setlist_songs', ['setlist_id', 'song_id'])
+        db.send_create_signal('project', ['AllocatedSong'])
 
         # Adding model 'UserProfile'
         db.create_table('project_userprofile', (
@@ -158,8 +159,8 @@ class Migration(SchemaMigration):
         # Deleting model 'Setlist'
         db.delete_table('project_setlist')
 
-        # Removing M2M table for field songs on 'Setlist'
-        db.delete_table('project_setlist_songs')
+        # Deleting model 'AllocatedSong'
+        db.delete_table('project_allocatedsong')
 
         # Deleting model 'UserProfile'
         db.delete_table('project_userprofile')
@@ -232,6 +233,13 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
+        'project.allocatedsong': {
+            'Meta': {'object_name': 'AllocatedSong'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'position': ('django.db.models.fields.IntegerField', [], {'default': '0', 'null': 'True'}),
+            'setlist': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['project.Setlist']"}),
+            'song': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['project.Song']"})
+        },
         'project.band': {
             'Meta': {'object_name': 'Band'},
             'bio': ('django.db.models.fields.TextField', [], {'max_length': '1000', 'blank': 'True'}),
@@ -295,7 +303,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Setlist'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'songs': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['project.Song']", 'symmetrical': 'False'})
+            'songs': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['project.Song']", 'through': "orm['project.AllocatedSong']", 'symmetrical': 'False'})
         },
         'project.song': {
             'Meta': {'object_name': 'Song'},

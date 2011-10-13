@@ -555,8 +555,8 @@ def add_gig_song(request, band_id, entry_id, song_id):
             raise Exception("You have no permission to view this band cause you are not a member of it.")
 
         response_data = {}
-        
-        bands_manager.add_gig_song(entry_id, song_id)
+
+        bands_manager.add_gig_song(entry_id, song_id, request.POST['position'])
 
         response_data = { 'success' : "ok" }
     except Exception as exc:
@@ -717,7 +717,7 @@ def add_rehearsal_song(request, band_id, entry_id, song_id):
 
         response_data = {}
 
-        bands_manager.add_rehearsal_song(entry_id, song_id)
+        bands_manager.add_rehearsal_song(entry_id, song_id, request.POST['position'])
 
         response_data = { 'success' : "ok" }
     except Exception as exc:

@@ -33,7 +33,7 @@
                             <input type="hidden" name="song_id" value="{{ song.id }}"/>
                         </li>
                     {% empty %}
-                        <span class="redtext" id="empty_gig_placeholder">No songs left.</span>
+                        <span class="redtext" id="empty_band_placeholder">No songs left.</span>
                     {% endfor %}
                 </ul>
             </div>
@@ -85,18 +85,20 @@
                     if ($("#ul_gig_setlist > li").length == 0) {
                         $("#ul_gig_setlist").append("\<span class=\"redtext\" id=\"empty_gig_placeholder\"\>No songs yet.\</span\>");
                     }
-                    save('remove', ui.item.children('input')[0].value);
+                    save('remove', ui.item.children('input')[0].value, 0); // position is irrelevant
                 },
                 receive: function(event, ui){
                     if ($('#empty_gig_placeholder').length != 0) {
                         $('#empty_gig_placeholder').remove();
                     }
-                    save('add', ui.item.children('input')[0].value);
+
+                    var position = $('#ul_gig_setlist > li').index(ui.item[0]);
+                    save('add', ui.item.children('input')[0].value, position);
                 }
             });
         });
 
-        function save(operation, songId){
+        function save(operation, songId, position){
             var url = '';
             if (operation == 'add'){
                 url = '/band/{{ band.id }}/events/gig/{{ gig.id }}/setlist/add/' + songId;
@@ -109,6 +111,7 @@
             $.ajax({
                 url: url,
                 type: 'POST',
+                data: { 'position' : position},
                 dataType: 'json',
                 beforeSend: function(){
                     $('#ajax_result').removeClass('alert-message error');
