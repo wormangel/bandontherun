@@ -102,8 +102,8 @@ class Migration(SchemaMigration):
         db.create_table('project_unavailability', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('date_start', self.gf('django.db.models.fields.DateField')()),
-            ('time_start', self.gf('django.db.models.fields.CharField')(max_length=5)),
-            ('time_end', self.gf('django.db.models.fields.CharField')(max_length=5)),
+            ('time_start', self.gf('django.db.models.fields.TimeField')()),
+            ('time_end', self.gf('django.db.models.fields.TimeField')()),
             ('band', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['project.Band'])),
             ('added_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('all_day', self.gf('django.db.models.fields.BooleanField')(default=False)),
@@ -115,8 +115,8 @@ class Migration(SchemaMigration):
         db.create_table('project_rehearsal', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('date_start', self.gf('django.db.models.fields.DateField')()),
-            ('time_start', self.gf('django.db.models.fields.CharField')(max_length=5)),
-            ('time_end', self.gf('django.db.models.fields.CharField')(max_length=5)),
+            ('time_start', self.gf('django.db.models.fields.TimeField')()),
+            ('time_end', self.gf('django.db.models.fields.TimeField')()),
             ('band', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['project.Band'])),
             ('added_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('place', self.gf('django.db.models.fields.CharField')(max_length=30)),
@@ -129,8 +129,8 @@ class Migration(SchemaMigration):
         db.create_table('project_gig', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('date_start', self.gf('django.db.models.fields.DateField')()),
-            ('time_start', self.gf('django.db.models.fields.CharField')(max_length=5)),
-            ('time_end', self.gf('django.db.models.fields.CharField')(max_length=5)),
+            ('time_start', self.gf('django.db.models.fields.TimeField')()),
+            ('time_end', self.gf('django.db.models.fields.TimeField')()),
             ('band', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['project.Band'])),
             ('added_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('place', self.gf('django.db.models.fields.CharField')(max_length=30)),
@@ -276,8 +276,8 @@ class Migration(SchemaMigration):
             'place': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'setlist': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['project.Setlist']", 'unique': 'True', 'null': 'True'}),
             'ticket': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
-            'time_end': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
-            'time_start': ('django.db.models.fields.CharField', [], {'max_length': '5'})
+            'time_end': ('django.db.models.fields.TimeField', [], {}),
+            'time_start': ('django.db.models.fields.TimeField', [], {})
         },
         'project.rehearsal': {
             'Meta': {'object_name': 'Rehearsal'},
@@ -288,8 +288,8 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'place': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'setlist': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['project.Setlist']", 'unique': 'True', 'null': 'True'}),
-            'time_end': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
-            'time_start': ('django.db.models.fields.CharField', [], {'max_length': '5'})
+            'time_end': ('django.db.models.fields.TimeField', [], {}),
+            'time_start': ('django.db.models.fields.TimeField', [], {})
         },
         'project.setlist': {
             'Meta': {'object_name': 'Setlist'},
@@ -311,8 +311,8 @@ class Migration(SchemaMigration):
             'date_end': ('django.db.models.fields.DateField', [], {'null': 'True'}),
             'date_start': ('django.db.models.fields.DateField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'time_end': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
-            'time_start': ('django.db.models.fields.CharField', [], {'max_length': '5'})
+            'time_end': ('django.db.models.fields.TimeField', [], {}),
+            'time_start': ('django.db.models.fields.TimeField', [], {})
         },
         'project.userinvitation': {
             'Meta': {'object_name': 'UserInvitation'},

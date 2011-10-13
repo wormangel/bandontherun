@@ -71,8 +71,8 @@ class CalendarEntry(models.Model):
     class Meta:
         abstract = True
     date_start = models.DateField()
-    time_start = models.CharField(verbose_name="start", max_length=5)
-    time_end = models.CharField(verbose_name="end", max_length=5)
+    time_start = models.TimeField(verbose_name="start")
+    time_end = models.TimeField(verbose_name="end")
     band = models.ForeignKey(Band)
     added_by = models.ForeignKey(User)
 
