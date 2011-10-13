@@ -1,6 +1,15 @@
 [
     {
-        "pk": 19, 
+        "pk": 17, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "allocatedsong", 
+            "name": "allocated song", 
+            "app_label": "project"
+        }
+    }, 
+    {
+        "pk": 20, 
         "model": "contenttypes.contenttype", 
         "fields": {
             "model": "band", 
@@ -9,7 +18,7 @@
         }
     }, 
     {
-        "pk": 20, 
+        "pk": 21, 
         "model": "contenttypes.contenttype", 
         "fields": {
             "model": "bandfile", 
@@ -18,7 +27,7 @@
         }
     }, 
     {
-        "pk": 18, 
+        "pk": 19, 
         "model": "contenttypes.contenttype", 
         "fields": {
             "model": "contact", 
@@ -45,7 +54,7 @@
         }
     }, 
     {
-        "pk": 23, 
+        "pk": 24, 
         "model": "contenttypes.contenttype", 
         "fields": {
             "model": "gig", 
@@ -108,7 +117,7 @@
         }
     }, 
     {
-        "pk": 22, 
+        "pk": 23, 
         "model": "contenttypes.contenttype", 
         "fields": {
             "model": "rehearsal", 
@@ -171,7 +180,7 @@
         }
     }, 
     {
-        "pk": 21, 
+        "pk": 22, 
         "model": "contenttypes.contenttype", 
         "fields": {
             "model": "unavailability", 
@@ -189,7 +198,7 @@
         }
     }, 
     {
-        "pk": 24, 
+        "pk": 25, 
         "model": "contenttypes.contenttype", 
         "fields": {
             "model": "userinvitation", 
@@ -198,7 +207,7 @@
         }
     }, 
     {
-        "pk": 17, 
+        "pk": 18, 
         "model": "contenttypes.contenttype", 
         "fields": {
             "model": "userprofile", 
@@ -216,18 +225,10 @@
         }
     }, 
     {
-        "pk": "c5f4ebd169ab4151dbe4d6dc022a6b60", 
+        "pk": "71799f454e568eadaa424d89e2a32026", 
         "model": "sessions.session", 
         "fields": {
-            "expire_date": "2011-10-25 01:35:08", 
-            "session_data": "Yzk2ZjQ1Njk1NTdlNzE0Zjg5MTU1NzM4ZmY0ZjhjY2VmNTY3OTk4OTqAAn1xAS4=\n"
-        }
-    }, 
-    {
-        "pk": "c458b0e3052b118e2aec521352810de1", 
-        "model": "sessions.session", 
-        "fields": {
-            "expire_date": "2011-10-25 01:36:26", 
+            "expire_date": "2011-10-27 09:39:51", 
             "session_data": "Njk0NTExN2IxMzNkZGY0OTU1ZGViZTNkOWM1MjY1NjYwOTViMDdlMjqAAn1xAShVEl9hdXRoX3Vz\nZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHED\nVQ1fYXV0aF91c2VyX2lkcQRLAXUu\n"
         }
     }, 
@@ -235,12 +236,20 @@
         "pk": 1, 
         "model": "project.song", 
         "fields": {
+            "title": "Back in Black", 
+            "artist": "ACDC"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "project.song", 
+        "fields": {
             "title": "Mysteria", 
             "artist": "Edguy"
         }
     }, 
     {
-        "pk": 2, 
+        "pk": 3, 
         "model": "project.song", 
         "fields": {
             "title": "Road to Hell", 
@@ -248,14 +257,54 @@
         }
     }, 
     {
+        "pk": 4, 
+        "model": "project.song", 
+        "fields": {
+            "title": "Thunderstruck", 
+            "artist": "ACDC"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "project.setlist", 
         "fields": {
-            "name": "", 
-            "songs": [
-                1, 
-                2
-            ]
+            "name": ""
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 1, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 2, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 3, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 4, 
+            "setlist": 1
         }
     }, 
     {
@@ -266,13 +315,27 @@
         }
     }, 
     {
+        "pk": 2, 
+        "model": "project.userprofile", 
+        "fields": {
+            "phone": "1234567"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "project.userprofile", 
+        "fields": {
+            "phone": "123456"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "project.contact", 
         "fields": {
-            "added": "2011-10-11", 
-            "name": "Calango", 
+            "added": "2011-10-13", 
+            "name": "Kalango", 
             "service": true, 
-            "phone": "33217777", 
+            "phone": "555-6879", 
             "cost": "20", 
             "added_by": 1
         }
@@ -281,7 +344,7 @@
         "pk": 1, 
         "model": "project.band", 
         "fields": {
-            "bio": "Heavy Metal <b>Band</b>", 
+            "bio": "Heavy Metal Band", 
             "name": "Cranium Basher", 
             "contacts": [
                 1
@@ -289,7 +352,8 @@
             "url": "http://www.craniumbasher.mus/", 
             "setlist": 1, 
             "members": [
-                1
+                1, 
+                2
             ], 
             "logo": ""
         }
@@ -298,7 +362,7 @@
         "pk": 1, 
         "model": "south.migrationhistory", 
         "fields": {
-            "applied": "2011-10-11 04:34:42", 
+            "applied": "2011-10-13 12:37:10", 
             "app_name": "project", 
             "migration": "0001_initial"
         }
@@ -628,38 +692,38 @@
         }
     }, 
     {
-        "pk": 55, 
+        "pk": 49, 
         "model": "auth.permission", 
         "fields": {
-            "codename": "add_band", 
-            "name": "Can add band", 
-            "content_type": 19
+            "codename": "add_allocatedsong", 
+            "name": "Can add allocated song", 
+            "content_type": 17
         }
     }, 
     {
-        "pk": 56, 
+        "pk": 50, 
         "model": "auth.permission", 
         "fields": {
-            "codename": "change_band", 
-            "name": "Can change band", 
-            "content_type": 19
+            "codename": "change_allocatedsong", 
+            "name": "Can change allocated song", 
+            "content_type": 17
         }
     }, 
     {
-        "pk": 57, 
+        "pk": 51, 
         "model": "auth.permission", 
         "fields": {
-            "codename": "delete_band", 
-            "name": "Can delete band", 
-            "content_type": 19
+            "codename": "delete_allocatedsong", 
+            "name": "Can delete allocated song", 
+            "content_type": 17
         }
     }, 
     {
         "pk": 58, 
         "model": "auth.permission", 
         "fields": {
-            "codename": "add_bandfile", 
-            "name": "Can add band file", 
+            "codename": "add_band", 
+            "name": "Can add band", 
             "content_type": 20
         }
     }, 
@@ -667,8 +731,8 @@
         "pk": 59, 
         "model": "auth.permission", 
         "fields": {
-            "codename": "change_bandfile", 
-            "name": "Can change band file", 
+            "codename": "change_band", 
+            "name": "Can change band", 
             "content_type": 20
         }
     }, 
@@ -676,44 +740,98 @@
         "pk": 60, 
         "model": "auth.permission", 
         "fields": {
-            "codename": "delete_bandfile", 
-            "name": "Can delete band file", 
+            "codename": "delete_band", 
+            "name": "Can delete band", 
             "content_type": 20
         }
     }, 
     {
-        "pk": 52, 
+        "pk": 61, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_bandfile", 
+            "name": "Can add band file", 
+            "content_type": 21
+        }
+    }, 
+    {
+        "pk": 62, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_bandfile", 
+            "name": "Can change band file", 
+            "content_type": 21
+        }
+    }, 
+    {
+        "pk": 63, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_bandfile", 
+            "name": "Can delete band file", 
+            "content_type": 21
+        }
+    }, 
+    {
+        "pk": 55, 
         "model": "auth.permission", 
         "fields": {
             "codename": "add_contact", 
             "name": "Can add contact", 
-            "content_type": 18
+            "content_type": 19
         }
     }, 
     {
-        "pk": 53, 
+        "pk": 56, 
         "model": "auth.permission", 
         "fields": {
             "codename": "change_contact", 
             "name": "Can change contact", 
-            "content_type": 18
+            "content_type": 19
         }
     }, 
     {
-        "pk": 54, 
+        "pk": 57, 
         "model": "auth.permission", 
         "fields": {
             "codename": "delete_contact", 
             "name": "Can delete contact", 
-            "content_type": 18
+            "content_type": 19
+        }
+    }, 
+    {
+        "pk": 70, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_gig", 
+            "name": "Can add gig", 
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 71, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_gig", 
+            "name": "Can change gig", 
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 72, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_gig", 
+            "name": "Can delete gig", 
+            "content_type": 24
         }
     }, 
     {
         "pk": 67, 
         "model": "auth.permission", 
         "fields": {
-            "codename": "add_gig", 
-            "name": "Can add gig", 
+            "codename": "add_rehearsal", 
+            "name": "Can add rehearsal", 
             "content_type": 23
         }
     }, 
@@ -721,8 +839,8 @@
         "pk": 68, 
         "model": "auth.permission", 
         "fields": {
-            "codename": "change_gig", 
-            "name": "Can change gig", 
+            "codename": "change_rehearsal", 
+            "name": "Can change rehearsal", 
             "content_type": 23
         }
     }, 
@@ -730,36 +848,9 @@
         "pk": 69, 
         "model": "auth.permission", 
         "fields": {
-            "codename": "delete_gig", 
-            "name": "Can delete gig", 
-            "content_type": 23
-        }
-    }, 
-    {
-        "pk": 64, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "add_rehearsal", 
-            "name": "Can add rehearsal", 
-            "content_type": 22
-        }
-    }, 
-    {
-        "pk": 65, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "change_rehearsal", 
-            "name": "Can change rehearsal", 
-            "content_type": 22
-        }
-    }, 
-    {
-        "pk": 66, 
-        "model": "auth.permission", 
-        "fields": {
             "codename": "delete_rehearsal", 
             "name": "Can delete rehearsal", 
-            "content_type": 22
+            "content_type": 23
         }
     }, 
     {
@@ -817,84 +908,84 @@
         }
     }, 
     {
-        "pk": 61, 
+        "pk": 64, 
         "model": "auth.permission", 
         "fields": {
             "codename": "add_unavailability", 
             "name": "Can add unavailability", 
-            "content_type": 21
+            "content_type": 22
         }
     }, 
     {
-        "pk": 62, 
+        "pk": 65, 
         "model": "auth.permission", 
         "fields": {
             "codename": "change_unavailability", 
             "name": "Can change unavailability", 
-            "content_type": 21
+            "content_type": 22
         }
     }, 
     {
-        "pk": 63, 
+        "pk": 66, 
         "model": "auth.permission", 
         "fields": {
             "codename": "delete_unavailability", 
             "name": "Can delete unavailability", 
-            "content_type": 21
+            "content_type": 22
         }
     }, 
     {
-        "pk": 70, 
+        "pk": 73, 
         "model": "auth.permission", 
         "fields": {
             "codename": "add_userinvitation", 
             "name": "Can add user invitation", 
-            "content_type": 24
+            "content_type": 25
         }
     }, 
     {
-        "pk": 71, 
+        "pk": 74, 
         "model": "auth.permission", 
         "fields": {
             "codename": "change_userinvitation", 
             "name": "Can change user invitation", 
-            "content_type": 24
+            "content_type": 25
         }
     }, 
     {
-        "pk": 72, 
+        "pk": 75, 
         "model": "auth.permission", 
         "fields": {
             "codename": "delete_userinvitation", 
             "name": "Can delete user invitation", 
-            "content_type": 24
+            "content_type": 25
         }
     }, 
     {
-        "pk": 49, 
+        "pk": 52, 
         "model": "auth.permission", 
         "fields": {
             "codename": "add_userprofile", 
             "name": "Can add user profile", 
-            "content_type": 17
+            "content_type": 18
         }
     }, 
     {
-        "pk": 50, 
+        "pk": 53, 
         "model": "auth.permission", 
         "fields": {
             "codename": "change_userprofile", 
             "name": "Can change user profile", 
-            "content_type": 17
+            "content_type": 18
         }
     }, 
     {
-        "pk": 51, 
+        "pk": 54, 
         "model": "auth.permission", 
         "fields": {
             "codename": "delete_userprofile", 
             "name": "Can delete user profile", 
-            "content_type": 17
+            "content_type": 18
         }
     }, 
     {
@@ -961,12 +1052,48 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2011-10-11 01:36:26", 
+            "last_login": "2011-10-13 09:39:51", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "sha1$Nmc2LsmbEgdE$2a469f3636463493d66f1d52142ed40702955bfe", 
+            "password": "sha1$NWF8KG78bffN$e39d201f99223d6ce73f695e02f03cd091cfe855", 
             "email": "wormangel@gmail.com", 
-            "date_joined": "2011-10-11 01:36:25"
+            "date_joined": "2011-10-13 09:38:51"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "otacilio", 
+            "first_name": "Otacilio", 
+            "last_name": "Lacerda", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-10-13 09:39:24", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$HrTzFC6a9Lba$232057af281cff1d53e37bcaf9d6924786a29635", 
+            "email": "otaciliolacerda@gmail.com", 
+            "date_joined": "2011-10-13 09:39:24"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "vitor", 
+            "first_name": "Vitor", 
+            "last_name": "Avelino", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-10-13 09:39:41", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$fw2Z1HGSm3tw$9617cbf95eb8a9c0960d30f23ea343fd5923204c", 
+            "email": "vitor88@gmail.com", 
+            "date_joined": "2011-10-13 09:39:40"
         }
     }
 ]
