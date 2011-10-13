@@ -160,6 +160,7 @@ def add_gig_entry(band_id, date_start, time_start, time_end, place, costs, ticke
     try:
         band = get_band(band_id)
         entry = Gig.objects.create(date_start=date_start, time_start=time_start, time_end=time_end, place=place, costs=costs, ticket=ticket, band=band, added_by=user)
+        entry.setlist = Setlist.objects.create()
         entry.save()
     except Exception as exc:
         raise Exception("Error adding gig: %s" % exc.message)

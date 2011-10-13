@@ -486,6 +486,23 @@ def edit_gig(request, band_id, entry_id):
     return render_to_response('band/events/gig/edit.html', context, context_instance=RequestContext(request))
 
 @login_required
+@require_http_methods(["GET"])
+def show_gig(request, band_id, entry_id):
+    context = {}
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to view this band's events cause you are not a member of it.")
+
+        gig = bands_manager.get_gig(entry_id)
+        context['band'] = band
+        context['gig'] = gig
+    except Exception as exc:
+        # 500
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+    return render_to_response('band/events/gig/show.html', context, context_instance=RequestContext(request))
+
+@login_required
 @require_POST 
 def remove_gig(request, band_id, entry_id):
     context = {}
@@ -498,6 +515,18 @@ def remove_gig(request, band_id, entry_id):
     except Exception as exc:
         print exc
         # 500
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def gig_setlist(request, band_id, entry_id):
+    context = {}
+
+    try:
+        band = bands_manager.get_band(band_id)
+        context['band'] = band
+    except Exception as exc:
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+    return render_to_response('band/events/gig/setlist.html', context, context_instance=RequestContext(request))
     
 @login_required
 @require_http_methods(["GET", "POST"])

@@ -1,0 +1,42 @@
+{% extends 'band-base.html' %}
+{% load url from future %}
+{% load formatter %}
+
+{% block band-content %}
+    {% if not error_msg %}
+    <h2>{{ band.name }}</h2>
+    <h3>Gig at {{ gig.place }} - {{ gig.date_start }}</h3>
+    <dl>
+        <dt>Date:</dt>
+        <dd>{{ gig.date_start }}</dd>
+        <dt>Time:</dt>
+        <dd>{{ gig.time_start }} - {{ gig.time_end }}</dd>
+        <dt>Place/Venue:</dt>
+        <dd>{{ gig.place }}</dd>
+        <dt>Ticket price:</dt>
+        <dd>{{ gig.ticket|currency }}</dd>
+    </dl>
+    <a href="{% url 'edit-gig' band.id gig.id %}"><button class="btn">Edit</button></a>
+    <hr size="20"/>
+    <h4>Setlist:</h4>
+    <ul id="setlist">
+    {% for song in gig.setlist.set_list %}
+        <li>
+            {{ song.artist }} - {{ song.title }}
+        </li>
+    {% empty %}
+        No songs yet.
+    {% endfor %}
+    </ul>
+    <h6><a href="{% url 'gig-setlist' band.id gig.id %}">Click here to edit.</a></h6>
+
+    <hr size="20"/>
+    <h4>Gig contract:</h4>
+        
+    {% else %}
+    <div class="alert-message error">
+        {{ error_msg }}
+    </div>
+    {% endif %}
+{% endblock %}
+
