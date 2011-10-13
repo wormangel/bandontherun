@@ -199,9 +199,12 @@ def add_gig_song(gig_id, song_id, pos):
         gig = get_gig(gig_id)
         song = get_song(song_id)
 
+        if gig.setlist.contains(song):
+            raise Exception("This song is already on the setlist!")
+
         newSong = AllocatedSong(setlist=gig.setlist, song=song, position = pos)
         newSong.save()
-
+        
         # advances each song in the setlist after my new position by 1 position
         if (gig.setlist.count > 0):
             for aSong in AllocatedSong.objects.filter(setlist=gig.setlist, position__gte=pos).exclude(song=song):
@@ -233,6 +236,14 @@ def remove_gig_song(gig_id, song_id):
         return gig
     except Exception as exc:
         raise Exception("Error removing song to gig's setlist: %s" % exc.message)
+
+def sort_gig_setlist(gig_id, song_id, pos):
+    try:
+        remove_gig_song(gig_id, song_id)
+        add_gig_song(gig_id, song_id, pos)
+
+    except Exception as exc:
+        raise Exception("Error adding song to gig's setlist: %s" % exc.message)
 
 ### Rehearsals ###
 
@@ -277,6 +288,9 @@ def add_rehearsal_song(rehearsal_id, song_id, pos):
         rehearsal = get_rehearsal(rehearsal_id)
         song = get_song(song_id)
 
+        if rehearsal.setlist.contains(song):
+            raise Exception("This song is already on the setlist!")
+
         aSong = AllocatedSong(setlist=rehearsal.setlist, song=song, position=pos)
         aSong.save()
 
@@ -312,3 +326,10 @@ def remove_rehearsal_song(rehearsal_id, song_id):
     except Exception as exc:
         raise Exception("Error removing song to rehearsal's setlist: %s" % exc.message)
 
+def sort_rehearsal_setlist(rehearsal_id, song_id, pos):
+    try:
+        remove_rehearsal_song(rehearsal_id, song_id)
+        add_rehearsal_song(rehearsal_id, song_id, pos)
+
+    except Exception as exc:
+        raise Exception("Error sorting rehearsal's setlist: %s" % exc.message)

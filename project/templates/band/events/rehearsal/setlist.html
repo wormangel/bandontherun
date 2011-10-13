@@ -93,8 +93,14 @@
                     if ($('#empty_rehearsal_placeholder').length != 0) {
                         $('#empty_rehearsal_placeholder').remove();
                     }
-                    var position = $('#ul_gig_setlist > li').index(ui.item[0]);
+                    var position = $('#ul_rehearsal_setlist > li').index(ui.item[0]);
                     save('add', ui.item.children('input')[0].value, position);
+                },
+                update: function(event, ui){
+                    if(ui.sender == null && ui.item[0].parentNode.id == 'ul_rehearsal_setlist'){ // guarantees the change was inside the list
+                        var position = $('#ul_rehearsal_setlist > li').index(ui.item[0]);
+                        save('sort', ui.item.children('input')[0].value, position)
+                    }
                 }
             });
         });
@@ -106,7 +112,7 @@
             } else if (operation == 'remove'){
                 url = '/band/{{ band.id }}/events/rehearsal/{{ rehearsal.id }}/setlist/remove/' + songId;
             } else if (operation == 'sort'){
-                url = '/band/{{ band.id }}/events/rehearsal/{{ rehearsal.id }}/setlist/sort';
+                url = '/band/{{ band.id }}/events/rehearsal/{{ rehearsal.id }}/setlist/sort/' + songId;
             }
 
             $.ajax({

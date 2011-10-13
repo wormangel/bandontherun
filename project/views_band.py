@@ -587,6 +587,26 @@ def remove_gig_song(request, band_id, entry_id, song_id):
     return response
 
 @login_required
+@require_POST
+def sort_gig_setlist(request, band_id, entry_id, song_id):
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to view this band cause you are not a member of it.")
+
+        response_data = {}
+
+        bands_manager.sort_gig_setlist(entry_id, song_id, request.POST['position'])
+
+        response_data = { 'success' : "ok" }
+    except Exception as exc:
+        response_data= { 'success' : "fail: " + exc.message }
+
+    response = HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
+    print response
+    return response
+
+@login_required
 @require_http_methods(["GET"])
 def show_rehearsal(request, band_id, entry_id):
     context = {}
@@ -760,3 +780,23 @@ def remove_rehearsal(request, band_id, entry_id):
     except Exception as exc:
         print exc
         # 500
+
+@login_required
+@require_POST
+def sort_rehearsal_setlist(request, band_id, entry_id, song_id):
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to view this band cause you are not a member of it.")
+
+        response_data = {}
+
+        bands_manager.sort_rehearsal_setlist(entry_id, song_id, request.POST['position'])
+
+        response_data = { 'success' : "ok" }
+    except Exception as exc:
+        response_data= { 'success' : "fail: " + exc.message }
+
+    response = HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
+    print response
+    return response

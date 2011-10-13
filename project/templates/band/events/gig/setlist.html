@@ -96,6 +96,12 @@
 
                     var position = $('#ul_gig_setlist > li').index(ui.item[0]);
                     save('add', ui.item.children('input')[0].value, position);
+                },
+                update: function(event, ui){
+                    if(ui.sender == null && ui.item[0].parentNode.id == 'ul_gig_setlist'){ // guarantees the change was inside the list
+                        var position = $('#ul_gig_setlist > li').index(ui.item[0]);
+                        save('sort', ui.item.children('input')[0].value, position)
+                    }
                 }
             });
         });
@@ -107,7 +113,7 @@
             } else if (operation == 'remove'){
                 url = '/band/{{ band.id }}/events/gig/{{ gig.id }}/setlist/remove/' + songId;
             } else if (operation == 'sort'){
-                url = '/band/{{ band.id }}/events/gig/{{ gig.id }}/setlist/sort';
+                url = '/band/{{ band.id }}/events/gig/{{ gig.id }}/setlist/sort/' + songId;
             }
 
             $.ajax({
