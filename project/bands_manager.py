@@ -99,6 +99,13 @@ def get_band(band_id):
         return band
     except Band.DoesNotExist:
         raise Exception("There is no band associated with id %s." % band_id)
+
+def get_gig(gig_id):
+    try:
+        gig = Gig.objects.get(id=gig_id)
+        return gig
+    except Gig.DoesNotExist:
+        raise Exception("There is no gig associated with id %s." % gig_id)
         
 def remove_contact(band_id, contact_id):
     try:
@@ -156,6 +163,20 @@ def add_gig_entry(band_id, date_start, time_start, time_end, place, costs, ticke
         entry.save()
     except Exception as exc:
         raise Exception("Error adding gig: %s" % exc.message)
+
+def update_gig_entry(entry_id, date_start, time_start, time_end, place, costs, ticket):
+    try:
+        gig = get_gig(entry_id)
+        gig.date_start = date_start
+        gig.time_start = time_start
+        gig.time_end = time_end
+        gig.place = place
+        gig.costs = costs
+        gig.ticket = ticket
+        gig.save()
+        return gig
+    except Exception as exc:
+        raise Exception("Error updating gig: %s" % exc.message)
     
 def remove_gig(band_id, entry_id, user):
     try:

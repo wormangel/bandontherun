@@ -40,6 +40,7 @@ urlpatterns = patterns('',
     url(r'^band/(?P<band_id>\d+)/events/unavailability/(?P<entry_id>\d+)/remove$', 'project.views_band.remove_unavailability', name='remove-unavailability'),
 
     url(r'^band/(?P<band_id>\d+)/events/gig/add$', 'project.views_band.add_gig', name='add-gig'),
+    url(r'^band/(?P<band_id>\d+)/events/gig/(?P<entry_id>\d+)/edit$', 'project.views_band.edit_gig', name='edit-gig'),
     url(r'^band/(?P<band_id>\d+)/events/gig/(?P<entry_id>\d+)/remove$', 'project.views_band.remove_gig', name='remove-gig'),
 
     url(r'^band/(?P<band_id>\d+)/events/rehearsal/add$', 'project.views_band.add_rehearsal', name='add-rehearsal'),

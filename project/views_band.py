@@ -11,6 +11,7 @@ from datetime import datetime
 from filetransfers.api import prepare_upload, serve_file
 from models import Band, User, BandFile
 from forms import BandCreateForm, BandEditForm, UploadBandFileForm, ContactBandForm, UnavailabilityEntryForm, RehearsalEntryForm, GigEntryForm
+from project.models import Gig
 
 import users_manager, bands_manager
 
@@ -435,6 +436,54 @@ def add_gig(request, band_id):
     else:
         context['form'] = GigEntryForm()
     return render_to_response('band/events/gig/create.html', context, context_instance=RequestContext(request))
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def edit_gig(request, band_id, entry_id):
+    context = {}
+
+    try:
+        band = bands_manager.get_band(band_id)
+        context['band'] = band
+
+        gig = bands_manager.get_gig(entry_id)
+
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to edit this band's events cause you are not a member of it.")
+
+        if request.method == 'POST':
+            form = GigEntryForm(request.POST)
+            context['form'] = form
+            if form.is_valid():
+                date_start = form.cleaned_data['date_start']
+                time_start = form.cleaned_data['time_start']
+                time_end = form.cleaned_data['time_end']
+                place = form.cleaned_data['place']
+                costs = form.cleaned_data['costs']
+                ticket = form.cleaned_data['ticket']
+                
+                gig = bands_manager.update_gig_entry(entry_id, date_start, time_start, time_end, place, costs, ticket)
+                context['success'] = "Gig updated successfully!"
+        else: # GET
+            if gig.band != band:
+                raise Exception("There is no gig for this band with the given Id.")
+
+            data = {'date_start' : gig.date_start,
+                    'time_start' : gig.time_start,
+                    'time_end' : gig.time_end,
+                    'place' : gig.place,
+                    'costs' : gig.costs,
+                    'ticket' : gig.ticket
+                    }
+            form = GigEntryForm(data)
+
+        context['gig'] = gig
+        context['form'] = form
+    except Exception as exc:
+        # 404
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+
+    return render_to_response('band/events/gig/edit.html', context, context_instance=RequestContext(request))
 
 @login_required
 @require_POST 

@@ -56,7 +56,7 @@ class UnavailabilityEntryForm(forms.Form):
     date_start = forms.DateField()
     date_end = forms.DateField()
     time_start = forms.TimeField(widget=forms.TimeInput(), input_formats=["%H:%M"])
-    time_end = forms.TimeField(widget=forms.TimeInput(), input_formats=["%H:%M"])
+    time_end = forms.TimeField(widget=forms.TimeInput(), input_formats=["%H:%M", "%H:%M:%S"])
     
 class RehearsalEntryForm(forms.Form):
     date_start = forms.DateField(label="Date")
