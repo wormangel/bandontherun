@@ -63,6 +63,7 @@
             $('.alert-message warning').hide();
 
             $('#ul_band_setlist').sortable({
+                items: 'li',
                 connectWith: '#ul_rehearsal_setlist',
                 placeholder: 'droppable-zone-highlight',
                 forcePlaceholderSize: true,
@@ -79,6 +80,7 @@
             });
 
             $('#ul_rehearsal_setlist').sortable({
+                items: 'li',
                 connectWith: '#ul_band_setlist',
                 placeholder: 'droppable-zone-highlight',
                 remove: function(event, ui){
