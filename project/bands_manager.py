@@ -90,6 +90,17 @@ def add_gig_song(gig_id, song_id):
     except Exception as exc:
         raise Exception("Error adding song to gig's setlist: %s" % exc.message)
 
+def add_rehearsal_song(rehearsal_id, song_id):
+    try:
+        rehearsal = get_rehearsal(rehearsal_id)
+        song = get_song(song_id)
+
+        rehearsal.setlist.songs.add(song)
+        rehearsal.save()
+        return rehearsal
+    except Exception as exc:
+        raise Exception("Error adding song to rehearsal's setlist: %s" % exc.message)
+
 def remove_gig_song(gig_id, song_id):
     try:
         gig = get_gig(gig_id)
@@ -103,6 +114,20 @@ def remove_gig_song(gig_id, song_id):
         return gig
     except Exception as exc:
         raise Exception("Error removing song to gig's setlist: %s" % exc.message)
+
+def remove_rehearsal_song(rehearsal_id, song_id):
+    try:
+        rehearsal = get_rehearsal(rehearsal_id)
+        song = get_song(song_id)
+
+        if not rehearsal.setlist.contains(song):
+            raise Exception("This song is not on the rehearsal setlist!")
+
+        rehearsal.setlist.songs.remove(song)
+        rehearsal.save()
+        return rehearsal
+    except Exception as exc:
+        raise Exception("Error removing song to rehearsal's setlist: %s" % exc.message)
 
 def remove_setlist_song(band_id, song_id):
     try:
@@ -131,6 +156,13 @@ def get_gig(gig_id):
         return gig
     except Gig.DoesNotExist:
         raise Exception("There is no gig associated with id %s." % gig_id)
+
+def get_rehearsal(rehearsal_id):
+    try:
+        rehearsal = Rehearsal.objects.get(id=rehearsal_id)
+        return rehearsal
+    except Rehearsal.DoesNotExist:
+        raise Exception("There is no rehearsal associated with id %s." % gig_id)
 
 def get_song(song_id):
     try:
@@ -222,10 +254,24 @@ def add_rehearsal_entry(band_id, date_start, time_start, time_end, place, costs,
     try:
         band = get_band(band_id)
         entry = Rehearsal.objects.create(date_start=date_start, time_start=time_start, time_end=time_end, place=place, costs=costs, band=band, added_by=user)
+        entry.setlist = Setlist.objects.create()
         entry.save()
     except Exception as exc:
         raise Exception("Error adding rehearsal: %s" % exc.message)
-    
+
+def update_rehearsal_entry(entry_id, date_start, time_start, time_end, place, costs):
+    try:
+        rehearsal = get_rehearsal(entry_id)
+        rehearsal.date_start = date_start
+        rehearsal.time_start = time_start
+        rehearsal.time_end = time_end
+        rehearsal.place = place
+        rehearsal.costs = costs
+        rehearsal.save()
+        return rehearsal
+    except Exception as exc:
+        raise Exception("Error updating rehearsal: %s" % exc.message)
+
 def remove_rehearsal(band_id, entry_id, user):
     try:
         entry = Rehearsal.objects.filter(id=entry_id)

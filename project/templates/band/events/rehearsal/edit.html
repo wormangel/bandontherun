@@ -1,0 +1,76 @@
+{% extends 'band-base.html' %}
+{% load url from future %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery-ui-1.8.16.custom.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.ui.timepicker.css" />
+{% endblock %}
+
+{% block band-content %}
+    <h2>{{ band.name }}</h2>
+    <h3>Rehearsals</h3>
+
+    {% if not error_msg %}
+        {% if success %}
+            <div class="alert-message success">
+                <a class="close" href="#">×</a>
+                <p>{{ success }}</p>
+            </div>
+        {% endif %}
+
+        <form action="/band/{{ band.id }}/events/rehearsal/{{ rehearsal.id }}/edit" method="post"> {% csrf_token %}
+          {% include "form_template.html" with form_title="Edit rehearsal" %}
+          <div class="actions">
+              <button class="btn primary" type="submit">Save</button>
+              <button class="btn" type="reset">Cancel</button>
+          </div>
+        </form>
+    {% else %}
+        <div class="alert-message error">
+            {{ error_msg }}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.ui.timepicker.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/jquery.maskMoney.js" type="text/javascript"></script>
+    <script>
+        $(function() {
+            // Init the time pickers
+            $("#id_time_start").timepicker({defaultTime: ''});
+
+            $("#id_time_end").timepicker({defaultTime: ''});
+
+            // Init the date pickers
+            var dates = $("#id_date_start, #id_date_end").datepicker({
+                defaultDate: "+1w",
+                onSelect: function( selectedDate ) {
+                    var option = this.id == "id_date_start" ? "minDate" : "maxDate",
+                        instance = $( this ).data( "datepicker" ),
+                        date = $.datepicker.parseDate(
+                            instance.settings.dateFormat ||
+                            $.datepicker._defaults.dateFormat,
+                            selectedDate, instance.settings );
+                    dates.not( this ).datepicker( "option", option, date );
+                }
+            });
+
+            $(".alert-message.close").click(function(e) {
+                $this.closest('.alert-message').remove();
+                e.preventDefault();
+            });
+
+            // Applies the currency masking
+            var $cost = $("#id_costs");
+            $cost.maskMoney({symbol:'$ ', showSymbol:true, symbolStay: true});
+
+            $("form").submit(function(e) {
+                $cost.val($cost.val().replace("$ ", "").replace(",", ""));
+            });
+
+            $("#id_costs")
+        });
+    </script>
+{% endblock %}

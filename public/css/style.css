@@ -125,7 +125,7 @@ footer a {
     color: red;
 }
 
-#gig_setlist_instructions {
+#gig_setlist_instructions, #rehearsal_setlist_instructions {
     border: 1px solid lightblue;
     border-radius: 6px;
     padding:9px;

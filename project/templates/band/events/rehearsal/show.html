@@ -1,0 +1,41 @@
+{% extends 'band-base.html' %}
+{% load url from future %}
+{% load formatter %}
+
+{% block band-content %}
+    {% if not error_msg %}
+    <h2>{{ band.name }}</h2>
+    <h3>Rehearsal at {{ rehearsal.place }} - {{ rehearsal.date_start }}</h3>
+    <dl>
+        <dt>Date:</dt>
+        <dd>{{ rehearsal.date_start }}</dd>
+        <dt>Time:</dt>
+        <dd>{{ rehearsal.time_start }} - {{ rehearsal.time_end }}</dd>
+        <dt>Place:</dt>
+        <dd>{{ rehearsal.place }}</dd>
+        <dt>Costs:</dt>
+        <dd>{{ rehearsal.costs|currency }}</dd>
+    </dl>
+    <a href="{% url 'edit-rehearsal' band.id rehearsal.id %}"><button class="btn">Edit</button></a>
+    <hr size="20"/>
+    <h4>Setlist:</h4>
+    <ul id="setlist">
+    {% for song in rehearsal.setlist.song_list %}
+        <li>
+            {{ song.artist }} - {{ song.title }}
+        </li>
+    {% empty %}
+        No songs yet.
+    {% endfor %}
+    </ul>
+    <h6><a href="{% url 'rehearsal-setlist' band.id rehearsal.id %}">Click here to edit.</a></h6>
+
+    <hr size="20"/>
+
+    {% else %}
+    <div class="alert-message error">
+        {{ error_msg }}
+    </div>
+    {% endif %}
+{% endblock %}
+
