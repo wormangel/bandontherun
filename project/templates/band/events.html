@@ -45,7 +45,7 @@
     <div id="bubble">
         <div class="info"></div>
         <hr />
-        <a href="#">Edit</a>
+        <a href="#">Show</a>
         <form method="post"> {% csrf_token %}
             <button type="submit">Remove it?</button>
         </form>
@@ -205,11 +205,11 @@
                     },
                     eventClick: function(event, jsEvent, view) {
                         var removeURI = '/band/{{ band.id }}/events/#type/#id/remove',
-                        editURI = '/band/{{ band.id }}/events/#type/#id/edit'
+                        showURI = '/band/{{ band.id }}/events/#type/#id/show'
                         $bubble = $("#bubble");
                         $bubble.css('top', (jsEvent.pageY-5) + 'px');
                         $bubble.css('left', (jsEvent.pageX+10) + 'px');
-                        $bubble.find("> a").attr('href', editURI.replace('#type', event.type).replace('#id', event.pk));
+                        $bubble.find("> a").attr('href', showURI.replace('#type', event.type).replace('#id', event.pk));
                         $bubble.find('form').attr('action', removeURI.replace('#type', event.type).replace('#id', event.pk));
                         $bubble.find(".info").empty().html(event.toHTML());
                         $bubble.data('event', event.id);
