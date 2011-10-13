@@ -1,5 +1,176 @@
 {% extends 'band-base.html' %}
+{% load url from future %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery-ui-1.8.16.custom.css" />
+{% endblock %}
 
 {% block band-content %}
-<h2>Calma, cara.</h2>
+
+    <h2>{{ band.name }}</h2>
+    <h3><a href="{% url 'show-gig' band.id gig.id %}">Gig at {{ gig.place }} - {{ gig.date_start }}</a> - Setlist</h3>
+
+    <div id="ajax_result"></div>
+    
+    <div id="gig_setlist_instructions">
+        <span class="label notice">INSTRUCTIONS</span>
+        <ul>
+            <li>Drag and drop the songs from the band setlist to the gig setlist.</li>
+            <li>You can also order the songs as you please.</li>
+            <li>The changes are saved automatically.</li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div id="band_setlist" class="span6">
+                <h6>Band setlist:</h6>
+
+                <ul id="ul_band_setlist">
+                    {% for song in diff_setlist %}
+                        <li>
+                            {{ song.artist }} - {{ song.title }}
+                            <input type="hidden" name="song_id" value="{{ song.id }}"/>
+                        </li>
+                    {% empty %}
+                        <span class="redtext" id="empty_gig_placeholder">No songs left.</span>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div id="gig_setlist" class="span10">
+                <h6>Gig setlist:</h6>
+
+                <ul id="ul_gig_setlist">
+                    {% for song in gig.setlist.song_list %}
+                        <li>
+                            {{ song.artist }} - {{ song.title }}
+                            <input type="hidden" name="song_id" value="{{ song.id }}"/>
+                        </li>
+                    {% empty %}
+                        <span class="redtext" id="empty_gig_placeholder">No songs yet.</span>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery-ui-1.8.16.custom.min.js"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            $('.alert-message warning').hide();
+
+            $('#ul_band_setlist').sortable({
+                connectWith: '#ul_gig_setlist',
+                placeholder: 'droppable-zone-highlight',
+                forcePlaceholderSize: true,
+                remove: function(event, ui){
+                    if ($("#ul_band_setlist > li").length == 0) {
+                        $("#ul_band_setlist").append("\<span class=\"redtext\" id=\"empty_band_placeholder\"\>No songs left.\</span\>");
+                    }
+                },
+                receive: function(event, ui){
+                    if ($('#empty_band_placeholder').length != 0) {
+                        $('#empty_band_placeholder').remove();
+                    }
+                }
+            });
+
+            $('#ul_gig_setlist').sortable({
+                connectWith: '#ul_band_setlist',
+                placeholder: 'droppable-zone-highlight',
+                remove: function(event, ui){
+                    if ($("#ul_gig_setlist > li").length == 0) {
+                        $("#ul_gig_setlist").append("\<span class=\"redtext\" id=\"empty_gig_placeholder\"\>No songs yet.\</span\>");
+                    }
+                    save('remove', ui.item.children('input')[0].value);
+                },
+                receive: function(event, ui){
+                    if ($('#empty_gig_placeholder').length != 0) {
+                        $('#empty_gig_placeholder').remove();
+                    }
+                    save('add', ui.item.children('input')[0].value);
+                }
+            });
+        });
+
+        function save(operation, songId){
+            var url = '';
+            if (operation == 'add'){
+                url = '/band/{{ band.id }}/events/gig/{{ gig.id }}/setlist/add/' + songId;
+            } else if (operation == 'remove'){
+                url = '/band/{{ band.id }}/events/gig/{{ gig.id }}/setlist/remove/' + songId;
+            } else if (operation == 'sort'){
+                url = '/band/{{ band.id }}/events/gig/{{ gig.id }}/setlist/sort';
+            }
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function(){
+                    $('#ajax_result').removeClass('alert-message error');
+                    $('#ajax_result').removeClass('alert-message success');
+                    $('#ajax_result').addClass('alert-message warning');
+                    $('#ajax_result').text('Saving...');
+                },
+                success: function(data){
+                    if (data.success == 'ok'){
+                        $('#ajax_result').removeClass('alert-message warning');
+                        $('#ajax_result').addClass('alert-message success');
+                        $('#ajax_result').text('Saved!');
+                    } else {
+                        $('#ajax_result').removeClass('alert-message warning');
+                        $('#ajax_result').addClass('alert-message error');
+                        $('#ajax_result').text('Error updating setlist.');
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    $('#ajax_result').removeClass('alert-message warning');
+                    $('#ajax_result').addClass('alert-message error');
+                    $('#ajax_result').text('Error updating setlist.');
+                }
+            });
+        }
+        
+        // Obligatory stuff for AJAX to work in DJANGO (csrf-related) 
+        $(document).ajaxSend(function(event, xhr, settings) {
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            function sameOrigin(url) {
+                // url could be relative or scheme relative or absolute
+                var host = document.location.host; // host + port
+                var protocol = document.location.protocol;
+                var sr_origin = '//' + host;
+                var origin = protocol + sr_origin;
+                // Allow absolute or scheme relative URLs to same origin
+                return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                    (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                    // or any other URL that isn't scheme relative or absolute i.e relative.
+                    !(/^(\/\/|http:|https:).*/.test(url));
+            }
+            function safeMethod(method) {
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+
+            if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        });
+    </script>
 {% endblock %}

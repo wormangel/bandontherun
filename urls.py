@@ -44,6 +44,8 @@ urlpatterns = patterns('',
     url(r'^band/(?P<band_id>\d+)/events/gig/(?P<entry_id>\d+)/show$', 'project.views_band.show_gig', name='show-gig'),
     url(r'^band/(?P<band_id>\d+)/events/gig/(?P<entry_id>\d+)/remove$', 'project.views_band.remove_gig', name='remove-gig'),
     url(r'^band/(?P<band_id>\d+)/events/gig/(?P<entry_id>\d+)/setlist$', 'project.views_band.gig_setlist', name='gig-setlist'),
+    url(r'^band/(?P<band_id>\d+)/events/gig/(?P<entry_id>\d+)/setlist/add/(?P<song_id>\d+)$', 'project.views_band.add_gig_song', name='add-gig-song'),
+    url(r'^band/(?P<band_id>\d+)/events/gig/(?P<entry_id>\d+)/setlist/remove/(?P<song_id>\d+)$', 'project.views_band.remove_gig_song', name='remove-gig-song'),
 
     url(r'^band/(?P<band_id>\d+)/events/rehearsal/add$', 'project.views_band.add_rehearsal', name='add-rehearsal'),
     url(r'^band/(?P<band_id>\d+)/events/rehearsal/(?P<entry_id>\d+)/remove$', 'project.views_band.remove_rehearsal', name='remove-rehearsal'),

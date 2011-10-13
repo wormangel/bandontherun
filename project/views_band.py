@@ -12,6 +12,7 @@ from filetransfers.api import prepare_upload, serve_file
 from models import Band, User, BandFile
 from forms import BandCreateForm, BandEditForm, UploadBandFileForm, ContactBandForm, UnavailabilityEntryForm, RehearsalEntryForm, GigEntryForm
 from project.models import Gig
+from django.utils import simplejson
 
 import users_manager, bands_manager
 
@@ -523,10 +524,68 @@ def gig_setlist(request, band_id, entry_id):
 
     try:
         band = bands_manager.get_band(band_id)
+
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to view this band's event cause you are not a member of it.")
+        
         context['band'] = band
+
+        gig = bands_manager.get_gig(entry_id)
+        context['gig'] = gig
+
+        # calculates the band diff setlist (band setlist songs minus gig setlist songs)
+        diff_setlist = []
+
+        for song in band.setlist.song_list:
+            if not gig.setlist.contains(song):
+                print 'ae'
+                diff_setlist.append(song)
+
+        context['diff_setlist'] = diff_setlist
+
     except Exception as exc:
         context['error_msg'] = "Error ocurred: %s" % exc.message
     return render_to_response('band/events/gig/setlist.html', context, context_instance=RequestContext(request))
+
+@login_required
+@require_POST
+def add_gig_song(request, band_id, entry_id, song_id):
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to view this band cause you are not a member of it.")
+
+        response_data = {}
+        
+        bands_manager.add_gig_song(entry_id, song_id)
+
+        response_data = { 'success' : "ok" }
+    except Exception as exc:
+        response_data= { 'success' : "fail: " + exc.message }
+
+    response = HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
+    print response
+    return response
+
+@login_required
+@require_POST
+def remove_gig_song(request, band_id, entry_id, song_id):
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to view this band cause you are not a member of it.")
+
+        response_data = {}
+
+        bands_manager.remove_gig_song(entry_id, song_id)
+
+        response_data = { 'success' : "ok" }
+    except Exception as exc:
+        response_data= { 'success' : "fail: " + exc.message }
+
+    response = HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
+    print response
+    return response
     
 @login_required
 @require_http_methods(["GET", "POST"])

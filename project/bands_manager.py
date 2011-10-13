@@ -79,10 +79,35 @@ def add_setlist_song(band_id, artist, title):
     except Exception as exc:
         raise Exception("Error adding song: %s" % exc.message)
 
+def add_gig_song(gig_id, song_id):
+    try:
+        gig = get_gig(gig_id)
+        song = get_song(song_id)
+
+        gig.setlist.songs.add(song)
+        gig.save()
+        return gig
+    except Exception as exc:
+        raise Exception("Error adding song to gig's setlist: %s" % exc.message)
+
+def remove_gig_song(gig_id, song_id):
+    try:
+        gig = get_gig(gig_id)
+        song = get_song(song_id)
+
+        if not gig.setlist.contains(song):
+            raise Exception("This song is not on the gig setlist!")
+
+        gig.setlist.songs.remove(song)
+        gig.save()
+        return gig
+    except Exception as exc:
+        raise Exception("Error removing song to gig's setlist: %s" % exc.message)
+
 def remove_setlist_song(band_id, song_id):
     try:
         band = get_band(band_id)
-        song = Song.objects.get(id=song_id)
+        song = get_song(id=song_id)
 
         if not band.setlist.contains(song):
             raise Exception("This song is not on the setlist!")
@@ -106,7 +131,14 @@ def get_gig(gig_id):
         return gig
     except Gig.DoesNotExist:
         raise Exception("There is no gig associated with id %s." % gig_id)
-        
+
+def get_song(song_id):
+    try:
+        song = Song.objects.get(id=song_id)
+        return song
+    except Song.DoesNotExist:
+        raise Exception("There is no song associated with id %s." % song_id)
+
 def remove_contact(band_id, contact_id):
     try:
         band = get_band(band_id)

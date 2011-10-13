@@ -20,7 +20,7 @@
     <hr size="20"/>
     <h4>Setlist:</h4>
     <ul id="setlist">
-    {% for song in gig.setlist.set_list %}
+    {% for song in gig.setlist.song_list %}
         <li>
             {{ song.artist }} - {{ song.title }}
         </li>
