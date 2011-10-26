@@ -24,10 +24,6 @@ class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, primary_key=True)
     phone = models.CharField(verbose_name="phone", max_length=15, blank=True)
 
-class UserManager(models.Manager):
-    def get_by_natural_key(self, username, first_name):
-        return self.get(username=username, first_name=first_name) 
-
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 User.bands = property(lambda u: Band.objects.filter(members__username=u.username))
 
@@ -91,6 +87,7 @@ class Rehearsal(CalendarEntry):
     setlist = models.OneToOneField(Setlist, null=True)
 
 class Gig(CalendarEntry):
+    date_end = models.DateField()
     place = models.CharField(max_length=30)
     costs = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
     setlist = models.OneToOneField(Setlist, null=True)
