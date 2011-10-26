@@ -11,13 +11,6 @@
     <h3>Gigs</h3>
 
     {% if not error_msg %}
-        {% if success %}
-            <div class="alert-message success">
-                <a class="close" href="#">×</a>
-                <p>{{ success }}</p>
-            </div>
-        {% endif %}
-
         <form action="/band/{{ band.id }}/events/gig/{{ gig.id }}/edit" method="post"> {% csrf_token %}
           {% include "form_template.html" with form_title="Edit gig" %}
           <div class="actions">

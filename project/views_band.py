@@ -387,7 +387,8 @@ def add_unavailability(request, band_id):
 
                 bands_manager.add_unavailability_entry(band_id, date_start, date_end, time_start, time_end, all_day, request.user)
                 
-                context['success'] = "Unavailability added successfully!" # TODO: make this work with redirect or change the flow
+                request.flash['success'] = "Unavailability added successfully!"
+                return redirect('/band/%d/events' % band.id)
             except Exception as exc:
                 context['error_msg'] = "Error ocurred: %s" % exc.message
                 # 500
@@ -430,7 +431,8 @@ def add_gig(request, band_id):
                 if not band.is_member(request.user):
                     raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
                 bands_manager.add_gig_entry(band_id, date_start, time_start, time_end, place, costs, ticket, request.user)
-                context['success'] = "Gig added successfully!" # TODO: make this work with redirect or change the flow
+                request.flash['success'] = "Gig added successfully!"
+                return redirect('/band/%d/events' % band.id)
             except Exception as exc:
                 context['error_msg'] = "Error ocurred: %s" % exc.message
                 # 500
@@ -464,7 +466,8 @@ def edit_gig(request, band_id, entry_id):
                 ticket = form.cleaned_data['ticket']
                 
                 gig = bands_manager.update_gig_entry(entry_id, date_start, time_start, time_end, place, costs, ticket)
-                context['success'] = "Gig updated successfully!"
+                request.flash['success'] = "Gig updated successfully!"
+                return redirect('/band/%d/events' % band.id)
         else: # GET
             if gig.band != band:
                 raise Exception("There is no gig for this band with the given Id.")
@@ -562,9 +565,7 @@ def add_gig_song(request, band_id, entry_id, song_id):
     except Exception as exc:
         response_data= { 'success' : "fail: " + exc.message }
 
-    response = HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
-    print response
-    return response
+    return HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
 
 @login_required
 @require_POST
@@ -573,18 +574,13 @@ def remove_gig_song(request, band_id, entry_id, song_id):
         band = bands_manager.get_band(band_id)
         if not band.is_member(request.user):
             raise Exception("You have no permission to view this band cause you are not a member of it.")
-
         response_data = {}
-
         bands_manager.remove_gig_song(entry_id, song_id)
-
         response_data = { 'success' : "ok" }
     except Exception as exc:
         response_data= { 'success' : "fail: " + exc.message }
 
-    response = HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
-    print response
-    return response
+    return HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
 
 @login_required
 @require_POST
@@ -593,18 +589,13 @@ def sort_gig_setlist(request, band_id, entry_id, song_id):
         band = bands_manager.get_band(band_id)
         if not band.is_member(request.user):
             raise Exception("You have no permission to view this band cause you are not a member of it.")
-
         response_data = {}
-
         bands_manager.sort_gig_setlist(entry_id, song_id, request.POST['position'])
-
         response_data = { 'success' : "ok" }
     except Exception as exc:
         response_data= { 'success' : "fail: " + exc.message }
 
-    response = HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
-    print response
-    return response
+    return HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
 
 @login_required
 @require_http_methods(["GET"])
@@ -631,7 +622,6 @@ def edit_rehearsal(request, band_id, entry_id):
     try:
         band = bands_manager.get_band(band_id)
         context['band'] = band
-
         rehearsal = bands_manager.get_rehearsal(entry_id)
 
         if not band.is_member(request.user):
@@ -648,7 +638,8 @@ def edit_rehearsal(request, band_id, entry_id):
                 costs = form.cleaned_data['costs']
 
                 rehearsal = bands_manager.update_rehearsal_entry(entry_id, date_start, time_start, time_end, place, costs)
-                context['success'] = "Rehearsal updated successfully!"
+                request.flash['success'] = "Rehearsal updated successfully!"
+                return redirect('/band/%d/events' % band.id)
         else: # GET
             if rehearsal.band != band:
                 raise Exception("There is no rehearsal for this band with the given Id.")
@@ -676,24 +667,19 @@ def rehearsal_setlist(request, band_id, entry_id):
 
     try:
         band = bands_manager.get_band(band_id)
-
         if not band.is_member(request.user):
             raise Exception("You have no permission to view this band's event cause you are not a member of it.")
-
         context['band'] = band
-
         rehearsal = bands_manager.get_rehearsal(entry_id)
         context['rehearsal'] = rehearsal
 
         # calculates the band diff setlist (band setlist songs minus rehearsal setlist songs)
         diff_setlist = []
-
         for song in band.setlist.song_list:
             if not rehearsal.setlist.contains(song):
                 diff_setlist.append(song)
 
         context['diff_setlist'] = diff_setlist
-
     except Exception as exc:
         context['error_msg'] = "Error ocurred: %s" % exc.message
     return render_to_response('band/events/rehearsal/setlist.html', context, context_instance=RequestContext(request))
@@ -719,7 +705,8 @@ def add_rehearsal(request, band_id):
                 if not band.is_member(request.user):
                     raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
                 bands_manager.add_rehearsal_entry(band_id, date_start, time_start, time_end, place, costs, request.user)
-                context['success'] = "Rehearsal added successfully!" # TODO: make this work with redirect or change the flow
+                request.flash['success'] = "Rehearsal added successfully!"
+                return redirect('/band/%d/events' % band.id)
             except Exception as exc:
                 context['error_msg'] = "Error ocurred: %s" % exc.message
                 # 500
@@ -734,18 +721,13 @@ def add_rehearsal_song(request, band_id, entry_id, song_id):
         band = bands_manager.get_band(band_id)
         if not band.is_member(request.user):
             raise Exception("You have no permission to view this band cause you are not a member of it.")
-
         response_data = {}
-
         bands_manager.add_rehearsal_song(entry_id, song_id, request.POST['position'])
-
         response_data = { 'success' : "ok" }
     except Exception as exc:
         response_data= { 'success' : "fail: " + exc.message }
 
-    response = HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
-    print response
-    return response
+    return HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
 
 @login_required
 @require_POST
@@ -754,18 +736,13 @@ def remove_rehearsal_song(request, band_id, entry_id, song_id):
         band = bands_manager.get_band(band_id)
         if not band.is_member(request.user):
             raise Exception("You have no permission to view this band cause you are not a member of it.")
-
         response_data = {}
-
         bands_manager.remove_rehearsal_song(entry_id, song_id)
-
         response_data = { 'success' : "ok" }
     except Exception as exc:
         response_data= { 'success' : "fail: " + exc.message }
 
-    response = HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
-    print response
-    return response
+    return HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
 
 @login_required
 @require_POST 
@@ -788,15 +765,10 @@ def sort_rehearsal_setlist(request, band_id, entry_id, song_id):
         band = bands_manager.get_band(band_id)
         if not band.is_member(request.user):
             raise Exception("You have no permission to view this band cause you are not a member of it.")
-
         response_data = {}
-
         bands_manager.sort_rehearsal_setlist(entry_id, song_id, request.POST['position'])
-
         response_data = { 'success' : "ok" }
     except Exception as exc:
         response_data= { 'success' : "fail: " + exc.message }
 
-    response = HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
-    print response
-    return response
+    return HttpResponse(simplejson.dumps(response_data), mimetype='application/json')

@@ -11,13 +11,6 @@
     <h3>Unavailabilities</h3>
 
     {% if not error_msg %}
-        {% if success %}
-            <div class="alert-message success">
-                <a class="close" href="unavailability.html#">×</a>
-                <p>{{ success }}</p>
-            </div>
-        {% endif %}
-
         <form action="/band/{{ band.id }}/events/unavailability/add" method="post"> {% csrf_token %}
           {% include "form_template.html" with form_title="Add unavailability" %}
           <div class="actions">

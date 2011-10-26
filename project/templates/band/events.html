@@ -27,11 +27,10 @@
     <div id="band-content">
         <h2>{{ band.name }}</h2>
         <h3>Events</h3>
-        {{ success }}
-        {% if success %}
+        {% if flash.success %}
             <div class="alert-message success">
                 <a class="close" href="#">×</a>
-                <p>{{ success }}</p>
+                <p>{{ flash.success }}</p>
             </div>
         {% endif %}
         
