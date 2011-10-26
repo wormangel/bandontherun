@@ -73,6 +73,8 @@ body { padding-top: 40px; }
 
 #gigs, #unavailability, #rehearsal {display: none;}
 
+.fc-header, .fc-header td, .fc-border-separate {border: none;}
+
 footer {
     width: 400px;
     margin: 0px auto;
