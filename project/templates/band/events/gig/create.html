@@ -64,10 +64,10 @@
 
             // Applies the currency masking
             var $cost = $("#id_costs");
-            $cost.maskMoney({symbol:'$ ', showSymbol:true, symbolStay: true});
+            $cost.maskMoney({symbol:'$ ', showSymbol:true, symbolStay: true, allowZero: true});
 
             var $ticket = $("#id_ticket");
-            $ticket.maskMoney({symbol:'$ ', showSymbol:true, symbolStay: true});
+            $ticket.maskMoney({symbol:'$ ', showSymbol:true, symbolStay: true, allowZero: true});
 
             $("form").submit(function(e) {
                 $cost.val($cost.val().replace("$ ", "").replace(",", ""));
