@@ -164,10 +164,10 @@ def get_gig(gig_id):
     except Gig.DoesNotExist:
         raise Exception("There is no gig associated with id %s." % gig_id)
 
-def add_gig_entry(band_id, date_start, time_start, time_end, place, costs, ticket, user):
+def add_gig_entry(band_id, date_start, date_end, time_start, time_end, place, costs, ticket, user):
     try:
         band = get_band(band_id)
-        entry = Gig.objects.create(date_start=date_start, time_start=time_start, time_end=time_end, place=place, costs=costs, ticket=ticket, band=band, added_by=user)
+        entry = Gig.objects.create(date_start=date_start, date_end=date_end, time_start=time_start, time_end=time_end, place=place, costs=costs, ticket=ticket, band=band, added_by=user)
         entry.setlist = Setlist.objects.create()
         entry.save()
     except Exception as exc:
@@ -333,3 +333,7 @@ def sort_rehearsal_setlist(rehearsal_id, song_id, pos):
 
     except Exception as exc:
         raise Exception("Error sorting rehearsal's setlist: %s" % exc.message)
+        
+def has_unavailabilities(band_id, date_start, date_end):
+    band = get_band(band_id)
+    return len(Unavailability.objects.filter(date_start__lte=date_start, date_end__gte=date_end, band=band)) > 0

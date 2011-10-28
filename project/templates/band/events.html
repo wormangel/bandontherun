@@ -33,6 +33,12 @@
                 <p>{{ flash.success }}</p>
             </div>
         {% endif %}
+        {% if flash.warning %}
+            <div class="alert-message warning">
+                <a class="close" href="#">×</a>
+                <p>{{ flash.warning }}</p>
+            </div>
+        {% endif %}
         
         <div id="event-containers">
             <div id="calendar"></div>
@@ -152,11 +158,12 @@
                 
                 function createGig(data) {
                     var dateSplitted, timeStart, timeEnd;
-                    dateSplitted = data.fields.date_start.split("-");
+                    dateStartSplitted = data.fields.date_start.split("-");
                     startSplitted = data.fields.time_start.split(":");
-                    timeStart = new Date(dateSplitted[0], dateSplitted[1]-1, dateSplitted[2], startSplitted[0], startSplitted[1]);
+                    timeStart = new Date(dateStartSplitted[0], dateStartSplitted[1]-1, dateStartSplitted[2], startSplitted[0], startSplitted[1]);
+                    dateEndSplitted = data.fields.date_end.split("-");
                     endSplitted = data.fields.time_end.split(":");
-                    timeEnd = new Date(dateSplitted[0], dateSplitted[1]-1, dateSplitted[2], endSplitted[0], endSplitted[1]);
+                    timeEnd = new Date(dateEndSplitted[0], dateEndSplitted[1]-1, dateEndSplitted[2], endSplitted[0], endSplitted[1]);
                     return new Gig(data.pk, "Gig at " + data.fields.place, timeStart, timeEnd, data.fields.added_by, data.fields.place, data.fields.costs, data.fields.ticket);
                 }
                 

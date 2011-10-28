@@ -361,7 +361,6 @@ def get_calendar_entries(request, band_id):
         context['error_msg'] = "Error ocurred: %s" % exc.message
     response = HttpResponse(mimetype='application/json')
     json_serializer.serialize(band.calendar_entries, ensure_ascii=False, stream=response)
-    print response
     return response
     
 @login_required
@@ -422,6 +421,7 @@ def add_gig(request, band_id):
         context['form'] = form
         if form.is_valid():
             date_start = form.cleaned_data['date_start']
+            date_end = form.cleaned_data['date_end']
             time_start = form.cleaned_data['time_start']
             time_end = form.cleaned_data['time_end']
             place = form.cleaned_data['place']
@@ -430,7 +430,9 @@ def add_gig(request, band_id):
             try:
                 if not band.is_member(request.user):
                     raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
-                bands_manager.add_gig_entry(band_id, date_start, time_start, time_end, place, costs, ticket, request.user)
+                bands_manager.add_gig_entry(band_id, date_start, date_end, time_start, time_end, place, costs, ticket, request.user)
+                if (bands_manager.has_unavailabilities(band_id, date_start, date_end)):
+                    request.flash['warning'] = "There is at least one unavailability of a member on this period."
                 request.flash['success'] = "Gig added successfully!"
                 return redirect('/band/%d/events' % band.id)
             except Exception as exc:

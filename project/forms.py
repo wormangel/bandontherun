@@ -66,7 +66,8 @@ class RehearsalEntryForm(forms.Form):
     costs = forms.DecimalField(max_digits=10, decimal_places=2)
 
 class GigEntryForm(forms.Form):
-    date_start = forms.DateField(label="Date")
+    date_start = forms.DateField(label="Date start")
+    date_end = forms.DateField(label="Date end")
     time_start = forms.TimeField(widget=forms.TimeInput(), input_formats=["%H:%M"])
     time_end = forms.TimeField(widget=forms.TimeInput(), input_formats=["%H:%M"])
     place = forms.CharField(label="Place/Venue", max_length=30)
