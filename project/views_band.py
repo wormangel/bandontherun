@@ -501,6 +501,16 @@ def show_gig(request, band_id, entry_id):
             raise Exception("You have no permission to view this band's events cause you are not a member of it.")
 
         gig = bands_manager.get_gig(entry_id)
+
+        # calculates the band diff setlist (band setlist songs minus gig setlist songs)
+        diff_setlist = []
+
+        for song in band.setlist.song_list:
+            if not gig.setlist.contains(song):
+                diff_setlist.append(song)
+
+        context['diff_setlist'] = diff_setlist
+
         context['band'] = band
         context['gig'] = gig
     except Exception as exc:
@@ -609,6 +619,15 @@ def show_rehearsal(request, band_id, entry_id):
             raise Exception("You have no permission to view this band's events cause you are not a member of it.")
 
         rehearsal = bands_manager.get_rehearsal(entry_id)
+
+        # calculates the band diff setlist (band setlist songs minus rehearsal setlist songs)
+        diff_setlist = []
+        for song in band.setlist.song_list:
+            if not rehearsal.setlist.contains(song):
+                diff_setlist.append(song)
+
+        context['diff_setlist'] = diff_setlist
+        
         context['band'] = band
         context['rehearsal'] = rehearsal
     except Exception as exc:
