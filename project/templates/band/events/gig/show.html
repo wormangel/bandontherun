@@ -76,6 +76,49 @@
         {{ error_msg }}
     </div>
     {% endif %}
+    
+    {% if form %}
+        {% load filetransfers %}
+        <form action="{{ contract_url }}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% render_upload_data contract_data %}
+            {{ contract_form.as_p }}
+            <button class="btn inline primary" type="submit"/>Upload</button>
+        </form>    
+    {% else %}
+        <table class="zebra-striped">
+        <thead>
+          <tr>
+            <th class="header headerSortUp">Description</th>
+            <th class="yellow header">Filename</th>
+            <th class="blue header">Size</th>
+            <th class="purple header">Created</th>
+            <th class="orange  header">Uploader</th>
+            <th class="green header">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td name="description" type="text" > {{ contract.description }} </td>
+                <td name="filename" type="text" > {{ contract.filename }} </td>
+                <td name="size" type="text" > {{ contract.size }} </td>
+                <td name="created" type="text" > {{ contract.created }} </td>
+                <td name="uploader" type="text" > {{ contract.uploader }} </td>
+                <td name="actions" type="text" >
+                    <form action="/band/{{ band.id }}/download/{{ contract.id }}" method="get">
+                        {% csrf_token %}
+                        <button class="btn inline small" type="submit">Download</button>
+                    </form>
+                    <form action="/band/{{ band.id }}/{{ user.username }}/{{ contract.id }}/deletefile" method="post">
+                        {% csrf_token %}
+                        <button class="btn inline small" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>     
+        </tbody>
+    </table>
+    {% endif %}    
+
 {% endblock %}
 
 {% block scripts %}

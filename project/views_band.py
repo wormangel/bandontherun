@@ -170,11 +170,11 @@ def delete_file(request, band_id, username, bandfile_id):
             band_file.delete()
         else:
             context['error_msg'] = "You have no permission to delete a file from this band cause you are not a member of it."
-            return render_to_response('band/files.html', context, context_instance=RequestContext(request))
+            return render_to_response("band/files.html", context, context_instance=RequestContext(request))
     else:
         context['error_msg'] = "Invalid file."
-        return render_to_response('band/files.html', context, context_instance=RequestContext(request))
-    return render_to_response('band/files.html', context, context_instance=RequestContext(request))
+        return render_to_response("band/files.html", context, context_instance=RequestContext(request))
+    return render_to_response("band/files.html", context, context_instance=RequestContext(request))
 
 @login_required
 @require_GET
@@ -513,11 +513,56 @@ def show_gig(request, band_id, entry_id):
 
         context['band'] = band
         context['gig'] = gig
+        
+        if gig.contract is None:
+            view_url = reverse('project.views_band.upload_contract', args=[band.id, gig.id])
+            upload_url, upload_data = prepare_upload(request, view_url)
+            context["contract_form"] = UploadBandFileForm(request.POST, request.FILES)
+            context['contract_url'] = upload_url
+            context['contract_data'] = upload_data
+            context['form'] = True
+        else:
+            context["contract"] = gig.contract
+            context['form'] = False
     except Exception as exc:
         # 500
         context['error_msg'] = "Error ocurred: %s" % exc.message
     return render_to_response('band/events/gig/show.html', context, context_instance=RequestContext(request))
 
+@login_required
+@require_http_methods(["POST"])
+def upload_contract(request, band_id, entry_id):
+    try:
+        user = User.objects.get(username=request.user.username)
+        band = Band.objects.get(id=band_id)
+        gig = Gig.objects.get(id=entry_id)
+
+        if not band.is_member(user):
+            raise Exception("You have no permission to upload files to this band cause you are not a member of it.")
+
+        context = __prepare_context(request, band)
+        context['band'] = band
+        context['gig'] = gig
+        form = UploadBandFileForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            file = request.FILES['file']
+            band_file = form.save(commit=False)
+            band_file.filename= file.name
+            band_file.size = file.size
+            band_file.uploader = user.username
+            band_file.band = band
+            band_file.created = datetime.now()
+            band_file.save()
+            gig.contract = band_file
+            gig.save()
+            context["contract"] = band_file
+            return render_to_response('band/events/gig/show.html', context, context_instance=RequestContext(request))
+        context['contract_form'] = form
+    except Exception as exc:
+        context['error_msg'] = "Error: %s" % exc.message
+    return render_to_response('band/events/gig/show.html', context, context_instance=RequestContext(request))
+    
 @login_required
 @require_POST 
 def remove_gig(request, band_id, entry_id):
