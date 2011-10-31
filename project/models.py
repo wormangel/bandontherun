@@ -92,7 +92,7 @@ class Gig(CalendarEntry):
     costs = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
     setlist = models.OneToOneField(Setlist, null=True)
     ticket = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
-    contract = models.ForeignKey(BandFile, null=True)
+    contract = models.ForeignKey(BandFile, null=True, on_delete=models.SET_NULL)
 
 class UserInvitation(models.Model):
     key = models.CharField(primary_key=True, max_length=100)

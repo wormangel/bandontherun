@@ -11,7 +11,8 @@ from datetime import datetime
 from filetransfers.api import prepare_upload, serve_file
 from models import Band, User, BandFile
 from forms import BandCreateForm, BandEditForm, UploadBandFileForm, ContactBandForm, UnavailabilityEntryForm, RehearsalEntryForm, GigEntryForm
-from project.models import Gig
+from project.errors import SongAlreadyOnSetlistError, BatchParseError, BatchParseError
+from project.models import Gig, Song
 from django.utils import simplejson
 
 import users_manager, bands_manager
@@ -170,11 +171,11 @@ def delete_file(request, band_id, username, bandfile_id):
             band_file.delete()
         else:
             context['error_msg'] = "You have no permission to delete a file from this band cause you are not a member of it."
-            return render_to_response('band/files.html', context, context_instance=RequestContext(request))
+            return render_to_response("band/files.html", context, context_instance=RequestContext(request))
     else:
         context['error_msg'] = "Invalid file."
-        return render_to_response('band/files.html', context, context_instance=RequestContext(request))
-    return render_to_response('band/files.html', context, context_instance=RequestContext(request))
+        return render_to_response("band/files.html", context, context_instance=RequestContext(request))
+    return render_to_response("band/files.html", context, context_instance=RequestContext(request))
 
 @login_required
 @require_GET
@@ -272,6 +273,41 @@ def add_setlist_song(request, band_id):
     except Exception as exc:
         context['error_msg'] = "Error ocurred: %s" % exc.message
         return render_to_response('band/setlist.html', context, context_instance=RequestContext(request))
+
+@login_required
+@require_POST
+def add_setlist_batch(request, band_id):
+    context = {}
+    batch = request.POST['batch']
+
+    try:
+        band = bands_manager.get_band(band_id)
+        context['band'] = band
+        
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
+
+        for line in batch.splitlines():
+            try:
+                artist, title = line.split(' - ')
+            except:
+                raise BatchParseError(line)
+            
+            if artist is None or title is None:
+                raise BatchParseError(line)
+            try:
+                bands_manager.add_setlist_song(band_id, artist, title)
+            except SongAlreadyOnSetlistError:
+                print 'lol'
+                continue
+            
+        return redirect('/band/%s/setlist' % band_id)
+
+    except BatchParseError as exc:
+        context['error_msg'] = "Parsing error. The following line is in a unknow format: %s" % exc.line
+    except Exception as exc:
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+    return render_to_response('band/setlist.html', context, context_instance=RequestContext(request))
         
 @login_required
 @require_GET
@@ -502,13 +538,68 @@ def show_gig(request, band_id, entry_id):
             raise Exception("You have no permission to view this band's events cause you are not a member of it.")
 
         gig = bands_manager.get_gig(entry_id)
+
+        # calculates the band diff setlist (band setlist songs minus gig setlist songs)
+        diff_setlist = []
+
+        for song in band.setlist.song_list:
+            if not gig.setlist.contains(song):
+                diff_setlist.append(song)
+
+        context['diff_setlist'] = diff_setlist
+
         context['band'] = band
         context['gig'] = gig
+        
+        if gig.contract is None:
+            view_url = reverse('project.views_band.upload_contract', args=[band.id, gig.id])
+            upload_url, upload_data = prepare_upload(request, view_url)
+            context["contract_form"] = UploadBandFileForm(request.POST, request.FILES)
+            context['contract_url'] = upload_url
+            context['contract_data'] = upload_data
+            context['form'] = True
+        else:
+            context["contract"] = gig.contract
+            context['form'] = False
     except Exception as exc:
         # 500
         context['error_msg'] = "Error ocurred: %s" % exc.message
     return render_to_response('band/events/gig/show.html', context, context_instance=RequestContext(request))
 
+@login_required
+@require_http_methods(["POST"])
+def upload_contract(request, band_id, entry_id):
+    try:
+        user = User.objects.get(username=request.user.username)
+        band = Band.objects.get(id=band_id)
+        gig = Gig.objects.get(id=entry_id)
+
+        if not band.is_member(user):
+            raise Exception("You have no permission to upload files to this band cause you are not a member of it.")
+
+        context = __prepare_context(request, band)
+        context['band'] = band
+        context['gig'] = gig
+        form = UploadBandFileForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            file = request.FILES['file']
+            band_file = form.save(commit=False)
+            band_file.filename= file.name
+            band_file.size = file.size
+            band_file.uploader = user.username
+            band_file.band = band
+            band_file.created = datetime.now()
+            band_file.save()
+            gig.contract = band_file
+            gig.save()
+            context["contract"] = band_file
+            return render_to_response('band/events/gig/show.html', context, context_instance=RequestContext(request))
+        context['contract_form'] = form
+    except Exception as exc:
+        context['error_msg'] = "Error: %s" % exc.message
+    return render_to_response('band/events/gig/show.html', context, context_instance=RequestContext(request))
+    
 @login_required
 @require_POST 
 def remove_gig(request, band_id, entry_id):
@@ -604,6 +695,15 @@ def show_rehearsal(request, band_id, entry_id):
             raise Exception("You have no permission to view this band's events cause you are not a member of it.")
 
         rehearsal = bands_manager.get_rehearsal(entry_id)
+
+        # calculates the band diff setlist (band setlist songs minus rehearsal setlist songs)
+        diff_setlist = []
+        for song in band.setlist.song_list:
+            if not rehearsal.setlist.contains(song):
+                diff_setlist.append(song)
+
+        context['diff_setlist'] = diff_setlist
+        
         context['band'] = band
         context['rehearsal'] = rehearsal
     except Exception as exc:

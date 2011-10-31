@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     # setlists url
     url(r'^band/(?P<band_id>\d+)/setlist$', 'project.views_band.show_setlist', name='show-setlist'),
     url(r'^band/(?P<band_id>\d+)/setlist/add$', 'project.views_band.add_setlist_song', name='add-setlist-song'),
+    url(r'^band/(?P<band_id>\d+)/setlist/add_batch$', 'project.views_band.add_setlist_batch', name='add-setlist-batch'),
     url(r'^band/(?P<band_id>\d+)/setlist/(?P<song_id>\w+)/remove$', 'project.views_band.remove_setlist_song', name='remove-setlist-song'),
 
     # band contacts url
@@ -42,6 +43,7 @@ urlpatterns = patterns('',
     url(r'^band/(?P<band_id>\d+)/events/gig/add$', 'project.views_band.add_gig', name='add-gig'),
     url(r'^band/(?P<band_id>\d+)/events/gig/(?P<entry_id>\d+)/edit$', 'project.views_band.edit_gig', name='edit-gig'),
     url(r'^band/(?P<band_id>\d+)/events/gig/(?P<entry_id>\d+)/show$', 'project.views_band.show_gig', name='show-gig'),
+    url(r'^band/(?P<band_id>\d+)/events/gig/(?P<entry_id>\d+)/upload_contract$', 'project.views_band.upload_contract', name='upload-contract'),
     url(r'^band/(?P<band_id>\d+)/events/gig/(?P<entry_id>\d+)/remove$', 'project.views_band.remove_gig', name='remove-gig'),
     url(r'^band/(?P<band_id>\d+)/events/gig/(?P<entry_id>\d+)/setlist$', 'project.views_band.gig_setlist', name='gig-setlist'),
     url(r'^band/(?P<band_id>\d+)/events/gig/(?P<entry_id>\d+)/setlist/add/(?P<song_id>\d+)$', 'project.views_band.add_gig_song', name='add-gig-song'),

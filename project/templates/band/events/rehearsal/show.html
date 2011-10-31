@@ -2,6 +2,10 @@
 {% load url from future %}
 {% load formatter %}
 
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery-ui-1.8.16.custom.css" />
+{% endblock %}
+
 {% block band-content %}
     {% if not error_msg %}
     <h2>{{ band.name }}</h2>
@@ -19,16 +23,49 @@
     <a href="{% url 'edit-rehearsal' band.id rehearsal.id %}"><button class="btn">Edit</button></a>
     <hr size="20"/>
     <h4>Setlist:</h4>
-    <ul id="setlist">
-    {% for song in rehearsal.setlist.song_list %}
-        <li>
-            {{ song.artist }} - {{ song.title }}
-        </li>
-    {% empty %}
-        No songs yet.
-    {% endfor %}
-    </ul>
-    <h6><a href="{% url 'rehearsal-setlist' band.id rehearsal.id %}">Click here to edit.</a></h6>
+    <div id="ajax_result"></div>
+
+    <div id="rehearsal_setlist_instructions">
+        <span class="label notice">INSTRUCTIONS</span>
+        <ul>
+            <li>Drag and drop the songs from the band setlist to the rehearsal setlist.</li>
+            <li>You can also order the songs as you please.</li>
+            <li>The changes are saved automatically.</li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div id="band_setlist" class="span6">
+                <h6>Band setlist:</h6>
+
+                <ul id="ul_band_setlist">
+                    {% for song in diff_setlist %}
+                        <li>
+                            {{ song.artist }} - {{ song.title }}
+                            <input type="hidden" name="song_id" value="{{ song.id }}"/>
+                        </li>
+                    {% empty %}
+                        <span class="redtext" id="empty_band_placeholder">No songs left.</span>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div id="rehearsal_setlist" class="span10">
+                <h6>Rehearsal setlist:</h6>
+
+                <ul id="ul_rehearsal_setlist">
+                    {% for song in rehearsal.setlist.song_list %}
+                        <li>
+                            {{ song.artist }} - {{ song.title }}
+                            <input type="hidden" name="song_id" value="{{ song.id }}"/>
+                        </li>
+                    {% empty %}
+                        <span class="redtext" id="empty_rehearsal_placeholder">No songs yet.</span>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
 
     <hr size="20"/>
 
@@ -37,5 +74,135 @@
         {{ error_msg }}
     </div>
     {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery-ui-1.8.16.custom.min.js"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            $('.alert-message warning').hide();
+
+            $('#ul_band_setlist').sortable({
+                items: 'li',
+                connectWith: '#ul_rehearsal_setlist',
+                placeholder: 'droppable-zone-highlight',
+                forcePlaceholderSize: true,
+                remove: function(event, ui){
+                    if ($("#ul_band_setlist > li").length == 0) {
+                        $("#ul_band_setlist").append("\<span class=\"redtext\" id=\"empty_band_placeholder\"\>No songs left.\</span\>");
+                    }
+                },
+                receive: function(event, ui){
+                    if ($('#empty_band_placeholder').length != 0) {
+                        $('#empty_band_placeholder').remove();
+                    }
+                }
+            });
+
+            $('#ul_rehearsal_setlist').sortable({
+                items: 'li',
+                connectWith: '#ul_band_setlist',
+                placeholder: 'droppable-zone-highlight',
+                remove: function(event, ui){
+                    if ($("#ul_rehearsal_setlist > li").length == 0) {
+                        $("#ul_rehearsal_setlist").append("\<span class=\"redtext\" id=\"empty_rehearsal_placeholder\"\>No songs yet.\</span\>");
+                    }
+                    save('remove', ui.item.children('input')[0].value, 0); // position is irrelevant
+                },
+                receive: function(event, ui){
+                    if ($('#empty_rehearsal_placeholder').length != 0) {
+                        $('#empty_rehearsal_placeholder').remove();
+                    }
+                    var position = $('#ul_rehearsal_setlist > li').index(ui.item[0]);
+                    save('add', ui.item.children('input')[0].value, position);
+                },
+                update: function(event, ui){
+                    if(ui.sender == null && ui.item[0].parentNode.id == 'ul_rehearsal_setlist'){ // guarantees the change was inside the list
+                        var position = $('#ul_rehearsal_setlist > li').index(ui.item[0]);
+                        save('sort', ui.item.children('input')[0].value, position)
+                    }
+                }
+            });
+        });
+
+        function save(operation, songId, position){
+            var url = '';
+            if (operation == 'add'){
+                url = '/band/{{ band.id }}/events/rehearsal/{{ rehearsal.id }}/setlist/add/' + songId;
+            } else if (operation == 'remove'){
+                url = '/band/{{ band.id }}/events/rehearsal/{{ rehearsal.id }}/setlist/remove/' + songId;
+            } else if (operation == 'sort'){
+                url = '/band/{{ band.id }}/events/rehearsal/{{ rehearsal.id }}/setlist/sort/' + songId;
+            }
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { 'position' : position},
+                dataType: 'json',
+                beforeSend: function(){
+                    $('#ajax_result').removeClass('alert-message error');
+                    $('#ajax_result').removeClass('alert-message success');
+                    $('#ajax_result').addClass('alert-message warning');
+                    $('#ajax_result').text('Saving...');
+                },
+                success: function(data){
+                    if (data.success == 'ok'){
+                        $('#ajax_result').removeClass('alert-message warning');
+                        $('#ajax_result').addClass('alert-message success');
+                        $('#ajax_result').text('Saved!');
+                    } else {
+                        $('#ajax_result').removeClass('alert-message warning');
+                        $('#ajax_result').addClass('alert-message error');
+                        $('#ajax_result').text('Error updating setlist.');
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    $('#ajax_result').removeClass('alert-message warning');
+                    $('#ajax_result').addClass('alert-message error');
+                    $('#ajax_result').text('Error updating setlist.');
+                }
+            });
+        }
+
+        // Obligatory stuff for AJAX to work in DJANGO (csrf-related)
+        $(document).ajaxSend(function(event, xhr, settings) {
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            function sameOrigin(url) {
+                // url could be relative or scheme relative or absolute
+                var host = document.location.host; // host + port
+                var protocol = document.location.protocol;
+                var sr_origin = '//' + host;
+                var origin = protocol + sr_origin;
+                // Allow absolute or scheme relative URLs to same origin
+                return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                    (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                    // or any other URL that isn't scheme relative or absolute i.e relative.
+                    !(/^(\/\/|http:|https:).*/.test(url));
+            }
+            function safeMethod(method) {
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+
+            if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        });
+    </script>
 {% endblock %}
 

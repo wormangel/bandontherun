@@ -7,19 +7,39 @@
 
     <section id="setlist">
         <h3>Setlist:</h3>
-        <ul id="setlist">
-        {% for song in band.setlist.song_list %}
-            <li>
-                <form action="/band/{{ band.id }}/setlist/{{ song.id }}/remove" method="post">
-                    {% csrf_token %}
-                    {{ song.artist }} - {{ song.title }}
-                    <button class="btn inline small" type="submit">Delete</button>
-                </form>
-            </li>
-        {% empty %}
-            No songs yet.
-        {% endfor %}
-        </ul>
+        <table class="zebra-striped">
+            <thead>
+              <tr>
+                <th class="header">Artist - Song</th>
+                <th class="header">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for song in band.setlist.song_list %}
+            <tr>
+                <td name="artist-song" type="text" style=""> {{ song.artist }} - {{ song.title }}</td>
+                <td name="action" type="text" style="">
+                    <div style="align: left;">
+                        <form action="/band/{{ band.id }}/setlist/{{ song.id }}/details" method="post">
+                            {% csrf_token %}
+                            <button class="btn inline span" type="submit" style="margin-left: 5px;">Details</button>
+                        </form>
+                    </div>
+                    <div style="align: right;">
+                        <form action="/band/{{ band.id }}/setlist/{{ song.id }}/remove" method="post">
+                            {% csrf_token %}
+                            <button class="btn inline span" type="submit" style="margin-left: 8px;">Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+                <tr>
+                    <td type='text' > No songs yet. </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>     
     </section>
 
     <section id="newsong">
@@ -29,6 +49,17 @@
             Artist: <input id="artist" name="artist" type="text" placeholder="song artist" />
             Title:  <input id="title" name="title" type="text" placeholder="song title" />
             <button class="btn inline primary" type="submit">Add</button>
+        </form>
+    </section>
+
+    <section id="batch">
+        <h4>Batch add songs:</h4>
+        <form action="/band/{{ band.id }}/setlist/add_batch" method="post">
+            {% csrf_token %}
+            Quick way to add a batch of songs to the setlist!<br/><br/>
+            <textarea class="span9" rows="5" id="batch" name="batch" placeholder="e.g.: Artist - Song" ></textarea>
+            <br/>
+            <button class="btn primary span8" type="submit" style="margin-top:5px;">Add Batch</button>
         </form>
     </section>
 
