@@ -450,7 +450,6 @@ def edit_gig(request, band_id, entry_id):
     try:
         band = bands_manager.get_band(band_id)
         context['band'] = band
-
         gig = bands_manager.get_gig(entry_id)
 
         if not band.is_member(request.user):
@@ -468,6 +467,8 @@ def edit_gig(request, band_id, entry_id):
                 ticket = form.cleaned_data['ticket']
                 
                 gig = bands_manager.update_gig_entry(entry_id, date_start, time_start, time_end, place, costs, ticket)
+                if (bands_manager.has_unavailabilities(band_id, date_start, date_end)):
+                    request.flash['warning'] = "There is at least one unavailability of a member on this period."
                 request.flash['success'] = "Gig updated successfully!"
                 return redirect('/band/%d/events' % band.id)
         else: # GET
@@ -529,22 +530,18 @@ def gig_setlist(request, band_id, entry_id):
 
     try:
         band = bands_manager.get_band(band_id)
-
         if not band.is_member(request.user):
             raise Exception("You have no permission to view this band's event cause you are not a member of it.")
         
         context['band'] = band
-
         gig = bands_manager.get_gig(entry_id)
         context['gig'] = gig
 
         # calculates the band diff setlist (band setlist songs minus gig setlist songs)
         diff_setlist = []
-
         for song in band.setlist.song_list:
             if not gig.setlist.contains(song):
                 diff_setlist.append(song)
-
         context['diff_setlist'] = diff_setlist
 
     except Exception as exc:
@@ -560,9 +557,7 @@ def add_gig_song(request, band_id, entry_id, song_id):
             raise Exception("You have no permission to view this band cause you are not a member of it.")
 
         response_data = {}
-
         bands_manager.add_gig_song(entry_id, song_id, request.POST['position'])
-
         response_data = { 'success' : "ok" }
     except Exception as exc:
         response_data= { 'success' : "fail: " + exc.message }
@@ -640,6 +635,8 @@ def edit_rehearsal(request, band_id, entry_id):
                 costs = form.cleaned_data['costs']
 
                 rehearsal = bands_manager.update_rehearsal_entry(entry_id, date_start, time_start, time_end, place, costs)
+                if (bands_manager.has_unavailabilities(band_id, date_start, date_end)):
+                    request.flash['warning'] = "There is at least one unavailability of a member on this period."
                 request.flash['success'] = "Rehearsal updated successfully!"
                 return redirect('/band/%d/events' % band.id)
         else: # GET
@@ -707,6 +704,8 @@ def add_rehearsal(request, band_id):
                 if not band.is_member(request.user):
                     raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
                 bands_manager.add_rehearsal_entry(band_id, date_start, time_start, time_end, place, costs, request.user)
+                if (bands_manager.has_unavailabilities(band_id, date_start, date_end)):
+                    request.flash['warning'] = "There is at least one unavailability of a member on this period."
                 request.flash['success'] = "Rehearsal added successfully!"
                 return redirect('/band/%d/events' % band.id)
             except Exception as exc:
