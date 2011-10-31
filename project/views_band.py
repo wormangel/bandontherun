@@ -11,7 +11,8 @@ from datetime import datetime
 from filetransfers.api import prepare_upload, serve_file
 from models import Band, User, BandFile
 from forms import BandCreateForm, BandEditForm, UploadBandFileForm, ContactBandForm, UnavailabilityEntryForm, RehearsalEntryForm, GigEntryForm
-from project.models import Gig
+from project.errors import SongAlreadyOnSetlistError, BatchParseError, BatchParseError
+from project.models import Gig, Song
 from django.utils import simplejson
 
 import users_manager, bands_manager
@@ -272,6 +273,41 @@ def add_setlist_song(request, band_id):
     except Exception as exc:
         context['error_msg'] = "Error ocurred: %s" % exc.message
         return render_to_response('band/setlist.html', context, context_instance=RequestContext(request))
+
+@login_required
+@require_POST
+def add_setlist_batch(request, band_id):
+    context = {}
+    batch = request.POST['batch']
+
+    try:
+        band = bands_manager.get_band(band_id)
+        context['band'] = band
+        
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
+
+        for line in batch.splitlines():
+            try:
+                artist, title = line.split(' - ')
+            except:
+                raise BatchParseError(line)
+            
+            if artist is None or title is None:
+                raise BatchParseError(line)
+            try:
+                bands_manager.add_setlist_song(band_id, artist, title)
+            except SongAlreadyOnSetlistError:
+                print 'lol'
+                continue
+            
+        return redirect('/band/%s/setlist' % band_id)
+
+    except BatchParseError as exc:
+        context['error_msg'] = "Parsing error. The following line is in a unknow format: %s" % exc.line
+    except Exception as exc:
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+    return render_to_response('band/setlist.html', context, context_instance=RequestContext(request))
         
 @login_required
 @require_GET

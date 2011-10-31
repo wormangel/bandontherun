@@ -1,5 +1,6 @@
 from datetime import date as date
 from models import Band
+from project.errors import SongAlreadyOnSetlistError
 from project.models import Song, Setlist, Contact, Unavailability, Gig, Rehearsal, AllocatedSong
 import users_manager
 
@@ -70,12 +71,14 @@ def add_setlist_song(band_id, artist, title):
             song = song[0]
 
         if band.setlist.contains(song):
-            raise Exception("This song is already on the setlist!")
+            raise SongAlreadyOnSetlistError(song, "This song is already on the setlist!")
 
         aSong = AllocatedSong(setlist=band.setlist, song=song)
         aSong.save()
 
         return band
+    except SongAlreadyOnSetlistError:
+        raise
     except Exception as exc:
         raise Exception("Error adding song: %s" % exc.message)
 

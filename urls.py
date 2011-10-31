@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     # setlists url
     url(r'^band/(?P<band_id>\d+)/setlist$', 'project.views_band.show_setlist', name='show-setlist'),
     url(r'^band/(?P<band_id>\d+)/setlist/add$', 'project.views_band.add_setlist_song', name='add-setlist-song'),
+    url(r'^band/(?P<band_id>\d+)/setlist/add_batch$', 'project.views_band.add_setlist_batch', name='add-setlist-batch'),
     url(r'^band/(?P<band_id>\d+)/setlist/(?P<song_id>\w+)/remove$', 'project.views_band.remove_setlist_song', name='remove-setlist-song'),
 
     # band contacts url
