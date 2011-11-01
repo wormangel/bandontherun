@@ -1,5 +1,17 @@
 {% extends 'band-base.html' %}
 {% load url from future %}
+
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#showall").click(function() {
+            $("#query").val("");
+            $("#filterForm").submit();
+            return false;
+        });
+   });
+</script>
+{% endblock %}
         
 {% block band-content %}
     {% if not error_msg %}
@@ -7,6 +19,16 @@
 
     <section id="setlist">
         <h3>Setlist:</h3>
+        
+        <form id="filterForm" action="/band/{{ band.id }}/setlist/filter" method="get">
+            {% csrf_token %}
+            <input id="query" name="query" class="xlarge" type="text" placeholder="type filter text" value="{{ query_string }}" style="float: left;">
+            <button class="btn inline span" type="submit">Filter</button>
+            <a id="showall" href="#" style="margin-left: 15px;">Show all</a>
+        </form>
+        <span class="help-block"> Total: {{ song_list_size }} songs.</span>
+        
+        <br>
         <table class="zebra-striped">
             <thead>
               <tr>
@@ -15,7 +37,7 @@
               </tr>
             </thead>
             <tbody>
-            {% for song in band.setlist.song_list %}
+            {% for song in song_list %}
             <tr>
                 <td name="artist-song" type="text" class="tiny"> 
                     {{ song.artist }} - {{ song.title }}
@@ -33,7 +55,13 @@
             </tr>
             {% empty %}
                 <tr>
-                    <td type='text' > No songs yet. </td>
+                    <td type='text' >
+                    {% if query_string == "" %}
+                         No songs yet. 
+                    {% else %}
+                         No matchs found.
+                    {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>

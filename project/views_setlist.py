@@ -3,6 +3,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import  require_GET, require_POST
 from django.shortcuts import render_to_response, redirect
+from django.db.models import Q
 
 from project.errors import SongAlreadyOnSetlistError, BatchParseError
 
@@ -18,6 +19,29 @@ def show_setlist(request, band_id):
             # 403
             raise Exception("You have no permission to view this band cause you are not a member of it.")
         context['band'] = band
+        context['song_list'] = band.setlist.song_list
+        context['song_list_size'] = len(band.setlist.song_list) 
+        context['query_string'] = ''
+    except Exception as exc:
+        # 500
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+    return render_to_response('band/setlist.html', context, context_instance=RequestContext(request))
+    
+@login_required
+@require_GET
+def filter_setlist(request, band_id):
+    context = {}
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            # 403
+            raise Exception("You have no permission to view this band cause you are not a member of it.")
+        context['band'] = band
+        query = request.GET["query"]
+        song_list = band.setlist.song_list.filter(Q(artist__icontains=query) | Q(title__icontains=query))
+        context['song_list'] = song_list
+        context['song_list_size'] = len(song_list) 
+        context['query_string'] = query
     except Exception as exc:
         # 500
         context['error_msg'] = "Error ocurred: %s" % exc.message
