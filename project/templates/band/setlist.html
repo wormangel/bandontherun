@@ -17,20 +17,18 @@
             <tbody>
             {% for song in band.setlist.song_list %}
             <tr>
-                <td name="artist-song" type="text" style=""> {{ song.artist }} - {{ song.title }}</td>
-                <td name="action" type="text" style="">
-                    <div style="align: left;">
-                        <form action="/band/{{ band.id }}/setlist/{{ song.id }}/details" method="post">
-                            {% csrf_token %}
-                            <button class="btn inline span" type="submit" style="margin-left: 5px;">Details</button>
-                        </form>
-                    </div>
-                    <div style="align: right;">
-                        <form action="/band/{{ band.id }}/setlist/{{ song.id }}/remove" method="post">
-                            {% csrf_token %}
-                            <button class="btn inline span" type="submit" style="margin-left: 8px;">Delete</button>
-                        </form>
-                    </div>
+                <td name="artist-song" type="text" style="vertical-align: middle; padding: 0px 0px 0px 0px;"> 
+                    {{ song.artist }} - {{ song.title }}
+                </td>
+                <td name="action" type="text" style="padding: 0px 0px 0px 0px;">
+                    <form action="/band/{{ band.id }}/setlist/{{ song.id }}/details" method="post" style="float: left; margin-bottom: 0px;">
+                        {% csrf_token %}
+                        <button class="btn inline span" type="submit" style="padding: 2px 5px 3px;">Details</button>
+                    </form>
+                    <form action="/band/{{ band.id }}/setlist/{{ song.id }}/remove" method="post" style="margin-bottom: 0px;">
+                        {% csrf_token %}
+                        <button class="btn inline span" type="submit" style="margin-left: 18px; padding: 2px 5px 3px 5px;">Delete</button>
+                    </form>
                 </td>
             </tr>
             {% empty %}
