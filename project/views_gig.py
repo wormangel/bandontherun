@@ -121,7 +121,7 @@ def show_gig(request, band_id, entry_id):
         context['gig'] = gig
 
         if gig.contract is None:
-            view_url = reverse('project.views_band.upload_contract', args=[band.id, gig.id])
+            view_url = reverse('project.views_gig.upload_contract', args=[band.id, gig.id])
             upload_url, upload_data = prepare_upload(request, view_url)
             context["contract_form"] = UploadBandFileForm(request.POST, request.FILES)
             context['contract_url'] = upload_url
@@ -259,3 +259,13 @@ def sort_gig_setlist(request, band_id, entry_id, song_id):
         response_data= { 'success' : "fail: " + exc.message }
 
     return HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
+
+def __prepare_context(request, band):
+    context = {}
+    context['band'] = band
+    view_url = reverse('upload-band-file', args=[band.id])
+    upload_url, upload_data = prepare_upload(request, view_url)
+    context['upload_form'] = UploadBandFileForm()
+    context['upload_url'] = upload_url
+    context['upload_data'] = upload_data
+    return context
