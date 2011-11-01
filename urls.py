@@ -31,6 +31,8 @@ urlpatterns = patterns('',
     url(r'^band/(?P<band_id>\d+)/setlist/voting$', 'project.views_setlist.voting_dashboard', name='voting-dashboard'),
     url(r'^band/(?P<band_id>\d+)/setlist/voting/(?P<voting_id>\d+)/show$', 'project.views_setlist.show_voting', name='show-voting'),
     url(r'^band/(?P<band_id>\d+)/setlist/voting/create$', 'project.views_setlist.create_voting', name='create-voting'),
+    url(r'^band/(?P<band_id>\d+)/setlist/(?P<song_id>\w+)/song_details$', 'project.views_setlist.show_song_details', name='show-song-details'),
+    url(r'^band/(?P<band_id>\d+)/setlist/(?P<song_id>\w+)/upload_file$', 'project.views_setlist.upload_song_file', name='upload-song-file'),
 
     # band contacts url
     url(r'^band/(?P<band_id>\d+)/contacts$', 'project.views_contact.show_contacts', name='show-contacts'),

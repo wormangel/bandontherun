@@ -5,6 +5,8 @@ class Song(models.Model):
     artist = models.CharField(verbose_name="artist", max_length=50)
     title = models.CharField(verbose_name="title", max_length=80)
 
+Song.attachments = property(lambda u: BandFile.objects.filter(attachments__id=u.id))
+
 class Setlist(models.Model):
     name = models.CharField(verbose_name="name", max_length=50)
     songs = models.ManyToManyField(Song, through='AllocatedSong')
@@ -67,7 +69,7 @@ class BandFile(models.Model):
     created = models.DateField()
     file = models.FileField(upload_to=get_save_path)
     attachments = models.ManyToManyField(Song)
-
+    
 class Voting(models.Model):
     date_creation = models.DateTimeField()
     n_suggestions = models.IntegerField()

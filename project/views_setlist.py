@@ -4,10 +4,15 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import  require_GET, require_POST
 from django.shortcuts import render_to_response, redirect
 from django.db.models import Q
+from django.core.urlresolvers import reverse
+from filetransfers.api import prepare_upload, serve_file
 
 from project.errors import SongAlreadyOnSetlistError, BatchParseError
 
+from datetime import datetime
 import  bands_manager
+from forms import UploadBandFileForm
+from models import User, Band, BandFile, Song
 
 @login_required
 @require_GET
@@ -141,3 +146,63 @@ def vote_setlist(request, band_id, song_id, voting_id):
 
 def show_voting(request, band_id, voting_id):
     pass
+    
+@login_required
+@require_GET
+def show_song_details(request, band_id, song_id):
+    context = {}
+    try:
+        band = bands_manager.get_band(band_id)
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to view this band's events cause you are not a member of it.")
+
+        song = bands_manager.get_song(song_id)
+        context = __prepare_context(request, band, song)
+    except Exception as exc:
+        # 500
+        print exc.message
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+    return render_to_response('band/song.html', context, context_instance=RequestContext(request))
+
+@login_required
+@require_POST
+def upload_song_file(request, band_id, song_id):
+    try:
+        user = User.objects.get(username=request.user.username)
+        band = Band.objects.get(id=band_id)
+        song = Song.objects.get(id=song_id)
+
+        if not band.is_member(user):
+            raise Exception("You have no permission to upload files to this band cause you are not a member of it.")
+
+        context = __prepare_context(request, band, song)
+        form = UploadBandFileForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            file = request.FILES['file']
+            band_file = form.save(commit=False)
+            band_file.filename= file.name
+            band_file.size = file.size
+            band_file.uploader = user.username
+            band_file.band = band
+            band_file.created = datetime.now()
+            band_file.save()
+            band_file.attachments.add(song)
+            band_file.save()
+            return render_to_response('band/song.html', context, context_instance=RequestContext(request))
+        context['song_form'] = form
+    except Exception as exc:
+        print exc.message
+        context['error_msg'] = "Error: %s" % exc.message
+    return render_to_response('band/song.html', context, context_instance=RequestContext(request))
+    
+def __prepare_context(request, band, song):
+    context = {}
+    context['band'] = band
+    context['song'] = song
+    view_url = reverse('upload-song-file', args=[band.id, song.id])
+    upload_url, upload_data = prepare_upload(request, view_url)
+    context['song_form'] = UploadBandFileForm()
+    context['song_url'] = upload_url
+    context['song_data'] = upload_data
+    return context

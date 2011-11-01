@@ -48,7 +48,7 @@
                     {{ song.artist }} - {{ song.title }}
                 </td>
                 <td name="action" type="text" class="tiny">
-                    <form action="/band/{{ band.id }}/setlist/{{ song.id }}/details" method="post">
+                    <form action="/band/{{ band.id }}/setlist/{{ song.id }}/song_details" method="get">
                         {% csrf_token %}
                         <button class="btn inline span" type="submit">Details</button>
                     </form>
