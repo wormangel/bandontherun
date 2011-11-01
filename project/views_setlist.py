@@ -112,3 +112,32 @@ def add_setlist_batch(request, band_id):
     except Exception as exc:
         context['error_msg'] = "Error ocurred: %s" % exc.message
     return render_to_response('band/setlist.html', context, context_instance=RequestContext(request))
+
+@login_required
+def voting_dashboard(request, band_id):
+    context = {}
+    try:
+        band = bands_manager.get_band(band_id)
+        context['band'] = band
+
+        context['active_voting'] = False
+        context['older_votings'] = False
+
+        if not band.is_member(request.user):
+            raise Exception("You have no permission to view this band's votings cause you are not a member of it.")
+
+        
+    except Exception as exc:
+        context['error_msg'] = "Error ocurred: %s" % exc.message
+
+
+    return render_to_response('band/voting/dashboard.html', context, context_instance=RequestContext(request))
+
+def create_voting(request, band_id):
+    pass
+
+def vote_setlist(request, band_id, song_id, voting_id):
+    pass
+
+def show_voting(request, band_id, voting_id):
+    pass

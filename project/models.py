@@ -68,6 +68,22 @@ class BandFile(models.Model):
     file = models.FileField(upload_to=get_save_path)
     attachments = models.ManyToManyField(Song)
 
+class Voting(models.Model):
+    date_creation = models.DateTimeField()
+    n_suggestions = models.IntegerField()
+    n_votes_per_user = models.IntegerField()
+    n_winning_songs = models.IntegerField()
+    date_start = models.DateField()
+    date_end = models.DateField()
+    auto_add_winners = models.BooleanField(default=True)
+    suggested_songs = models.ManyToManyField(Song)
+
+class Vote(models.Model):
+    voting = models.OneToOneField(Voting)
+    date = models.DateTimeField()
+    user = models.ForeignKey(User)
+    song = models.OneToOneField(Song)
+
 class CalendarEntry(models.Model):
     class Meta:
         abstract = True
