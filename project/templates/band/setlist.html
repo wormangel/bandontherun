@@ -24,11 +24,16 @@
             {% csrf_token %}
             <input id="query" name="query" class="xlarge" type="text" placeholder="type filter text" value="{{ query_string }}" style="float: left;">
             <button class="btn inline span" type="submit">Filter</button>
-            <a id="showall" href="#" style="margin-left: 15px;">Show all</a>
+            {% if not query_string == "" %}
+                <a id="showall" href="#" style="margin-left: 15px;">Show all</a>
+            {% else %}
+                <br>
+            {% endif %}
         </form>
-        <span class="help-block"> Total: {{ song_list_size }} songs.</span>
         
-        <br>
+        <span class="help-block inline"> Total: {{ song_list_size }} songs.</span>
+        <br><br>
+        
         <table class="zebra-striped">
             <thead>
               <tr>
