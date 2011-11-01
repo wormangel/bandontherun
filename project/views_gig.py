@@ -123,7 +123,7 @@ def show_gig(request, band_id, entry_id):
         if gig.contract is None:
             view_url = reverse('project.views_gig.upload_contract', args=[band.id, gig.id])
             upload_url, upload_data = prepare_upload(request, view_url)
-            context["contract_form"] = UploadBandFileForm(request.POST, request.FILES)
+            context["contract_form"] = UploadBandFileForm()
             context['contract_url'] = upload_url
             context['contract_data'] = upload_data
             context['form'] = True
