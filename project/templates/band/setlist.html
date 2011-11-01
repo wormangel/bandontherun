@@ -17,17 +17,17 @@
             <tbody>
             {% for song in band.setlist.song_list %}
             <tr>
-                <td name="artist-song" type="text" style="vertical-align: middle; padding: 0px 0px 0px 0px;"> 
+                <td name="artist-song" type="text" class="tiny"> 
                     {{ song.artist }} - {{ song.title }}
                 </td>
-                <td name="action" type="text" style="padding: 0px 0px 0px 0px;">
-                    <form action="/band/{{ band.id }}/setlist/{{ song.id }}/details" method="post" style="float: left; margin-bottom: 0px;">
+                <td name="action" type="text" class="tiny">
+                    <form action="/band/{{ band.id }}/setlist/{{ song.id }}/details" method="post">
                         {% csrf_token %}
-                        <button class="btn inline span" type="submit" style="padding: 2px 5px 3px;">Details</button>
+                        <button class="btn inline span" type="submit">Details</button>
                     </form>
-                    <form action="/band/{{ band.id }}/setlist/{{ song.id }}/remove" method="post" style="margin-bottom: 0px;">
+                    <form action="/band/{{ band.id }}/setlist/{{ song.id }}/remove" method="post">
                         {% csrf_token %}
-                        <button class="btn inline span" type="submit" style="margin-left: 18px; padding: 2px 5px 3px 5px;">Delete</button>
+                        <button class="btn inline span" type="submit">Delete</button>
                     </form>
                 </td>
             </tr>

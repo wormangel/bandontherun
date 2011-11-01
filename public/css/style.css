@@ -133,3 +133,22 @@ footer a {
     padding:9px;
     margin:4px;
 }
+
+td.tiny {
+    vertical-align: middle;
+    padding: 0px 0px 0px 0px;
+}
+
+td.tiny form:first-child {
+    float: left;
+    margin-bottom: 0px;
+}
+
+td.tiny form:last-child {
+    margin-bottom: 0px;
+}
+
+td.tiny form button {
+    margin-left: 6px;
+    padding: 2px 5px 3px 5px;
+}
