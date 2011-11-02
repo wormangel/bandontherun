@@ -21,16 +21,17 @@
             {{ error_msg }}
         </div>
     {% endif %}
-    
-    {% block scripts %}
+{% endblock %}
+{% block scripts %}
     <script type="text/javascript" src="{{ STATIC_URL }}js/libs/tablesorter.min.js"></script>
-    <script>
+    <script type="text/javascript">
         $(function() {
             $("table.sortable").tablesorter();
+
+            $("table.sortable tr.attached .delete_form").submit(function(){
+                return confirm("This file is attached to one or more songs! Are you sure you want to delete it?");
+            });
         });
-
-
     </script>
-    {% endblock %}
 {% endblock %}
 

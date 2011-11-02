@@ -10,7 +10,7 @@
         </thead>
         <tbody>
         {% for file in files %}
-            <tr>
+            <tr{% if file.attached_to > 0 %} class="attached"{% endif %}>
                 <td name="description" type="text" class="tiny"> {{ file.description }} </td>
                 <td name="filename" type="text" class="tiny"> {{ file.filename }} </td>
                 <td name="size" type="text" class="tiny"> {{ file.size }} </td>
@@ -21,7 +21,7 @@
                         {% csrf_token %}
                         <button class="btn inline span" type="submit">Download</button>
                     </form>
-                    <form action="/band/{{ band.id }}/{{ user.username }}/{{ file.id }}/deletefile" method="post">
+                    <form class="delete_form" action="/band/{{ band.id }}/{{ user.username }}/{{ file.id }}/deletefile" method="post">
                         {% csrf_token %}
                         <button class="btn inline span" type="submit">Delete</button>
                     </form>

@@ -48,6 +48,8 @@ class BandFile(models.Model):
     created = models.DateField()
     file = models.FileField(upload_to=get_save_path)
 
+BandFile.attached_to = property(lambda u: Song.objects.filter(attachments__id=u.id).count())
+
 class Song(models.Model):
     band = models.ForeignKey(Band)
     artist = models.CharField(verbose_name="artist", max_length=50)
