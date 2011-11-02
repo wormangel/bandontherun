@@ -42,6 +42,7 @@ urlpatterns = patterns('',
     url(r'^band/(?P<band_id>\d+)/events$', 'project.views_event.show_events', name='show-events'),
     url(r'^band/(?P<band_id>\d+)/events/entries$', 'project.views_event.get_calendar_entries', name='get-calendar-entries'),
 
+    url(r'^band/(?P<band_id>\d+)/events/unavailabilities/search$', 'project.views_event.search_unavailabilities', name='search-unavailabilities'),
     url(r'^band/(?P<band_id>\d+)/events/unavailability/add$', 'project.views_event.add_unavailability', name='add-unavailability'),
     url(r'^band/(?P<band_id>\d+)/events/unavailability/(?P<entry_id>\d+)/remove$', 'project.views_event.remove_unavailability', name='remove-unavailability'),
 

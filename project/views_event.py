@@ -82,3 +82,18 @@ def remove_unavailability(request, band_id, entry_id):
     except Exception as exc:
         print exc
         # 500
+
+@login_required
+@require_GET
+def search_unavailabilities(request, band_id):
+    from datetime import datetime
+    band = bands_manager.get_band(band_id)
+    date_start = datetime.strptime(request.GET["date_start"], '%m/%d/%Y')
+    date_end = datetime.strptime(request.GET["date_end"], '%m/%d/%Y')
+    unavailabilities = bands_manager.get_unavailabilities(band_id, date_start, date_end)
+    if not band.is_member(request.user):
+        # 403
+        raise Exception("You have no permission to view this band cause you are not a member of it.")
+    response = HttpResponse(mimetype='application/json')
+    json_serializer.serialize(unavailabilities, ensure_ascii=False, stream=response)
+    return response

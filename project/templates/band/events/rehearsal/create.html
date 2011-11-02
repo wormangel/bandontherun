@@ -58,8 +58,17 @@
             var $cost = $("#id_costs");
             $cost.maskMoney({symbol:'$ ', showSymbol:true, symbolStay: true, allowZero: true});
 
-            $("form").submit(function(e) {
-                $cost.val($cost.val().replace("$ ", "").replace(",", ""));
+            $("button[type=submit]").click(function(e) {
+                var $form = $("form");
+                $.get("/band/{{ band.id }}/events/unavailabilities/search", {'date_start': $("#id_date_start").val(), 'date_end': $("#id_date_end").val()}, function(data) {
+                    if (data.length > 0) {
+                        if (confirm("There is at least one unavaibality on this period. Do you want to proceed anyway?")) {
+                            $cost.val($cost.val().replace("$ ", "").replace(",", ""));
+                            $form.submit();
+                        }
+                    }
+                });
+                e.preventDefault();
             });
         });
     </script>

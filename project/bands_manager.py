@@ -337,6 +337,9 @@ def sort_rehearsal_setlist(rehearsal_id, song_id, pos):
     except Exception as exc:
         raise Exception("Error sorting rehearsal's setlist: %s" % exc.message)
         
-def has_unavailabilities(band_id, date_start, date_end):
+def get_unavailabilities(band_id, date_start, date_end):
     band = get_band(band_id)
-    return len(Unavailability.objects.filter(date_start__lte=date_start, date_end__gte=date_end, band=band)) > 0
+    return list(Unavailability.objects.filter(date_start=date_start, band=band)) + list(Unavailability.objects.filter(date_end=date_end, band=band))
+    
+def has_unavailabilities(band_id, date_start, date_end):
+    return len(get_unavailabilities(band_id, date_start, date_end)) > 0
