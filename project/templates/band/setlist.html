@@ -85,13 +85,22 @@
     </section>
 
     <div id="modal_batch" class="modal fade hide" style="display:none">
-            <form action="/band/{{ band.id }}/setlist/add_batch" method="post">
-            {% csrf_token %}
-            Quick way to add a batch of songs to the setlist!<br/><br/>
-            <textarea class="span9" rows="5" id="batch" name="batch" placeholder="e.g.: Artist - Song" ></textarea>
-            <br/>
-            <button class="btn primary" type="submit" style="margin-top:5px;">Add Songs</button>
-        </form>
+        <div class="modal-header">
+            <a href="#" class="close">×</a>
+            <h3>Add Batch</h3>
+        </div>
+        <div class="modal-body">
+            <form action="/band/{{ band.id }}/setlist/add_batch" method="post" id="batch_form">
+                {% csrf_token %}
+                Quick way to add a batch of songs to the setlist!<br/><br/>
+                <textarea class="span9" rows="5" id="batch" name="batch" placeholder="e.g.: Artist - Song" ></textarea>
+                <br/>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn primary" type="submit" form="batch_form" style="margin-top:5px;">Add Songs</button>
+        </div>
+
     </div>
 
     {% else %}
