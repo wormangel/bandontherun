@@ -79,47 +79,20 @@
             {{ song_form.as_p }}
             <button class="btn inline primary" type="submit"/>Upload</button>
         </form>    
-        <table class="zebra-striped">
-        <thead>
-          <tr>
-            <th class="header headerSortUp">Description</th>
-            <th class="yellow header">Filename</th>
-            <th class="blue header">Size</th>
-            <th class="purple header">Created</th>
-            <th class="orange  header">Uploader</th>
-            <th class="green header">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for file in song.files %}
-            <tr>
-                <td name="description" type="text" class="tiny"> {{ file.description }} </td>
-                <td name="filename" type="text" class="tiny"> {{ file.filename }} </td>
-                <td name="size" type="text" class="tiny"> {{ file.size }} </td>
-                <td name="created" type="text" class="tiny"> {{ file.created }} </td>
-                <td name="uploader" type="text" class="tiny"> {{ file.uploader }} </td>
-                <td name="actions" type="text" class="tiny" style="width: 135px;">
-                    <form action="/band/{{ band.id }}/download/{{ file.id }}" method="get">
-                        {% csrf_token %}
-                        <button class="btn inline span" type="submit">Download</button>
-                    </form>
-                    <form action="/band/{{ band.id }}/{{ user.username }}/{{ file.id }}/deletefile" method="post">
-                        {% csrf_token %}
-                        <button class="btn inline span" type="submit">Delete</button>
-                    </form>
-                </td>
-            </tr>     
-        {% endfor %}     
-        </tbody>
-    </table>
+        <table id="songs" class="zebra-striped sortable">
+            {% include "files_table_content.html" with files=song.files %}
+        </table>
 
 {% endblock %}
 
 {% block scripts %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery-ui-1.8.16.custom.min.js"></script>
-
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.tablesorter.min.js"></script>
     <script type="text/javascript">
+
         $(function(){
+            $("table.sortable").tablesorter();
+
             $('.alert-message warning').hide();
 
             $('#ul_band_setlist').sortable({

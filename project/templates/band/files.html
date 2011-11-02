@@ -3,60 +3,30 @@
         
 {% block band-content %}
     {% if not error_msg %}
-    <h2>{{ band.name }}</h2>
-    <h3>Files</h3>
-    {% load filetransfers %}
-    <form action="{{ upload_url }}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% render_upload_data upload_data %}
-        {{ upload_form.as_p }}
-        <button class="btn inline primary" type="submit"/>Upload</button>
-    </form>        
+        <h2>{{ band.name }}</h2>
+        <h3>Files</h3>
+        {% load filetransfers %}
+        <form action="{{ upload_url }}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% render_upload_data upload_data %}
+            {{ upload_form.as_p }}
+            <button class="btn inline primary" type="submit"/>Upload</button>
+        </form>
 
-    <table class="zebra-striped">
-        <thead>
-          <tr>
-            <th class="header headerSortUp">Description</th>
-            <th class="yellow header">Filename</th>
-            <th class="blue header">Size</th>
-            <th class="purple header">Created</th>
-            <th class="orange  header">Uploader</th>
-            <th class="green header">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for file in band.file_list %}
-            <tr>
-                <td name="description" type="text" class="tiny"> {{ file.description }} </td>
-                <td name="filename" type="text" class="tiny"> {{ file.filename }} </td>
-                <td name="size" type="text" class="tiny"> {{ file.size }} </td>
-                <td name="created" type="text" class="tiny"> {{ file.created }} </td>
-                <td name="uploader" type="text" class="tiny"> {{ file.uploader }} </td>
-                <td name="actions" type="text" class="tiny" style="width: 135px;">
-                    <form action="/band/{{ band.id }}/download/{{ file.id }}" method="get">
-                        {% csrf_token %}
-                        <button class="btn inline span" type="submit">Download</button>
-                    </form>
-                    <form action="/band/{{ band.id }}/{{ user.username }}/{{ file.id }}/deletefile" method="post">
-                        {% csrf_token %}
-                        <button class="btn inline span" type="submit">Delete</button>
-                    </form>
-                </td>
-            </tr>     
-        {% endfor %}
-        </tbody>
-    </table>
+        <table id="files" class="zebra-striped sortable">
+            {% include "files_table_content.html" with files=band.file_list %}
+        </table>
     {% else %}
-    <div class="alert-message error">
-        {{ error_msg }}
-    </div>
+        <div class="alert-message error">
+            {{ error_msg }}
+        </div>
     {% endif %}
     
     {% block scripts %}
-    <script src="{{ STATIC_URL }}js/libs/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.tablesorter.min.js"></script>
     <script>
         $(function() {
-            $("table#sortTableExample").tablesorter({ sortList: [[1,0]] });
+            $("table.sortable").tablesorter();
         });
     </script>
     {% endblock %}

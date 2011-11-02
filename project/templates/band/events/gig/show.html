@@ -1,6 +1,7 @@
 {% extends 'band-base.html' %}
 {% load url from future %}
 {% load formatter %}
+{% load utils %}
 
 {% block stylesheet %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery-ui-1.8.16.custom.css" />
@@ -87,36 +88,8 @@
         </form>    
     {% else %}
         <table class="zebra-striped">
-        <thead>
-          <tr>
-            <th class="header headerSortUp">Description</th>
-            <th class="yellow header">Filename</th>
-            <th class="blue header">Size</th>
-            <th class="purple header">Created</th>
-            <th class="orange  header">Uploader</th>
-            <th class="green header">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td name="description" type="text" class="tiny"> {{ contract.description }} </td>
-                <td name="filename" type="text" class="tiny"> {{ contract.filename }} </td>
-                <td name="size" type="text" class="tiny"> {{ contract.size }} </td>
-                <td name="created" type="text" class="tiny"> {{ contract.created }} </td>
-                <td name="uploader" type="text" class="tiny"> {{ contract.uploader }} </td>
-                <td name="actions" type="text" class="tiny">
-                    <form action="/band/{{ band.id }}/download/{{ contract.id }}" method="get">
-                        {% csrf_token %}
-                        <button class="btn inline small" type="submit">Download</button>
-                    </form>
-                    <form action="/band/{{ band.id }}/{{ user.username }}/{{ contract.id }}/deletefile" method="post">
-                        {% csrf_token %}
-                        <button class="btn inline small" type="submit">Delete</button>
-                    </form>
-                </td>
-            </tr>     
-        </tbody>
-    </table>
+            {% include "files_table_content.html" with files=contract|listify %}
+        </table>
     {% endif %}    
 
 {% endblock %}
