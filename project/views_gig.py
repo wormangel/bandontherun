@@ -21,31 +21,28 @@ def add_gig(request, band_id):
     context = {}
     band = bands_manager.get_band(band_id)
     context['band'] = band
+    form = GigEntryForm(request.POST or None)
+    context['form'] = form
 
-    if request.method == 'POST':
-        form = GigEntryForm(request.POST)
-        context['form'] = form
-        if form.is_valid():
-            date_start = form.cleaned_data['date_start']
-            date_end = form.cleaned_data['date_end']
-            time_start = form.cleaned_data['time_start']
-            time_end = form.cleaned_data['time_end']
-            place = form.cleaned_data['place']
-            costs = form.cleaned_data['costs']
-            ticket = form.cleaned_data['ticket']
-            try:
-                if not band.is_member(request.user):
-                    raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
-                bands_manager.add_gig_entry(band_id, date_start, date_end, time_start, time_end, place, costs, ticket, request.user)
-                if (bands_manager.has_unavailabilities(band_id, date_start, date_end)):
-                    request.flash['warning'] = "There is at least one unavailability of a member on this period."
-                request.flash['success'] = "Gig added successfully!"
-                return redirect('/band/%d/events' % band.id)
-            except Exception as exc:
-                context['error_msg'] = "Error ocurred: %s" % exc.message
-                # 500
-    else:
-        context['form'] = GigEntryForm()
+    if request.method == 'POST' and form.is_valid():
+        date_start = form.cleaned_data['date_start']
+        date_end = form.cleaned_data['date_end']
+        time_start = form.cleaned_data['time_start']
+        time_end = form.cleaned_data['time_end']
+        place = form.cleaned_data['place']
+        costs = form.cleaned_data['costs']
+        ticket = form.cleaned_data['ticket']
+        try:
+            if not band.is_member(request.user):
+                raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
+            bands_manager.add_gig_entry(band_id, date_start, date_end, time_start, time_end, place, costs, ticket, request.user)
+            if (bands_manager.has_unavailabilities(band_id, date_start, date_end)):
+                request.flash['warning'] = "There is at least one unavailability of a member on this period."
+            request.flash['success'] = "Gig added successfully!"
+            return redirect('/band/%d/events' % band.id)
+        except Exception as exc:
+            context['error_msg'] = "Error ocurred: %s" % exc.message
+            # 500
     return render_to_response('band/events/gig/create.html', context, context_instance=RequestContext(request))
 
 @login_required
@@ -81,6 +78,7 @@ def edit_gig(request, band_id, entry_id):
                 raise Exception("There is no gig for this band with the given Id.")
 
             data = {'date_start' : gig.date_start,
+                    'date_end' : gig.date_end,
                     'time_start' : gig.time_start,
                     'time_end' : gig.time_end,
                     'place' : gig.place,
@@ -190,18 +188,16 @@ def gig_setlist(request, band_id, entry_id):
 
     try:
         band = bands_manager.get_band(band_id)
+        context['band'] = band
 
         if not band.is_member(request.user):
             raise Exception("You have no permission to view this band's event cause you are not a member of it.")
-
-        context['band'] = band
 
         gig = bands_manager.get_gig(entry_id)
         context['gig'] = gig
 
         # calculates the band diff setlist (band setlist songs minus gig setlist songs)
         diff_setlist = []
-
         for song in band.setlist.song_list:
             if not gig.setlist.contains(song):
                 diff_setlist.append(song)
@@ -219,11 +215,8 @@ def add_gig_song(request, band_id, entry_id, song_id):
         band = bands_manager.get_band(band_id)
         if not band.is_member(request.user):
             raise Exception("You have no permission to view this band cause you are not a member of it.")
-
         response_data = {}
-
         bands_manager.add_gig_song(entry_id, song_id, request.POST['position'])
-
         response_data = { 'success' : "ok" }
     except Exception as exc:
         response_data= { 'success' : "fail: " + exc.message }

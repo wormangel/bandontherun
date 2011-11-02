@@ -32,33 +32,30 @@ def show_user(request, username):
 def create_user(request):
     context = {}
     context_instance = RequestContext(request)
-
+    form = UserCreateForm(request.POST or None)
+    context['form'] = form
+    
     if request.user.is_authenticated():
         return redirect('/user/dashboard')
 
-    if request.method == 'POST':
-        form = UserCreateForm(request.POST)
-        if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            email = form.cleaned_data['email']
-            phone = form.cleaned_data['phone']
-            try:
-                users_manager.create_user(first_name, last_name, username, password, email, phone)
-                # authenticate and login
-                user = authenticate(username=username, password=password)
-                login_auth(request, user)
-                return redirect('/user/dashboard')
-            except Exception as exc:
-                # 400
-                form.errors['__all__'] = form.error_class(["Error: %s" % exc.message])
-    else:
-        form = UserCreateForm()
+    if request.method == 'POST' and form.is_valid():
+        first_name = form.cleaned_data['first_name']
+        last_name = form.cleaned_data['last_name']
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        email = form.cleaned_data['email']
+        phone = form.cleaned_data['phone']
+        try:
+            users_manager.create_user(first_name, last_name, username, password, email, phone)
+            # authenticate and login
+            user = authenticate(username=username, password=password)
+            login_auth(request, user)
+            return redirect('/user/dashboard')
+        except Exception as exc:
+            # 400
+            form.errors['__all__'] = form.error_class(["Error: %s" % exc.message])
 
     # GET / POST with invalid input
-    context['form'] = form
     return render_to_response('user/create.html', context, context_instance=context_instance)
 
 @require_http_methods(["GET", "POST"])
@@ -144,29 +141,24 @@ def edit_user(request):
 def login(request):
     context = {}
     context_instance = RequestContext(request)
-
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            try:
-                next = request.GET['next']
-            except:
-                next = '/user/dashboard'
-
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login_auth(request, user)
-                return redirect(next)
-            else:
-                # 400
-                form.errors['__all__'] = form.error_class(["Login failure. Verify your user/password combination"])
-    else:
-        form = LoginForm()
-
-    # GET / POST with invalid input
+    form = LoginForm(request.POST or None)
     context['form'] = form
+
+    if request.method == 'POST' and form.is_valid():
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        try:
+            next = request.GET['next']
+        except:
+            next = '/user/dashboard'
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login_auth(request, user)
+            return redirect(next)
+        else:
+            # 400
+            form.errors['__all__'] = form.error_class(["Login failure. Verify your user/password combination"])
     return render_to_response('user/login.html', context, context_instance=context_instance)
 
 @login_required

@@ -28,7 +28,6 @@ def show_rehearsal(request, band_id, entry_id):
                 diff_setlist.append(song)
 
         context['diff_setlist'] = diff_setlist
-
         context['band'] = band
         context['rehearsal'] = rehearsal
     except Exception as exc:

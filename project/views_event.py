@@ -47,30 +47,26 @@ def add_unavailability(request, band_id):
     context = {}
     band = bands_manager.get_band(band_id)
     context['band'] = band
+    form = UnavailabilityEntryForm(request.POST or None)
+    context['form'] = form
 
-    if request.method == 'POST':
-        form = UnavailabilityEntryForm(request.POST)
-        context['form'] = form
+    if request.method == 'POST' and form.is_valid():
+        date_start = form.cleaned_data['date_start']
+        date_end = form.cleaned_data['date_end']
+        time_start = form.cleaned_data['time_start']
+        time_end = form.cleaned_data['time_end']
+        all_day = form.cleaned_data['all_day']
+        try:
+            if not band.is_member(request.user):
+                raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
 
-        if form.is_valid():
-            date_start = form.cleaned_data['date_start']
-            date_end = form.cleaned_data['date_end']
-            time_start = form.cleaned_data['time_start']
-            time_end = form.cleaned_data['time_end']
-            all_day = form.cleaned_data['all_day']
-            try:
-                if not band.is_member(request.user):
-                    raise Exception("You have no permission to add songs to this band's setlist cause you are not a member of it.")
+            bands_manager.add_unavailability_entry(band_id, date_start, date_end, time_start, time_end, all_day, request.user)
 
-                bands_manager.add_unavailability_entry(band_id, date_start, date_end, time_start, time_end, all_day, request.user)
-
-                request.flash['success'] = "Unavailability added successfully!"
-                return redirect('/band/%d/events' % band.id)
-            except Exception as exc:
-                context['error_msg'] = "Error ocurred: %s" % exc.message
-                # 500
-    else:
-        context['form'] = UnavailabilityEntryForm()
+            request.flash['success'] = "Unavailability added successfully!"
+            return redirect('/band/%d/events' % band.id)
+        except Exception as exc:
+            context['error_msg'] = "Error ocurred: %s" % exc.message
+            # 500
     return render_to_response('band/events/unavailability/create.html', context, context_instance=RequestContext(request))
 
 @login_required
