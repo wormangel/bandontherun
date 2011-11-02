@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'band-base.html' %}
 {% load url from future %}
 
 {% block stylesheet %}
@@ -6,43 +6,24 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery-ui-1.8.16.custom.css" />
 {% endblock %}
 
-{% block body %}
-    <div id="band-sidebar">
-        <img src="http://lorempixum.com/180/180" alt="Logo of {{ band.name }}" title="{{ band.name }}"/>
-        <ul class="unstyled">
-            <li><a href="{% url 'show-band' band.id %}">Info</a></li>
-            <li><a href="{% url 'show-setlist' band.id %}">Setlist</a></li>
-            <li><a href="{% url 'show-files' band.id %}">Files</a></li>
-            <li>
-                <a href="{% url 'show-events' band.id %}">Events</a>
-                <ul>
-                    <li><a href="{% url 'add-unavailability' band.id %}">New unavailability</a></li>
-                    <li><a href="{% url 'add-gig' band.id %}">New gig</a></li>
-                    <li><a href="{% url 'add-rehearsal' band.id %}">New rehearsal</a></li>
-                </ul>
-            </li>
-            <li><a href="{% url 'show-contacts' band.id %}">Contacs</a></li>
-        </ul>
-    </div>
-    <div id="band-content">
-        <h2>{{ band.name }}</h2>
-        <h3>Events</h3>
-        {% if flash.success %}
-            <div class="alert-message success">
-                <a class="close" href="#">×</a>
-                <p>{{ flash.success }}</p>
-            </div>
-        {% endif %}
-        {% if flash.warning %}
-            <div class="alert-message warning">
-                <a class="close" href="#">×</a>
-                <p>{{ flash.warning }}</p>
-            </div>
-        {% endif %}
-        
-        <div id="event-containers">
-            <div id="calendar"></div>
+{% block band-content %}
+    <h2>{{ band.name }}</h2>
+    <h3>Events</h3>
+    {% if flash.success %}
+        <div class="alert-message success">
+            <a class="close" href="#">×</a>
+            <p>{{ flash.success }}</p>
         </div>
+    {% endif %}
+    {% if flash.warning %}
+        <div class="alert-message warning">
+            <a class="close" href="#">×</a>
+            <p>{{ flash.warning }}</p>
+        </div>
+    {% endif %}
+
+    <div id="event-containers">
+        <div id="calendar"></div>
     </div>
 {% endblock %}
 

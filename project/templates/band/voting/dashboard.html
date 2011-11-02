@@ -1,0 +1,39 @@
+{% extends 'band-base.html' %}
+{% load url from future %}
+        
+{% block band-content %}
+    {% if not error_msg %}
+    <h2>{{ band.name }}</h2>
+
+    <h3>Setlist Voting:</h3>
+    {% if active_voting %}
+        There is a voting going on right now. Click <a href="{% url 'show-voting' band.id 1 %}">here</a> to view it!
+    {% else %}
+        There is no voting going on right now. <a href="{% url 'create-voting' band.id %}">Create</a> one now!
+    {% endif %}
+
+    <hr size="20"/>
+    <h3>Older votings:</h3>
+    {% if older_votings  %}
+        {% for old_voting in 'alo' %}
+            <b><a href="{% url 'show-voting' band.id 1 %}">Old voting</a></b>
+            <dl>
+                <dt>Date:</dt>
+                <dd>10/01/2010 - 10/10/2010</dd>
+                <dt>Chosen songs:</dt>
+                <dd>Angra - Test</dd>
+                <dd>Angra - Test2</dd>
+            </dl>
+        {% endfor %}
+    {% else %}
+        There is no information available.
+    {% endif %}
+
+    <hr size="20"/>
+    {% else %}
+    <div class="alert-message error">
+        {{ error_msg }}
+    </div>
+    {% endif %}
+{% endblock %}
+

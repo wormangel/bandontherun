@@ -14,6 +14,8 @@
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css">
         {% block stylesheet %} {% endblock %}
+        <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery-1.6.4.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/script.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}js/libs/modernizr-2.0.6.min.js"></script>
         <!--[if lt IE 9]>
           <script type="text/javascript" src="{{ STATIC_URL }}js/libs/selectivizr-min.js"></script>
@@ -68,8 +70,6 @@
                 <li><a href="#">Privacy Policy</a></li>
             </ul>
         </footer>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery-1.6.4.min.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/script.js"></script>
         {% block scripts %}
         {% endblock %}
         <script>

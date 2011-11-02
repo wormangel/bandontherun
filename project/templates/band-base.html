@@ -6,7 +6,12 @@
         <img src="http://lorempixum.com/180/180" alt="Logo of {{ band.name }}" title="{{ band.name }}"/>
         <ul class="unstyled">
             <li><a href="{% url 'show-band' band.id %}">Info</a></li>
-            <li><a href="{% url 'show-setlist' band.id %}">Setlist</a></li>
+            <li>
+                <a href="{% url 'show-setlist' band.id %}">Setlist</a>
+                <ul>
+                    <li><a href="{% url 'voting-dashboard' band.id %}">Voting</a></li>
+                </ul>
+            </li>
             <li><a href="{% url 'show-files' band.id %}">Files</a></li>
             <li>
                 <a href="{% url 'show-events' band.id %}">Events</a>

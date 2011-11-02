@@ -1,5 +1,25 @@
 {% extends 'band-base.html' %}
 {% load url from future %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/tablesorter.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/tablesorter_filter.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/bootstrap-modal.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("table.sortable").tablesorter().tablesorterFilter({
+            filterContainer: $("#query"),
+            filterClearContainer: $("#showall"),
+            filterColumns: [0],
+            filterWaitTime: 250
+        }).bind("filterEnd", function(){
+            var n_rows = $('table.zebra-striped.sortable tbody tr').length;
+            $("#setlist_size").text(n_rows);
+        });
+    });
+</script>
+{% endblock %}
         
 {% block band-content %}
     {% if not error_msg %}
@@ -7,7 +27,13 @@
 
     <section id="setlist">
         <h3>Setlist:</h3>
-        <table class="zebra-striped">
+
+        <input id="query" name="query" class="xlarge" type="text" placeholder="type filter text" style="float: left;" />
+        <a id="showall" href="#" style="margin-left: 15px;">Show all</a>
+        <span class="help-block inline">&nbsp;Total: <label id="setlist_size" class="help-block songcount">{{ song_list_size }}</label> songs.</span>
+        <br><br>
+        
+        <table class="zebra-striped sortable">
             <thead>
               <tr>
                 <th class="header">Artist - Song</th>
@@ -15,27 +41,31 @@
               </tr>
             </thead>
             <tbody>
-            {% for song in band.setlist.song_list %}
+            {% for song in song_list %}
             <tr>
-                <td name="artist-song" type="text" style=""> {{ song.artist }} - {{ song.title }}</td>
-                <td name="action" type="text" style="">
-                    <div style="align: left;">
-                        <form action="/band/{{ band.id }}/setlist/{{ song.id }}/details" method="post">
-                            {% csrf_token %}
-                            <button class="btn inline span" type="submit" style="margin-left: 5px;">Details</button>
-                        </form>
-                    </div>
-                    <div style="align: right;">
-                        <form action="/band/{{ band.id }}/setlist/{{ song.id }}/remove" method="post">
-                            {% csrf_token %}
-                            <button class="btn inline span" type="submit" style="margin-left: 8px;">Delete</button>
-                        </form>
-                    </div>
+                <td name="artist-song" type="text" class="tiny"> 
+                    {{ song.artist }} - {{ song.title }}
+                </td>
+                <td name="action" type="text" class="tiny">
+                    <form action="/band/{{ band.id }}/setlist/{{ song.id }}/song_details" method="get">
+                        {% csrf_token %}
+                        <button class="btn inline span" type="submit">Details</button>
+                    </form>
+                    <form action="/band/{{ band.id }}/setlist/{{ song.id }}/remove" method="post">
+                        {% csrf_token %}
+                        <button class="btn inline span" type="submit">Delete</button>
+                    </form>
                 </td>
             </tr>
             {% empty %}
                 <tr>
-                    <td type='text' > No songs yet. </td>
+                    <td type='text' >
+                    {% if query_string == "" %}
+                         No songs yet. 
+                    {% else %}
+                         No matches found.
+                    {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -50,18 +80,28 @@
             Title:  <input id="title" name="title" type="text" placeholder="song title" />
             <button class="btn inline primary" type="submit">Add</button>
         </form>
+
+        ...or <a href="#" data-controls-modal="modal_batch" data-backdrop="true">click here to add a batch of songs!</a>!
     </section>
 
-    <section id="batch">
-        <h4>Batch add songs:</h4>
-        <form action="/band/{{ band.id }}/setlist/add_batch" method="post">
-            {% csrf_token %}
-            Quick way to add a batch of songs to the setlist!<br/><br/>
-            <textarea class="span9" rows="5" id="batch" name="batch" placeholder="e.g.: Artist - Song" ></textarea>
-            <br/>
-            <button class="btn primary span8" type="submit" style="margin-top:5px;">Add Batch</button>
-        </form>
-    </section>
+    <div id="modal_batch" class="modal fade hide" style="display:none">
+        <div class="modal-header">
+            <a href="#" class="close">×</a>
+            <h3>Add Batch</h3>
+        </div>
+        <div class="modal-body">
+            <form action="/band/{{ band.id }}/setlist/add_batch" method="post" id="batch_form">
+                {% csrf_token %}
+                Quick way to add a batch of songs to the setlist!<br/><br/>
+                <textarea class="span9" rows="5" id="batch" name="batch" placeholder="e.g.: Artist - Song" ></textarea>
+                <br/>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn primary" type="submit" form="batch_form" style="margin-top:5px;">Add Songs</button>
+        </div>
+
+    </div>
 
     {% else %}
     <div class="alert-message error">
@@ -69,4 +109,3 @@
     </div>
     {% endif %}
 {% endblock %}
-

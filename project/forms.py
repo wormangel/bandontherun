@@ -71,5 +71,5 @@ class GigEntryForm(forms.Form):
     time_start = forms.TimeField(widget=forms.TimeInput(), input_formats=["%H:%M"])
     time_end = forms.TimeField(widget=forms.TimeInput(), input_formats=["%H:%M"])
     place = forms.CharField(label="Place/Venue", max_length=30)
-    costs = forms.DecimalField(label="Band Total Costs", min_value = 0, max_digits=10, decimal_places=2)
-    ticket = forms.DecimalField(label="Ticket Cost", min_value = 0, max_digits=10, decimal_places=2)
+    costs = forms.DecimalField(label="Band Total Costs", min_value = 0, max_digits=10, decimal_places=2, required=False)
+    ticket = forms.DecimalField(label="Ticket Cost", min_value = 0, max_digits=10, decimal_places=2, required=False)

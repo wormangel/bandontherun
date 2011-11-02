@@ -11,7 +11,7 @@ def create_band(name, bio, url, user):
         band = Band.objects.create(name=name, bio=bio, url=url)
 
         band.members.add(user)
-        band.setlist = Setlist.objects.create()
+        Setlist.objects.create(band = band)
         band.save()
 
         return band
@@ -64,9 +64,9 @@ def add_setlist_song(band_id, artist, title):
     try:
         band = get_band(band_id)
 
-        song = Song.objects.filter(artist = artist, title = title)
+        song = Song.objects.filter(band = band, artist = artist, title = title)
         if len(song) == 0:
-            song = Song.objects.create(artist = artist, title = title)
+            song = Song.objects.create(band = band, artist = artist, title = title)
         else:
             song = song[0]
 
