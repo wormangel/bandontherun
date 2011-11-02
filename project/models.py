@@ -77,8 +77,8 @@ class Voting(models.Model):
     n_suggestions = models.IntegerField()
     n_votes_per_user = models.IntegerField()
     n_winning_songs = models.IntegerField()
-    date_start = models.DateField()
-    date_end = models.DateField()
+    date_start = models.DateTimeField()
+    date_end = models.DateTimeField()
     auto_add_winners = models.BooleanField(default=True)
     suggested_songs = models.ManyToManyField(Song)
 
