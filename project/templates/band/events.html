@@ -40,6 +40,18 @@
     <script type="text/javascript" src="{{ STATIC_URL }}js/libs/fullcalendar.min.js"></script>
     <script>
         $(function() {
+            Date.prototype.defaultView = function() {
+                var dd = this.getDate(),
+                    mm = this.getMonth() + 1,
+                    hh = this.getHours(),
+                    minutes = this.getMinutes();
+                if (dd < 10) dd = '0' + dd;
+                if (mm < 10) mm = '0' + mm;
+                if (hh < 10) hh = '0' + hh;
+                if (minutes < 10) minutes = '0' + minutes
+                return mm + "/" + dd + "/" + this.getFullYear() +", " + hh + ":" + minutes;
+            }
+            
             function CalendarEntry(pk, title, timeStart, timeEnd, type, addedBy) {
                 this.id = type+pk;
                 this.pk = pk;
@@ -67,12 +79,13 @@
                 return  "<h1>" + this.title + "</h1>" +
                         "<h2>" + this.added_by + "</h2>" +
                         "<ul class=\"unstyled\">" +
-                        "   <li>" + this.start + "</li>" +
-                        "   <li>" + this.end + "</li>" +
+                        "   <li>" + this.start.defaultView() + "</li>" +
+                        "   <li>" + this.end.defaultView() + "</li>" +
                         "</ul>";
             }
             
             function Gig(pk, title, timeStart, timeEnd, addedBy, place, costs, ticket) {
+                this.allDay = false;
                 this.place = place
                 this.costs = costs;
                 this.ticket = ticket;
@@ -86,12 +99,14 @@
                 return  "<h1>" + this.title + "</h1>" +
                         "<h2>" + this.addedBy + "</h2>" +
                         "<ul class=\"unstyled\">" +
-                        "   <li>" + this.start + "</li>" +
-                        "   <li>" + this.end + "</li>" +
+                        "   <li>Starts: " + this.start.defaultView() + "</li>" +
+                        "   <li>Ends: " + this.end.defaultView() + "</li>" +
+                        ""
                         "</ul>";
             }
             
             function Rehearsal(pk, title, timeStart, timeEnd, addedBy, place, costs) {
+                this.allDay = false;
                 this.place = place
                 this.costs = costs;
                 this.type = "rehearsal";
@@ -104,8 +119,8 @@
                 return  "<h1>" + this.title + "</h1>" +
                         "<h2>" + this.id + "</h2>" +
                         "<ul class=\"unstyled\">" +
-                        "   <li>" + this.start + "</li>" +
-                        "   <li>" + this.end + "</li>" +
+                        "   <li>" + this.start.defaultView() + "</li>" +
+                        "   <li>" + this.end.defaultView() + "</li>" +
                         "</ul>";
             }
             
@@ -210,7 +225,6 @@
                 if (($(e.target).hasClass('fc-event') || $(e.target).closest('.fc-event')).length === 0) {
                     $("#bubble").hide();
                 }
-                
             });
         
             $("#bubble form").submit(function(e) {
