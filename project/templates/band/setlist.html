@@ -2,8 +2,12 @@
 {% load url from future %}
 
 {% block scripts %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.tablesorter.min.js"></script>
+
 <script type="text/javascript">
     $(document).ready(function() {
+        $("table.sortable").tablesorter();
+
         $("#showall").click(function() {
             $("#query").val("");
             $("#filterForm").submit();
@@ -34,7 +38,7 @@
         <span class="help-block inline"> Total: {{ song_list_size }} songs.</span>
         <br><br>
         
-        <table class="zebra-striped">
+        <table class="zebra-striped sortable">
             <thead>
               <tr>
                 <th class="header">Artist - Song</th>
@@ -100,4 +104,3 @@
     </div>
     {% endif %}
 {% endblock %}
-
