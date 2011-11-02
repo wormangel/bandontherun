@@ -109,9 +109,9 @@ class Rehearsal(CalendarEntry):
 class Gig(CalendarEntry):
     date_end = models.DateField()
     place = models.CharField(max_length=30)
-    costs = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
+    costs = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     setlist = models.OneToOneField(Setlist, null=True)
-    ticket = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
+    ticket = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     contract = models.ForeignKey(BandFile, null=True, on_delete=models.SET_NULL)
 
 class UserInvitation(models.Model):
