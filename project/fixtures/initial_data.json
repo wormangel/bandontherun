@@ -1,0 +1,1564 @@
+[
+    {
+        "pk": 12, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "allocatedsong", 
+            "name": "allocated song", 
+            "app_label": "project"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "band", 
+            "name": "band", 
+            "app_label": "project"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "bandfile", 
+            "name": "band file", 
+            "app_label": "project"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "contact", 
+            "name": "contact", 
+            "app_label": "project"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "contenttype", 
+            "name": "content type", 
+            "app_label": "contenttypes"
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "crontabschedule", 
+            "name": "crontab", 
+            "app_label": "djcelery"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "gig", 
+            "name": "gig", 
+            "app_label": "project"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "group", 
+            "name": "group", 
+            "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "intervalschedule", 
+            "name": "interval", 
+            "app_label": "djcelery"
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "periodictask", 
+            "name": "periodic task", 
+            "app_label": "djcelery"
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "periodictasks", 
+            "name": "periodic tasks", 
+            "app_label": "djcelery"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "permission", 
+            "name": "permission", 
+            "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "rehearsal", 
+            "name": "rehearsal", 
+            "app_label": "project"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "session", 
+            "name": "session", 
+            "app_label": "sessions"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "setlist", 
+            "name": "setlist", 
+            "app_label": "project"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "song", 
+            "name": "song", 
+            "app_label": "project"
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "taskstate", 
+            "name": "task", 
+            "app_label": "djcelery"
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "taskmeta", 
+            "name": "task meta", 
+            "app_label": "djcelery"
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "tasksetmeta", 
+            "name": "taskset meta", 
+            "app_label": "djcelery"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "unavailability", 
+            "name": "unavailability", 
+            "app_label": "project"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "user", 
+            "name": "user", 
+            "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "userinvitation", 
+            "name": "user invitation", 
+            "app_label": "project"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "userprofile", 
+            "name": "user profile", 
+            "app_label": "project"
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "vote", 
+            "name": "vote", 
+            "app_label": "project"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "voting", 
+            "name": "voting", 
+            "app_label": "project"
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "workerstate", 
+            "name": "worker", 
+            "app_label": "djcelery"
+        }
+    }, 
+    {
+        "pk": "7db81b6d36a057bfb9a89c2e407e194e", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2011-11-16 01:57:35", 
+            "session_data": "MTU5Y2VlNDE5OThiOWMyZmVjYzE3ZDBkMWFkMzgxZGQ5ZDNhZmVkMTqAAn1xAShVEF9kamZsYXNo\nX3Nlc3Npb25xAmNkamFuZ29mbGFzaC5tb2RlbHMKRmxhc2hTY29wZQpxAymBcQR9cQUoVQNub3dx\nBmNkamFuZ29mbGFzaC5tb2RlbHMKX0ltbWVkaWF0ZUZsYXNoU2NvcGVBZGFwdGVyCnEHKYFxCH1x\nCVUIZGVsZWdhdGVxCmgEc2JVCF9zZXNzaW9ucQt9cQxVB3N1Y2Nlc3NxDVUXR2lnIGFkZGVkIHN1\nY2Nlc3NmdWxseSFxDnNVBV91c2VkcQ99cRBoDU5zdWJVEl9hdXRoX3VzZXJfYmFja2VuZHERVSlk\namFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHESVQ1fYXV0aF91c2VyX2lk\ncRNLAXUu\n"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "project.userprofile", 
+        "fields": {
+            "phone": "8388406474"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "project.contact", 
+        "fields": {
+            "added": "2011-11-02", 
+            "name": "Kalango", 
+            "service": true, 
+            "phone": "555-4141", 
+            "cost": "20", 
+            "added_by": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "project.band", 
+        "fields": {
+            "bio": "heavy <b>metal</B>", 
+            "name": "Cranium Basher", 
+            "contacts": [
+                1
+            ], 
+            "url": "http://www.craniumbasher.mus/", 
+            "members": [
+                1
+            ], 
+            "logo": ""
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Highway Star", 
+            "attachments": [], 
+            "artist": "Deep Purple"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Daddy Brother Lover Little Boy", 
+            "attachments": [], 
+            "artist": "Mr. Big"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "I Believe in a Thing Called Love", 
+            "attachments": [], 
+            "artist": "The Darkness"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Long Live Rock and Roll", 
+            "attachments": [], 
+            "artist": "Steel Dragon"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Talk Dirty to Me", 
+            "attachments": [], 
+            "artist": "Poison"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Deuce", 
+            "attachments": [], 
+            "artist": "KISS"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Born to be Wild", 
+            "attachments": [], 
+            "artist": "Steppenwolf"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Fool For Your Lovin'", 
+            "attachments": [], 
+            "artist": "Whitesnake"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Speed King", 
+            "attachments": [], 
+            "artist": "Deep Purple"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Dirty Deeds Done Dirty Cheep", 
+            "attachments": [], 
+            "artist": "AC/DC"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Ain't Talkin' 'Bout Love", 
+            "attachments": [], 
+            "artist": "Van Halen"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "You Give Love a Bad Name", 
+            "attachments": [], 
+            "artist": "Bon Jovi"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Futebol, Mulher e Rock n' Roll", 
+            "attachments": [], 
+            "artist": "Dr. Sin"
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Rock and Roll", 
+            "attachments": [], 
+            "artist": "Led Zepellin"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Love Gun", 
+            "attachments": [], 
+            "artist": "KISS"
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Youth Gone Wild", 
+            "attachments": [], 
+            "artist": "Skid Row"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Stand Up", 
+            "attachments": [], 
+            "artist": "Steel Dragon"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Highway to Hell", 
+            "attachments": [], 
+            "artist": "AC/DC"
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Whole Lotta Rosie", 
+            "attachments": [], 
+            "artist": "AC/DC"
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Burn", 
+            "attachments": [], 
+            "artist": "Deep Purple"
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "I Wanna Rock", 
+            "attachments": [], 
+            "artist": "Twisted Sister"
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Heaven and Hell", 
+            "attachments": [], 
+            "artist": "Black Sabbath"
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Don't Talk to Strangers", 
+            "attachments": [], 
+            "artist": "Dio"
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "The Mob Rules", 
+            "attachments": [], 
+            "artist": "Black Sabbath"
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Man on the Silver Mountain", 
+            "attachments": [], 
+            "artist": "Rainbow"
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Holy Diver", 
+            "attachments": [], 
+            "artist": "Dio"
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Temple of Shadows", 
+            "attachments": [], 
+            "artist": "Angra"
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "project.song", 
+        "fields": {
+            "band": 1, 
+            "title": "Nothing to Say", 
+            "attachments": [], 
+            "artist": "Angra"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "project.setlist", 
+        "fields": {
+            "band": 1, 
+            "name": ""
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "project.setlist", 
+        "fields": {
+            "band": null, 
+            "name": ""
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 1, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 2, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 3, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 4, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 5, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 6, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 7, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 8, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 9, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 10, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 11, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 12, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 13, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 14, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 15, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 16, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 17, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 18, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 19, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 20, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 21, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 22, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 23, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 24, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 25, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 26, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 27, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "project.allocatedsong", 
+        "fields": {
+            "position": 0, 
+            "song": 28, 
+            "setlist": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "project.gig", 
+        "fields": {
+            "time_start": "23:00:00", 
+            "date_end": "2011-11-03", 
+            "date_start": "2011-11-02", 
+            "time_end": "02:00:00", 
+            "contract": null, 
+            "setlist": 2, 
+            "band": 1, 
+            "costs": null, 
+            "place": "Bronx", 
+            "ticket": null, 
+            "added_by": 1
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_group", 
+            "name": "Can add group", 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_group", 
+            "name": "Can change group", 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_group", 
+            "name": "Can delete group", 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_permission", 
+            "name": "Can add permission", 
+            "content_type": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_permission", 
+            "name": "Can change permission", 
+            "content_type": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_permission", 
+            "name": "Can delete permission", 
+            "content_type": 1
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_user", 
+            "name": "Can add user", 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_user", 
+            "name": "Can change user", 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_user", 
+            "name": "Can delete user", 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_contenttype", 
+            "name": "Can add content type", 
+            "content_type": 4
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_contenttype", 
+            "name": "Can change content type", 
+            "content_type": 4
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_contenttype", 
+            "name": "Can delete content type", 
+            "content_type": 4
+        }
+    }, 
+    {
+        "pk": 64, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_crontabschedule", 
+            "name": "Can add crontab", 
+            "content_type": 22
+        }
+    }, 
+    {
+        "pk": 65, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_crontabschedule", 
+            "name": "Can change crontab", 
+            "content_type": 22
+        }
+    }, 
+    {
+        "pk": 66, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_crontabschedule", 
+            "name": "Can delete crontab", 
+            "content_type": 22
+        }
+    }, 
+    {
+        "pk": 61, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_intervalschedule", 
+            "name": "Can add interval", 
+            "content_type": 21
+        }
+    }, 
+    {
+        "pk": 62, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_intervalschedule", 
+            "name": "Can change interval", 
+            "content_type": 21
+        }
+    }, 
+    {
+        "pk": 63, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_intervalschedule", 
+            "name": "Can delete interval", 
+            "content_type": 21
+        }
+    }, 
+    {
+        "pk": 70, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_periodictask", 
+            "name": "Can add periodic task", 
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 71, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_periodictask", 
+            "name": "Can change periodic task", 
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 72, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_periodictask", 
+            "name": "Can delete periodic task", 
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 67, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_periodictasks", 
+            "name": "Can add periodic tasks", 
+            "content_type": 23
+        }
+    }, 
+    {
+        "pk": 68, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_periodictasks", 
+            "name": "Can change periodic tasks", 
+            "content_type": 23
+        }
+    }, 
+    {
+        "pk": 69, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_periodictasks", 
+            "name": "Can delete periodic tasks", 
+            "content_type": 23
+        }
+    }, 
+    {
+        "pk": 55, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_taskmeta", 
+            "name": "Can add task meta", 
+            "content_type": 19
+        }
+    }, 
+    {
+        "pk": 56, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_taskmeta", 
+            "name": "Can change task meta", 
+            "content_type": 19
+        }
+    }, 
+    {
+        "pk": 57, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_taskmeta", 
+            "name": "Can delete task meta", 
+            "content_type": 19
+        }
+    }, 
+    {
+        "pk": 58, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_tasksetmeta", 
+            "name": "Can add taskset meta", 
+            "content_type": 20
+        }
+    }, 
+    {
+        "pk": 59, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_tasksetmeta", 
+            "name": "Can change taskset meta", 
+            "content_type": 20
+        }
+    }, 
+    {
+        "pk": 60, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_tasksetmeta", 
+            "name": "Can delete taskset meta", 
+            "content_type": 20
+        }
+    }, 
+    {
+        "pk": 76, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_taskstate", 
+            "name": "Can add task", 
+            "content_type": 26
+        }
+    }, 
+    {
+        "pk": 77, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_taskstate", 
+            "name": "Can change task", 
+            "content_type": 26
+        }
+    }, 
+    {
+        "pk": 78, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_taskstate", 
+            "name": "Can delete task", 
+            "content_type": 26
+        }
+    }, 
+    {
+        "pk": 73, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_workerstate", 
+            "name": "Can add worker", 
+            "content_type": 25
+        }
+    }, 
+    {
+        "pk": 74, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_workerstate", 
+            "name": "Can change worker", 
+            "content_type": 25
+        }
+    }, 
+    {
+        "pk": 75, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_workerstate", 
+            "name": "Can delete worker", 
+            "content_type": 25
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_allocatedsong", 
+            "name": "Can add allocated song", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_allocatedsong", 
+            "name": "Can change allocated song", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_allocatedsong", 
+            "name": "Can delete allocated song", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_band", 
+            "name": "Can add band", 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_band", 
+            "name": "Can change band", 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_band", 
+            "name": "Can delete band", 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_bandfile", 
+            "name": "Can add band file", 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_bandfile", 
+            "name": "Can change band file", 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_bandfile", 
+            "name": "Can delete band file", 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_contact", 
+            "name": "Can add contact", 
+            "content_type": 7
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_contact", 
+            "name": "Can change contact", 
+            "content_type": 7
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_contact", 
+            "name": "Can delete contact", 
+            "content_type": 7
+        }
+    }, 
+    {
+        "pk": 49, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_gig", 
+            "name": "Can add gig", 
+            "content_type": 17
+        }
+    }, 
+    {
+        "pk": 50, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_gig", 
+            "name": "Can change gig", 
+            "content_type": 17
+        }
+    }, 
+    {
+        "pk": 51, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_gig", 
+            "name": "Can delete gig", 
+            "content_type": 17
+        }
+    }, 
+    {
+        "pk": 46, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_rehearsal", 
+            "name": "Can add rehearsal", 
+            "content_type": 16
+        }
+    }, 
+    {
+        "pk": 47, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_rehearsal", 
+            "name": "Can change rehearsal", 
+            "content_type": 16
+        }
+    }, 
+    {
+        "pk": 48, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_rehearsal", 
+            "name": "Can delete rehearsal", 
+            "content_type": 16
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_setlist", 
+            "name": "Can add setlist", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_setlist", 
+            "name": "Can change setlist", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_setlist", 
+            "name": "Can delete setlist", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_song", 
+            "name": "Can add song", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_song", 
+            "name": "Can change song", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_song", 
+            "name": "Can delete song", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 43, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_unavailability", 
+            "name": "Can add unavailability", 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 44, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_unavailability", 
+            "name": "Can change unavailability", 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 45, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_unavailability", 
+            "name": "Can delete unavailability", 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 52, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_userinvitation", 
+            "name": "Can add user invitation", 
+            "content_type": 18
+        }
+    }, 
+    {
+        "pk": 53, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_userinvitation", 
+            "name": "Can change user invitation", 
+            "content_type": 18
+        }
+    }, 
+    {
+        "pk": 54, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_userinvitation", 
+            "name": "Can delete user invitation", 
+            "content_type": 18
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_userprofile", 
+            "name": "Can add user profile", 
+            "content_type": 6
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_userprofile", 
+            "name": "Can change user profile", 
+            "content_type": 6
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_userprofile", 
+            "name": "Can delete user profile", 
+            "content_type": 6
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_vote", 
+            "name": "Can add vote", 
+            "content_type": 14
+        }
+    }, 
+    {
+        "pk": 41, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_vote", 
+            "name": "Can change vote", 
+            "content_type": 14
+        }
+    }, 
+    {
+        "pk": 42, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_vote", 
+            "name": "Can delete vote", 
+            "content_type": 14
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_voting", 
+            "name": "Can add voting", 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_voting", 
+            "name": "Can change voting", 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_voting", 
+            "name": "Can delete voting", 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_session", 
+            "name": "Can add session", 
+            "content_type": 5
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_session", 
+            "name": "Can change session", 
+            "content_type": 5
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_session", 
+            "name": "Can delete session", 
+            "content_type": 5
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "worm", 
+            "first_name": "Lucas", 
+            "last_name": "Azevedo", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-11-02 01:56:02", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$eVzveLEbrwRu$cfff9902a364eca76493d7996267955ec817623c", 
+            "email": "wormangel@gmail.com", 
+            "date_joined": "2011-11-02 01:56:01"
+        }
+    }
+]
