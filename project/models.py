@@ -1,27 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class Song(models.Model):
-    artist = models.CharField(verbose_name="artist", max_length=50)
-    title = models.CharField(verbose_name="title", max_length=80)
-
-Song.attachments = property(lambda u: BandFile.objects.filter(attachments__id=u.id))
-
-class Setlist(models.Model):
-    name = models.CharField(verbose_name="name", max_length=50)
-    songs = models.ManyToManyField(Song, through='AllocatedSong')
-
-    def contains(self, song):
-        return len(self.songs.filter(artist=song.artist, title=song.title)) is not 0
-
-Setlist.song_list = property(lambda s: s.songs.order_by('allocatedsong__position'))
-Setlist.count = property(lambda s: len(s.song_list))
-
-class AllocatedSong(models.Model):
-    setlist = models.ForeignKey(Setlist)
-    song = models.ForeignKey(Song)
-    position = models.IntegerField(null=True, default=0)
-
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, primary_key=True)
     phone = models.CharField(verbose_name="phone", max_length=15, blank=True)
@@ -43,7 +22,6 @@ class Band(models.Model):
     url = models.URLField(verbose_name="url", blank=True)
     logo = models.ImageField(upload_to="public/bands/") #research this further
     members = models.ManyToManyField(User)
-    setlist = models.OneToOneField(Setlist, null=True)
     contacts = models.ManyToManyField(Contact)
     
     def is_member(self, user):
@@ -56,6 +34,7 @@ Band.member_list = property(lambda u: u.members.all())
 Band.file_list = property(lambda u: u.bandfile_set.all())
 Band.calendar_entries = property(lambda u: list(Unavailability.objects.filter(band=u)) + list(Gig.objects.filter(band=u)) + list(Rehearsal.objects.filter(band=u)))
 Band.contact_list = property(lambda u: u.contacts.all())
+Band.setlist = property(lambda u: Setlist.objects.filter(band=u))
 
 class BandFile(models.Model):
     def get_save_path(instance, filename):
@@ -68,8 +47,31 @@ class BandFile(models.Model):
     band = models.ForeignKey(Band)
     created = models.DateField()
     file = models.FileField(upload_to=get_save_path)
-    attachments = models.ManyToManyField(Song)
-    
+
+class Song(models.Model):
+    band = models.ForeignKey(Band)
+    artist = models.CharField(verbose_name="artist", max_length=50)
+    title = models.CharField(verbose_name="title", max_length=80)
+    attachments = models.ManyToManyField(BandFile)
+
+Song.files = property(lambda u: u.attachments.all())
+
+class Setlist(models.Model):
+    band = models.OneToOneField(Band, null=True)
+    name = models.CharField(verbose_name="name", max_length=50)
+    songs = models.ManyToManyField(Song, through='AllocatedSong')
+
+    def contains(self, song):
+        return len(self.songs.filter(artist=song.artist, title=song.title)) is not 0
+
+Setlist.song_list = property(lambda s: s.songs.order_by('allocatedsong__position'))
+Setlist.count = property(lambda s: len(s.song_list))
+
+class AllocatedSong(models.Model):
+    setlist = models.ForeignKey(Setlist)
+    song = models.ForeignKey(Song)
+    position = models.IntegerField(null=True, default=0)
+
 class Voting(models.Model):
     date_creation = models.DateTimeField()
     n_suggestions = models.IntegerField()

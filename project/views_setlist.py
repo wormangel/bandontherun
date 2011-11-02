@@ -187,8 +187,8 @@ def upload_song_file(request, band_id, song_id):
             band_file.band = band
             band_file.created = datetime.now()
             band_file.save()
-            band_file.attachments.add(song)
-            band_file.save()
+            song.attachments.add(band_file)
+            song.save()
             return render_to_response('band/song.html', context, context_instance=RequestContext(request))
         context['song_form'] = form
     except Exception as exc:
