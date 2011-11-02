@@ -152,3 +152,9 @@ td.tiny form button {
     margin-left: 6px;
     padding: 2px 5px 3px 5px;
 }
+
+.songcount {
+    display:inline;
+    padding: 0px;
+    float: none;
+}

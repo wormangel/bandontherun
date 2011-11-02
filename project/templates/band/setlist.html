@@ -2,18 +2,21 @@
 {% load url from future %}
 
 {% block scripts %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/tablesorter.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/tablesorter_filter.min.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $("table.sortable").tablesorter();
-
-        $("#showall").click(function() {
-            $("#query").val("");
-            $("#filterForm").submit();
-            return false;
+        $("table.sortable").tablesorter().tablesorterFilter({
+            filterContainer: $("#query"),
+            filterClearContainer: $("#showall"),
+            filterColumns: [0],
+            filterWaitTime: 250
+        }).bind("filterEnd", function(){
+            var n_rows = $('table.zebra-striped.sortable tbody tr').length;
+            $("#setlist_size").text(n_rows);
         });
-   });
+    });
 </script>
 {% endblock %}
         
@@ -23,19 +26,10 @@
 
     <section id="setlist">
         <h3>Setlist:</h3>
-        
-        <form id="filterForm" action="/band/{{ band.id }}/setlist/filter" method="get">
-            {% csrf_token %}
-            <input id="query" name="query" class="xlarge" type="text" placeholder="type filter text" value="{{ query_string }}" style="float: left;">
-            <button class="btn inline span" type="submit">Filter</button>
-            {% if not query_string == "" %}
-                <a id="showall" href="#" style="margin-left: 15px;">Show all</a>
-            {% else %}
-                <br>
-            {% endif %}
-        </form>
-        
-        <span class="help-block inline"> Total: {{ song_list_size }} songs.</span>
+
+        <input id="query" name="query" class="xlarge" type="text" placeholder="type filter text" style="float: left;" />
+        <a id="showall" href="#" style="margin-left: 15px;">Show all</a>
+        <span class="help-block inline">&nbsp;Total: <label id="setlist_size" class="help-block songcount">{{ song_list_size }}</label> songs.</span>
         <br><br>
         
         <table class="zebra-striped sortable">
