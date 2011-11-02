@@ -33,7 +33,6 @@
         $(function() {
             // Init the time pickers
             $("#id_time_start").timepicker({defaultTime: ''});
-
             $("#id_time_end").timepicker({defaultTime: ''});
 
             // Init the date pickers
@@ -63,7 +62,7 @@
                 $cost.val($cost.val().replace("$ ", "").replace(",", ""));
             });
 
-            $("#id_costs")
+            $cost.mask();
         });
     </script>
 {% endblock %}
