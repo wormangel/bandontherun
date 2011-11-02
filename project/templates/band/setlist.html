@@ -4,6 +4,7 @@
 {% block scripts %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/tablesorter.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/tablesorter_filter.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/bootstrap-modal.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -79,18 +80,19 @@
             Title:  <input id="title" name="title" type="text" placeholder="song title" />
             <button class="btn inline primary" type="submit">Add</button>
         </form>
+
+        ...or <a href="#" data-controls-modal="modal_batch" data-backdrop="true">click here to add a batch of songs!</a>!
     </section>
 
-    <section id="batch">
-        <h4>Batch add songs:</h4>
-        <form action="/band/{{ band.id }}/setlist/add_batch" method="post">
+    <div id="modal_batch" class="modal fade hide" style="display:none">
+            <form action="/band/{{ band.id }}/setlist/add_batch" method="post">
             {% csrf_token %}
             Quick way to add a batch of songs to the setlist!<br/><br/>
             <textarea class="span9" rows="5" id="batch" name="batch" placeholder="e.g.: Artist - Song" ></textarea>
             <br/>
-            <button class="btn primary span8" type="submit" style="margin-top:5px;">Add Batch</button>
+            <button class="btn primary" type="submit" style="margin-top:5px;">Add Songs</button>
         </form>
-    </section>
+    </div>
 
     {% else %}
     <div class="alert-message error">
