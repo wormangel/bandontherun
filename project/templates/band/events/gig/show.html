@@ -19,7 +19,7 @@
         <dt>Place/Venue:</dt>
         <dd>{{ gig.place }}</dd>
         <dt>Ticket price:</dt>
-        <dd>{{ gig.ticket|currency }}</dd>
+        <dd> {% if gig.ticket %}{{ gig.ticket|currency }} {% else %} TBD {% endif %}</dd>
     </dl>
     <a href="{% url 'edit-gig' band.id gig.id %}"><button class="btn">Edit</button></a>
     <hr size="20"/>
