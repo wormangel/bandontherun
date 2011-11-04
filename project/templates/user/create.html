@@ -1,6 +1,6 @@
 {% extends 'base-external.html' %}
 {% block body %}
-    <form action="/user/create" method="post"> {% csrf_token %}
+    <form action="/user/create/{{ key }}" method="post"> {% csrf_token %}
         {% include "form_template.html" with form_title="User Registration"  %}
         <div class="actions">
             <button class="btn primary" type="submit"/>Create</button>

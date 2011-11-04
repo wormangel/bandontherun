@@ -1,9 +1,11 @@
 # TODO: change some posts request to put / delete (investigate how to do that with django)
+from django.http import HttpResponse
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.shortcuts import render_to_response, redirect
 from django.core.urlresolvers import reverse
+from django.utils import simplejson
 
 from filetransfers.api import prepare_upload
 from forms import BandCreateForm, BandEditForm, UploadBandFileForm
@@ -95,11 +97,10 @@ def add_band_member(request, band_id):
             raise Exception("You have no permission to add members to this band cause you are not a member of it.")
 
         bands_manager.add_band_member(band_id, username)
-        return redirect('/band/%s' % band_id)
+        response_data = {'result': True}
     except Exception as exc:
-        context['error_msg'] = "Error ocurred: %s" % exc.message
-        context['band'] = band
-        return render_to_response('band/show.html', context, context_instance=RequestContext(request))
+        response_data = {'result': False}
+    return HttpResponse(simplejson.dumps(response_data), mimetype='application/json')
 
 @login_required
 @require_POST

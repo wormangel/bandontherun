@@ -71,6 +71,8 @@ body { padding-top: 40px; }
     -webkit-box-shadow: -1px 0 0 0 #ccc;
 }
 
+#invite {display: none;}
+
 #gigs, #unavailability, #rehearsal {display: none;}
 
 .fc-header, .fc-header td, .fc-border-separate {border: none;}

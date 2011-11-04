@@ -11,7 +11,9 @@
         <dd>{{ band.bio|safe }}</dd>
     </dl>
     <a href="{% url 'edit-band' band.id %}"><button class="btn">Edit</button></a>
-    <hr size="20"/>
+    
+    <hr />
+    
     <h4>Members:</h4>
     <ul id="members">
     {% for member in band.member_list %}
@@ -25,26 +27,67 @@
     {% endfor %}
     </ul>
 
-    <h4>Add a new member:</h4>
-    <form action="/band/{{ band.id }}/member/add" method="post">
-        {% csrf_token %}
-        <input id="username" name="username" type="text" placeholder="member username" />
-        <button class="btn inline primary" type="submit">Add</button>
-    </form>
-
-    <!--(Form abaixo será mostrado se não existir o usuário. Escondê-lo quando for aplicar css.)
-    <form action="/user/invite" method="post">
-    {% csrf_token %}
-    <label for="email">
-      <input id="email" name="email" type="email" placeholder="new member email" />
-    </label>
-    <input type="submit" value="Invite" />
-    </form>-->
-    <hr size="20"/>
+    <section id="new-member">
+        <h4>Add a new member:</h4>
+        <form action="/band/{{ band.id }}/member/add" method="post"> {% csrf_token %}
+            <input id="username" name="username" type="text" placeholder="member username" />
+            <button class="btn inline primary" type="submit">Add</button>
+        </form>
+        <span class="message-result" />
+    </section>
+    
+    <section id="invite">
+        <h4>Why don't you invite him/her?</h3>
+        <form action="/band/{{ band.id }}/member/invite" method="post"> {% csrf_token %}
+            <input id="email" name="email" type="email" placeholder="new member email" required />
+            <input class="btn inline primary" type="submit" value="Invite" />
+        </form>
+        <span class="message-result" />
+    </section>
+    
+    <hr />
+    
     {% else %}
     <div class="alert-message error">
         {{ error_msg }}
     </div>
     {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(function() {
+            $("#new-member form").submit(function(e) {
+                var $this = $(this);
+                $.post($this.attr('action'), 
+                       {'csrfmiddlewaretoken': $this.find('input[name=csrfmiddlewaretoken]').val(), 
+                        'username': $this.find('input[name=username]').val()})
+                .success(function(data) {
+                    if (data.result) {
+                        $this.next().html('User added!').fadeIn("slow");
+                    } else {
+                        $this.next().html('This user does not exist!');
+                        $("#invite").fadeIn("slow");
+                    }
+                });
+                e.preventDefault();
+            });
+            
+            $("#invite form").submit(function(e) {
+                var $this = $(this);
+                $.post($this.attr('action'), 
+                       {'csrfmiddlewaretoken': $this.find('input[name=csrfmiddlewaretoken]').val(), 
+                        'email': $this.find('input[name=email]').val()})
+                .success(function(data) {
+                    if (data.result) {
+                        $this.next().html('User invited!').fadeIn("slow");
+                    } else {
+                        $this.next().html('Error occurred. Try again!').fadeIn("slow");
+                    }
+                });
+                e.preventDefault();
+            });
+        });
+    </script>
 {% endblock %}
 

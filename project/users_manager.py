@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
+from models import UserInvitation
+
+import tasks
 
 def create_user(first_name, last_name, username, password, email, phone):
-
     if exists(username):
         raise Exception("Username already in use.")
 
@@ -41,10 +43,11 @@ def get_user(username):
         raise Exception("There is no user called '%s'." % username)
 
 def invitation_exists(key):
+    print 'invitation_exists'
     return UserInvitation.objects.filter(key=key).exists()
     
 def get_invitation(key):
-    return UserInvitation.objects.filter(key)
+    return UserInvitation.objects.get(key=key)
 
 def create_invitation(email, key, band):
     invitation = UserInvitation.objects.create(key=key, email=email, band=band)
@@ -52,4 +55,4 @@ def create_invitation(email, key, band):
 
 def invite_user(email, inviter, band):
     if email is not None:
-        UserInvitationTask.delay(band, inviter, email)
+        tasks.UserInvitationTask.delay(email, inviter, band)

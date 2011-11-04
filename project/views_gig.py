@@ -5,13 +5,12 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST
 from django.shortcuts import render_to_response, redirect
 from django.core.urlresolvers import reverse
+from django.utils import simplejson
 
 from datetime import datetime
-from filetransfers.api import prepare_upload
-from models import Band, User
+from models import Band, User, Gig
 from forms import   UploadBandFileForm, GigEntryForm
-from project.models import Gig
-from django.utils import simplejson
+from filetransfers.api import prepare_upload
 
 import  bands_manager
 

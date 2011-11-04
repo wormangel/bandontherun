@@ -77,9 +77,9 @@ urlpatterns = patterns('',
     
     url(r'^user/edit$', 'project.views_user.edit_user', name='edit-user'),
     url(r'^user/dashboard$', 'project.views_user.dashboard', name='user-dashboard'),
-    url(r'^user/invite$', 'project.views_user.invite_user', name='invite-user'),
+    url(r'^band/(?P<band_id>\d+)/member/invite$', 'project.views_user.invite_user', name='invite-user'),
     url(r'^user/profile/(?P<username>\w+)$', 'project.views_user.show_user', name='show-user'),
-    url(r'^user/create/(?P<email>\w+)/(?P<key>\w+)$', 'project.views_user.create_invited_user', name='create-invited-user'),
+    url(r'^user/create/(?P<key>\w+)$', 'project.views_user.create_invited_user', name='create-invited-user'),
     
     # Examples:
     # Uncomment the admin/doc line below to enable admin documentation:
