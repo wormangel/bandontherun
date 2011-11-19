@@ -72,12 +72,12 @@
                 this.allDay = allDay;
                 this.type = "unavailability";
                 this.color = "#000";
-                CalendarEntry.call(this, pk, title, timeStart, timeEnd, this.type);
+                CalendarEntry.call(this, pk, title, timeStart, timeEnd, this.type, addedBy);
             }
 
             Unavailability.prototype.toHTML = function() {
                 return  "<h1>" + this.title + "</h1>" +
-                        "<h2>" + this.added_by + "</h2>" +
+                        "<h2>Added by " + this.addedBy + "</h2>" +
                         "<ul class=\"unstyled\">" +
                         "   <li>" + this.start.defaultView() + "</li>" +
                         "   <li>" + this.end.defaultView() + "</li>" +
@@ -92,12 +92,12 @@
                 this.type = "gig";
                 this.color = "#444";
                 // TODO complete with other attrs
-                CalendarEntry.call(this, pk, title, timeStart, timeEnd, addedBy);
+                CalendarEntry.call(this, pk, title, timeStart, timeEnd, this.type, addedBy);
             }
             
             Gig.prototype.toHTML = function() {
                 return  "<h1>" + this.title + "</h1>" +
-                        "<h2>" + this.addedBy + "</h2>" +
+                        "<h2>Added by " + this.addedBy + "</h2>" +
                         "<ul class=\"unstyled\">" +
                         "   <li>Starts: " + this.start.defaultView() + "</li>" +
                         "   <li>Ends: " + this.end.defaultView() + "</li>" +
@@ -112,12 +112,12 @@
                 this.type = "rehearsal";
                 this.color = "#ccc";
                 // TODO complete with other attrs
-                CalendarEntry.call(this, pk, title, timeStart, timeEnd, addedBy);
+                CalendarEntry.call(this, pk, title, timeStart, timeEnd, this.type, addedBy);
             }
             
             Rehearsal.prototype.toHTML = function() {
                 return  "<h1>" + this.title + "</h1>" +
-                        "<h2>" + this.id + "</h2>" +
+                        "<h2>Added by " + this.addedBy + "</h2>" +
                         "<ul class=\"unstyled\">" +
                         "   <li>" + this.start.defaultView() + "</li>" +
                         "   <li>" + this.end.defaultView() + "</li>" +
@@ -149,7 +149,7 @@
                     dateEndSplitted = data.fields.date_end.split("-");
                     endSplitted = data.fields.time_end.split(":");
                     timeEnd = new Date(dateEndSplitted[0], dateEndSplitted[1]-1, dateEndSplitted[2], endSplitted[0], endSplitted[1]);
-                    return new Unavailability(data.pk, "Unavailability of " + data.fields.added_by, timeStart, timeEnd, data.fields.added_by, allDay);
+                    return new Unavailability(data.pk, "Unavailability of " + data.fields.added_by.fields.first_name, timeStart, timeEnd, data.fields.added_by.fields.first_name, allDay);
                 }
                 
                 function createGig(data) {
@@ -160,7 +160,7 @@
                     dateEndSplitted = data.fields.date_end.split("-");
                     endSplitted = data.fields.time_end.split(":");
                     timeEnd = new Date(dateEndSplitted[0], dateEndSplitted[1]-1, dateEndSplitted[2], endSplitted[0], endSplitted[1]);
-                    return new Gig(data.pk, "Gig at " + data.fields.place, timeStart, timeEnd, data.fields.added_by, data.fields.place, data.fields.costs, data.fields.ticket);
+                    return new Gig(data.pk, "Gig at " + data.fields.place, timeStart, timeEnd, data.fields.added_by.fields.first_name, data.fields.place, data.fields.costs, data.fields.ticket);
                 }
                 
                 function createRehearsal(data) {
@@ -170,7 +170,7 @@
                     timeStart = new Date(dateSplitted[0], dateSplitted[1]-1, dateSplitted[2], startSplitted[0], startSplitted[1]);
                     endSplitted = data.fields.time_end.split(":");
                     timeEnd = new Date(dateSplitted[0], dateSplitted[1]-1, dateSplitted[2], endSplitted[0], endSplitted[1]);
-                    return new Rehearsal(data.pk, "Rehearsal at " + data.fields.place, timeStart, timeEnd, data.fields.added_by, data.fields.place, data.fields.costs);
+                    return new Rehearsal(data.pk, "Rehearsal at " + data.fields.place, timeStart, timeEnd, data.fields.added_by.fields.first_name, data.fields.place, data.fields.costs);
                 }
             }
             

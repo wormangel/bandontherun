@@ -6,9 +6,7 @@ from django.shortcuts import render_to_response, redirect
 from django.core import serializers
 from forms import UnavailabilityEntryForm
 
-import  bands_manager
-
-json_serializer = serializers.get_serializer("json")()
+import bands_manager
 
 @login_required
 @require_GET
@@ -38,7 +36,7 @@ def get_calendar_entries(request, band_id):
         # 500
         context['error_msg'] = "Error ocurred: %s" % exc.message
     response = HttpResponse(mimetype='application/json')
-    json_serializer.serialize(band.calendar_entries, ensure_ascii=False, stream=response)
+    serializers.serialize('json', band.calendar_entries, ensure_ascii=False, stream=response, relations={'added_by':{'fields':('first_name',)}})
     return response
 
 @login_required
