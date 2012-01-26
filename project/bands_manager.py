@@ -1,7 +1,8 @@
-from datetime import date as date
+from datetime import date as date, datetime
 from models import Band
-from project.errors import SongAlreadyOnSetlistError
-from project.models import Song, Setlist, Contact, Unavailability, Gig, Rehearsal, AllocatedSong
+from project.errors import SongAlreadyOnSetlistError, BandHasActiveVotingError, InvalidVotingDate
+from project.models import Song, Setlist, Contact, Unavailability, Gig, Rehearsal, AllocatedSong, Voting
+from project.utils import mount_date
 import users_manager
 
 FILES_PATH = "project/upload_files/"
@@ -343,3 +344,42 @@ def get_unavailabilities(band_id, date_start, date_end):
     
 def has_unavailabilities(band_id, date_start, date_end):
     return len(get_unavailabilities(band_id, date_start, date_end)) > 0
+
+def add_voting(band_id, n_suggestions, n_votes_per_user, n_winning_songs, date_suggestion_start,
+                 time_suggestion_start, date_suggestion_end, time_suggestion_end, date_voting_start,
+                 time_voting_start, date_voting_end, time_voting_end):
+    try:
+        band = get_band(band_id)
+        
+        if band.has_active_voting:
+            raise BandHasActiveVotingError(message="This band already has one voting going on.")
+        
+        suggestion_start = mount_date(date_suggestion_start, time_suggestion_start)
+        suggestion_end = mount_date(date_suggestion_end, time_suggestion_end)
+        voting_start = mount_date(date_voting_start, time_voting_start)
+        voting_end = mount_date(date_voting_end, time_voting_end)
+
+        if suggestion_start >= suggestion_end:
+            raise InvalidVotingDate(message="Suggestion phase end should happen after start")
+        if voting_start >= voting_end:
+            raise InvalidVotingDate(message="Voting phase end should happen after start")
+        if suggestion_start >= voting_start or suggestion_end >= voting_start or\
+            suggestion_end >= voting_start or suggestion_end >= voting_end:
+            raise InvalidVotingDate(message="Suggestion phase should happen before the voting phase")
+        if (datetime.now() >= suggestion_end):
+            raise InvalidVotingDate(message="Suggestion phase already happened, cannot create voting")
+
+        voting = Voting.objects.create(band=band, n_suggestions=n_suggestions, n_votes_per_user=n_votes_per_user,\
+           n_winning_songs=n_winning_songs,date_suggestion_start=date_suggestion_start, date_suggestion_end=date_suggestion_end,\
+            date_voting_start=date_voting_start, date_voting_end=date_voting_end, time_suggestion_start=time_suggestion_start,\
+            time_suggestion_end=time_suggestion_end, time_voting_start=time_voting_start, time_voting_end=time_voting_end, date_creation = datetime.now())
+        if (datetime.now() >= suggestion_start):
+            voting.current_phase = Voting.SUGGESTION_PHASE
+        else:
+            voting.current_phase = Voting.IS_NEW
+
+        voting.save()
+        return voting
+
+    except:
+        raise

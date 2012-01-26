@@ -7,7 +7,7 @@
 
     <h3>Setlist Voting:</h3>
     {% if active_voting %}
-        There is a voting going on right now. Click <a href="{% url 'show-voting' band.id 1 %}">here</a> to view it!
+        There is a voting going on right now. Click <a href="{% url 'show-voting' band.id band.active_voting.id %}">here</a> to view it!
     {% else %}
         There is no voting going on right now. <a href="{% url 'create-voting' band.id %}">Create</a> one now!
     {% endif %}

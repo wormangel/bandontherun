@@ -1,5 +1,7 @@
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.query_utils import Q
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, primary_key=True)
@@ -75,14 +77,57 @@ class AllocatedSong(models.Model):
     position = models.IntegerField(null=True, default=0)
 
 class Voting(models.Model):
+    # constants
+
+    IS_NEW = 0
+    SUGGESTION_PHASE = 1
+    VOTING_PHASE = 2
+    IS_OVER = 3
+
+    band = models.ForeignKey(Band)
+    
     date_creation = models.DateTimeField()
+    current_phase = models.IntegerField(default=IS_NEW)
+
     n_suggestions = models.IntegerField()
     n_votes_per_user = models.IntegerField()
     n_winning_songs = models.IntegerField()
-    date_start = models.DateTimeField()
-    date_end = models.DateTimeField()
+
+    date_suggestion_start = models.DateField()
+    time_suggestion_start = models.TimeField()
+    date_suggestion_end = models.DateField()
+    time_suggestion_end = models.TimeField()
+    
+    date_voting_start = models.DateField()
+    time_voting_start = models.TimeField()
+    date_voting_end = models.DateField()
+    time_voting_end = models.TimeField()
+    
     auto_add_winners = models.BooleanField(default=True)
+    
     suggested_songs = models.ManyToManyField(Song)
+
+#    def get_current_phase(self):
+#        suggestion_date_start = datetime(self.date_suggestion_start.year, self.date_suggestion_start.month, self.date_suggestion_start.day,
+#                                     self.time_suggestion_start.hour, self.time_suggestion_start.minute, self.time_suggestion_start.second)
+#        suggestion_date_end = datetime(self.date_suggestion_end.year, self.date_suggestion_end.month, self.date_suggestion_end.day,
+#                                     self.time_suggestion_end.hour, self.time_suggestion_end.minute, self.time_suggestion_end.second)
+#        voting_date_start = datetime(self.date_voting_start.year, self.date_voting_start.month, self.date_voting_start.day,
+#                                     self.time_voting_start.hour, self.time_voting_start.minute, self.time_voting_start.second)
+#        voting_date_end = datetime(self.date_voting_end.year, self.date_voting_end.month, self.date_voting_end.day,
+#                                     self.time_voting_end.hour, self.time_voting_end.minute, self.time_voting_end.second)
+#        now = datetime.now()
+#        if now < suggestion_date_start:
+#            return Voting.NEW
+#        if now >= suggestion_date_start and now < suggestion_date_end:
+#            return Voting.SUGGESTION_PHASE
+#        if now >= suggestion_date_end and now < suggestion_date_end:
+#            return Voting.SUGGESTION_PHASE
+#        if now >= suggestion_date_start and now < suggestion_date_end:
+#            return Voting.SUGGESTION_PHASE
+
+Band.has_active_voting = property(lambda b: len(Voting.objects.filter(Q(band=b), ~Q(current_phase=Voting.IS_OVER))) > 0)
+Band.active_voting = property(lambda b: Voting.objects.filter(Q(band=b), ~Q(current_phase=Voting.IS_OVER))[0])
 
 class Vote(models.Model):
     voting = models.OneToOneField(Voting)

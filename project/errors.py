@@ -9,4 +9,11 @@ class SongAlreadyOnSetlistError(Error):
 class BatchParseError(Error):
     def __init__(self, line):
         self.line = line
-    
+
+class BandHasActiveVotingError(Error):
+    def __init__(self, message):
+        self.message = message
+
+class InvalidVotingDate(Error):
+    def __init__(self, message):
+        self.message = message

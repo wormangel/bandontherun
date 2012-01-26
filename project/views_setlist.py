@@ -13,6 +13,7 @@ from datetime import datetime
 import  bands_manager
 from forms import UploadBandFileForm
 from models import User, Band, BandFile, Song
+from project.forms import SetlistVotingForm
 
 @login_required
 @require_GET
@@ -105,7 +106,7 @@ def voting_dashboard(request, band_id):
         band = bands_manager.get_band(band_id)
         context['band'] = band
 
-        context['active_voting'] = False
+        context['active_voting'] = band.has_active_voting
         context['older_votings'] = False
 
         if not band.is_member(request.user):
@@ -119,7 +120,40 @@ def voting_dashboard(request, band_id):
     return render_to_response('band/voting/dashboard.html', context, context_instance=RequestContext(request))
 
 def create_voting(request, band_id):
-    pass
+    context = {}
+
+    band = bands_manager.get_band(band_id)
+    context['band'] = band
+    form = SetlistVotingForm(request.POST or None)
+    context['form'] = form
+
+    if request.method == 'POST' and form.is_valid():
+        n_suggestions = form.cleaned_data['n_suggestions']
+        n_votes_per_user = form.cleaned_data['n_votes_per_user']
+        n_winning_songs = form.cleaned_data['n_winning_songs']
+
+        date_suggestion_start = form.cleaned_data['date_suggestion_start']
+        time_suggestion_start = form.cleaned_data['time_suggestion_start']
+        date_suggestion_end = form.cleaned_data['date_suggestion_end']
+        time_suggestion_end = form.cleaned_data['time_suggestion_end']
+
+        date_voting_start = form.cleaned_data['date_voting_start']
+        time_voting_start = form.cleaned_data['time_voting_start']
+        date_voting_end = form.cleaned_data['date_voting_end']
+        time_voting_end = form.cleaned_data['time_voting_end']
+        try:
+            if not band.is_member(request.user):
+                raise Exception("You have no permission to start a voting cause you are not a member of this band.")
+            voting = bands_manager.add_voting(band_id, n_suggestions, n_votes_per_user, n_winning_songs, date_suggestion_start,
+                                     time_suggestion_start, date_suggestion_end, time_suggestion_end, date_voting_start,
+                                     time_voting_start, date_voting_end, time_voting_end)
+            request.flash['success'] = "Voting added successfully!"
+            return redirect('/band/%d/setlist/voting/%d/show' % (band.id, voting.id))
+        except Exception as exc:
+            # 500
+            print exc.message
+            context['error_msg'] = "Error ocurred: %s" % exc.message
+    return render_to_response('band/voting/create.html', context, context_instance=RequestContext(request))
 
 def vote_setlist(request, band_id, song_id, voting_id):
     pass

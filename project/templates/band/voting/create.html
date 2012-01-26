@@ -1,0 +1,98 @@
+{% extends 'band-base.html' %}
+{% load url from future %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery-ui-1.8.16.custom.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.ui.timepicker.css" />
+{% endblock %}
+
+{% block band-content %}
+    <h2>{{ band.name }}</h2>
+    <h3>Voting</h3>
+
+    {% if not error_msg %}
+        <form action="/band/{{ band.id }}/setlist/voting/create" method="post"> {% csrf_token %}
+          {% include "form_template.html" with form_title="Add voting" %}
+          <div class="actions">
+              <button class="btn primary" type="submit">Save</button>
+              <button class="btn" type="reset">Cancel</button>
+          </div>
+        </form>
+    {% else %}
+        <div class="alert-message error">
+            {{ error_msg }}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.ui.timepicker.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/jquery.maskMoney.js" type="text/javascript"></script>
+    <script>
+        $(function() {
+            // Init the time pickers
+            $("#id_time_suggestion_start").timepicker({defaultTime: ''});
+            $("#id_time_suggestion_end").timepicker({defaultTime: ''});
+            $("#id_time_voting_start").timepicker({defaultTime: ''});
+            $("#id_time_voting_end").timepicker({defaultTime: ''});
+
+            // Init the date pickers
+
+            $("#id_date_suggestion_start").datepicker({
+                defaultDate: "+1w",
+                onSelect: function(selectedDate) {
+                    var instance = $( this ).data( "datepicker" ),
+                        date = $.datepicker.parseDate(
+                            instance.settings.dateFormat ||
+                            $.datepicker._defaults.dateFormat,
+                            selectedDate, instance.settings
+                        );
+                    $("#id_date_suggestion_end, #id_date_voting_start, #id_date_voting_end").datepicker("option", "minDate", date);
+                }
+            })
+
+            $("#id_date_suggestion_end").datepicker({
+                defaultDate: "+1w",
+                onSelect: function(selectedDate) {
+                    var instance = $( this ).data( "datepicker" ),
+                        date = $.datepicker.parseDate(
+                            instance.settings.dateFormat ||
+                            $.datepicker._defaults.dateFormat,
+                            selectedDate, instance.settings
+                        );
+                    $("#id_date_suggestion_start").datepicker("option", "maxDate", date);
+                    $("#id_date_voting_start, #id_date_voting_end").datepicker("option", "minDate", date);
+                }
+            })
+
+            $("#id_date_voting_start").datepicker({
+                defaultDate: "+1w",
+                onSelect: function(selectedDate) {
+                    var instance = $( this ).data( "datepicker" ),
+                        date = $.datepicker.parseDate(
+                            instance.settings.dateFormat ||
+                            $.datepicker._defaults.dateFormat,
+                            selectedDate, instance.settings
+                        );
+                    $("#id_date_voting_end").datepicker("option", "minDate", date);
+                    $("#id_date_suggestion_start, #id_date_suggestion_end").datepicker("option", "maxDate", date);
+                }
+            })
+
+            $("#id_date_voting_end").datepicker({
+                defaultDate: "+1w",
+                onSelect: function(selectedDate) {
+                    var instance = $( this ).data( "datepicker" ),
+                        date = $.datepicker.parseDate(
+                            instance.settings.dateFormat ||
+                            $.datepicker._defaults.dateFormat,
+                            selectedDate, instance.settings
+                        );
+                    $("#id_date_voting_start, #id_date_suggestion_start, #id_date_suggestion_end").datepicker("option", "maxDate", date);
+                }
+            })
+
+        });
+    </script>
+{% endblock %}
